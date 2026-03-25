@@ -71,7 +71,7 @@ export default function TokenGrid({
           <Skeleton
             key={key}
             className="h-44 rounded-xl"
-            style={{ background: "rgba(34,233,122,0.06)" }}
+            style={{ background: "rgba(0,212,184,0.06)" }}
           />
         ))}
       </div>
@@ -104,7 +104,7 @@ export default function TokenGrid({
                 className="pl-9 text-sm"
                 style={{
                   background: "#0F1513",
-                  border: "1px solid rgba(34,233,122,0.2)",
+                  border: "1px solid rgba(0,212,184,0.2)",
                   color: "#E8ECEB",
                 }}
                 data-ocid="tokens.search_input"
@@ -129,13 +129,13 @@ export default function TokenGrid({
                   style={{
                     background:
                       networkFilter === n
-                        ? "rgba(34,233,122,0.18)"
+                        ? "rgba(0,212,184,0.18)"
                         : "rgba(15,21,19,0.8)",
                     border:
                       networkFilter === n
-                        ? "1px solid rgba(34,233,122,0.5)"
-                        : "1px solid rgba(34,233,122,0.12)",
-                    color: networkFilter === n ? "#22E97A" : "#A9B3AF",
+                        ? "1px solid rgba(0,212,184,0.5)"
+                        : "1px solid rgba(0,212,184,0.12)",
+                    color: networkFilter === n ? "#00D4B8" : "#A9B3AF",
                     whiteSpace: "nowrap",
                   }}
                   data-ocid={`tokens.${n.toLowerCase()}.tab`}
@@ -155,7 +155,7 @@ export default function TokenGrid({
             padding: "3px",
             borderRadius: "8px",
             background: "rgba(15,21,19,0.9)",
-            border: "1px solid rgba(34,233,122,0.12)",
+            border: "1px solid rgba(0,212,184,0.12)",
             marginLeft: showSearch ? "0" : "auto",
             flexShrink: 0,
           }}
@@ -168,11 +168,9 @@ export default function TokenGrid({
               padding: "6px 8px",
               borderRadius: "5px",
               background:
-                viewMode === "grouped"
-                  ? "rgba(34,233,122,0.15)"
-                  : "transparent",
+                viewMode === "grouped" ? "rgba(0,212,184,0.15)" : "transparent",
               border: "none",
-              color: viewMode === "grouped" ? "#22E97A" : "#A9B3AF",
+              color: viewMode === "grouped" ? "#00D4B8" : "#A9B3AF",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -190,9 +188,9 @@ export default function TokenGrid({
               padding: "6px 8px",
               borderRadius: "5px",
               background:
-                viewMode === "grid" ? "rgba(34,233,122,0.15)" : "transparent",
+                viewMode === "grid" ? "rgba(0,212,184,0.15)" : "transparent",
               border: "none",
-              color: viewMode === "grid" ? "#22E97A" : "#A9B3AF",
+              color: viewMode === "grid" ? "#00D4B8" : "#A9B3AF",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -208,7 +206,7 @@ export default function TokenGrid({
       {filtered.length === 0 ? (
         <div
           className="py-16 text-center rounded-xl"
-          style={{ border: "1px solid rgba(34,233,122,0.1)" }}
+          style={{ border: "1px solid rgba(0,212,184,0.1)" }}
           data-ocid="tokens.empty_state"
         >
           <p style={{ color: "#A9B3AF" }}>

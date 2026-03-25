@@ -117,8 +117,8 @@ export default function BridgePanel() {
         className="rounded-2xl p-6 space-y-5"
         style={{
           background: "#0F1513",
-          border: "1px solid rgba(34,233,122,0.2)",
-          boxShadow: "0 0 30px rgba(34,233,122,0.06)",
+          border: "1px solid rgba(0,212,184,0.2)",
+          boxShadow: "0 0 30px rgba(0,212,184,0.06)",
         }}
       >
         {/* Source chain */}
@@ -130,7 +130,7 @@ export default function BridgePanel() {
             <SelectTrigger
               style={{
                 background: "#0B1110",
-                border: "1px solid rgba(34,233,122,0.2)",
+                border: "1px solid rgba(0,212,184,0.2)",
                 color: "#E8ECEB",
               }}
               data-ocid="bridge.source_chain.select"
@@ -140,7 +140,7 @@ export default function BridgePanel() {
             <SelectContent
               style={{
                 background: "#0F1513",
-                border: "1px solid rgba(34,233,122,0.2)",
+                border: "1px solid rgba(0,212,184,0.2)",
               }}
             >
               {CHAINS.map((c) => (
@@ -162,7 +162,7 @@ export default function BridgePanel() {
               <SelectTrigger
                 style={{
                   background: "#0B1110",
-                  border: "1px solid rgba(34,233,122,0.2)",
+                  border: "1px solid rgba(0,212,184,0.2)",
                   color: "#E8ECEB",
                 }}
                 data-ocid="bridge.token.select"
@@ -172,7 +172,7 @@ export default function BridgePanel() {
               <SelectContent
                 style={{
                   background: "#0F1513",
-                  border: "1px solid rgba(34,233,122,0.2)",
+                  border: "1px solid rgba(0,212,184,0.2)",
                 }}
               >
                 {tokens.map((t) => (
@@ -199,7 +199,7 @@ export default function BridgePanel() {
                 className="font-mono text-sm"
                 style={{
                   background: "#0B1110",
-                  border: "1px solid rgba(34,233,122,0.2)",
+                  border: "1px solid rgba(0,212,184,0.2)",
                   color: "#E8ECEB",
                 }}
                 data-ocid="bridge.amount.input"
@@ -210,9 +210,9 @@ export default function BridgePanel() {
                 onClick={handleMax}
                 className="text-xs px-2"
                 style={{
-                  background: "rgba(34,233,122,0.06)",
-                  border: "1px solid rgba(34,233,122,0.25)",
-                  color: "#22E97A",
+                  background: "rgba(0,212,184,0.06)",
+                  border: "1px solid rgba(0,212,184,0.25)",
+                  color: "#00D4B8",
                 }}
                 data-ocid="bridge.max.button"
               >
@@ -231,20 +231,20 @@ export default function BridgePanel() {
         <div className="flex items-center gap-3">
           <div
             className="flex-1 h-px"
-            style={{ background: "rgba(34,233,122,0.1)" }}
+            style={{ background: "rgba(0,212,184,0.1)" }}
           />
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{
-              background: "rgba(34,233,122,0.12)",
-              border: "1px solid rgba(34,233,122,0.25)",
+              background: "rgba(0,212,184,0.12)",
+              border: "1px solid rgba(0,212,184,0.25)",
             }}
           >
-            <ArrowLeftRight size={14} style={{ color: "#22E97A" }} />
+            <ArrowLeftRight size={14} style={{ color: "#00D4B8" }} />
           </div>
           <div
             className="flex-1 h-px"
-            style={{ background: "rgba(34,233,122,0.1)" }}
+            style={{ background: "rgba(0,212,184,0.1)" }}
           />
         </div>
 
@@ -257,7 +257,7 @@ export default function BridgePanel() {
             <SelectTrigger
               style={{
                 background: "#0B1110",
-                border: "1px solid rgba(34,233,122,0.2)",
+                border: "1px solid rgba(0,212,184,0.2)",
                 color: "#E8ECEB",
               }}
               data-ocid="bridge.dest_chain.select"
@@ -267,7 +267,7 @@ export default function BridgePanel() {
             <SelectContent
               style={{
                 background: "#0F1513",
-                border: "1px solid rgba(34,233,122,0.2)",
+                border: "1px solid rgba(0,212,184,0.2)",
               }}
             >
               {CHAINS.filter((c) => c !== sourceChain).map((c) => (
@@ -291,7 +291,7 @@ export default function BridgePanel() {
             className="font-mono text-xs"
             style={{
               background: "#0B1110",
-              border: "1px solid rgba(34,233,122,0.2)",
+              border: "1px solid rgba(0,212,184,0.2)",
               color: "#E8ECEB",
             }}
             data-ocid="bridge.dest_address.input"
@@ -303,12 +303,12 @@ export default function BridgePanel() {
           <div
             className="rounded-xl p-4 space-y-2"
             style={{
-              background: "rgba(34,233,122,0.04)",
-              border: "1px solid rgba(34,233,122,0.12)",
+              background: "rgba(0,212,184,0.04)",
+              border: "1px solid rgba(0,212,184,0.12)",
             }}
             data-ocid="bridge.fee.panel"
           >
-            <div className="text-xs font-semibold" style={{ color: "#22E97A" }}>
+            <div className="text-xs font-semibold" style={{ color: "#00D4B8" }}>
               Fee Estimate
             </div>
             {feeLoading ? (
@@ -316,7 +316,7 @@ export default function BridgePanel() {
                 <Loader2
                   size={12}
                   className="animate-spin"
-                  style={{ color: "#22E97A" }}
+                  style={{ color: "#00D4B8" }}
                 />
                 <span className="text-xs" style={{ color: "#A9B3AF" }}>
                   Calculating...
@@ -373,8 +373,8 @@ export default function BridgePanel() {
           style={{
             background:
               isPending || !sourceChain || !destChain || !tokenSymbol || !amount
-                ? "rgba(34,233,122,0.2)"
-                : "#22E97A",
+                ? "rgba(0,212,184,0.2)"
+                : "#00D4B8",
             color: "#070B0A",
             border: "none",
           }}

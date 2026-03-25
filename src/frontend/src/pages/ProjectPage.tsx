@@ -46,7 +46,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
             margin: "0 auto 24px",
             borderRadius: "50%",
             overflow: "hidden",
-            boxShadow: "0 0 40px rgba(34,233,122,0.35)",
+            boxShadow: "0 0 40px rgba(0,212,184,0.35)",
             animation: "project-pulse 3s ease-in-out infinite",
           }}
         >
@@ -70,7 +70,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
         <p
           style={{
             fontSize: "18px",
-            color: "#22E97A",
+            color: "#00D4B8",
             maxWidth: "600px",
             margin: "0 auto",
             lineHeight: 1.6,
@@ -91,7 +91,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                 color: i === 0 ? "#E8ECEB" : "#A9B3AF",
                 lineHeight: 1.8,
                 marginBottom: "24px",
-                borderLeft: i === 3 ? "3px solid #22E97A" : "none",
+                borderLeft: i === 3 ? "3px solid #00D4B8" : "none",
                 paddingLeft: i === 3 ? "16px" : "0",
               } as React.CSSProperties
             }
@@ -129,7 +129,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                 padding: "24px",
                 borderRadius: "12px",
                 background: "#0F1513",
-                border: "1px solid rgba(34,233,122,0.12)",
+                border: "1px solid rgba(0,212,184,0.12)",
                 display: "flex",
                 gap: "16px",
                 alignItems: "flex-start",
@@ -140,12 +140,12 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                   width: "44px",
                   height: "44px",
                   borderRadius: "10px",
-                  background: "rgba(34,233,122,0.1)",
-                  border: "1px solid rgba(34,233,122,0.2)",
+                  background: "rgba(0,212,184,0.1)",
+                  border: "1px solid rgba(0,212,184,0.2)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#22E97A",
+                  color: "#00D4B8",
                   flexShrink: 0,
                 }}
               >
@@ -295,7 +295,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               top: "0",
               bottom: "0",
               width: "2px",
-              background: "rgba(34,233,122,0.15)",
+              background: "rgba(0,212,184,0.15)",
             }}
           />
           {ROADMAP.map((phase) => (
@@ -319,13 +319,13 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                   borderRadius: "50%",
                   background:
                     phase.status === "completed"
-                      ? "#22E97A"
+                      ? "#00D4B8"
                       : phase.status === "current"
                         ? "#FFD700"
                         : "#0F1513",
                   border: `2px solid ${
                     phase.status === "completed"
-                      ? "#22E97A"
+                      ? "#00D4B8"
                       : phase.status === "current"
                         ? "#FFD700"
                         : "rgba(169,179,175,0.3)"
@@ -334,7 +334,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                     phase.status === "current"
                       ? "0 0 12px rgba(255,215,0,0.4)"
                       : phase.status === "completed"
-                        ? "0 0 8px rgba(34,233,122,0.3)"
+                        ? "0 0 8px rgba(0,212,184,0.3)"
                         : "none",
                 }}
               />
@@ -353,7 +353,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                       fontWeight: "700",
                       color:
                         phase.status === "completed"
-                          ? "#22E97A"
+                          ? "#00D4B8"
                           : phase.status === "current"
                             ? "#FFD700"
                             : "#A9B3AF",
@@ -498,7 +498,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                 >
                   <span
                     style={{
-                      color: "#22E97A",
+                      color: "#00D4B8",
                       marginTop: "1px",
                       flexShrink: 0,
                     }}
@@ -675,7 +675,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               style={{
                 borderRadius: "10px",
                 background: "#0F1513",
-                border: "1px solid rgba(34,233,122,0.12)",
+                border: "1px solid rgba(0,212,184,0.12)",
                 paddingLeft: "0",
                 overflow: "hidden",
               }}
@@ -713,7 +713,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           <div
             style={{
               fontSize: "12px",
-              color: "#22E97A",
+              color: "#00D4B8",
               letterSpacing: "0.15em",
               marginBottom: "8px",
             }}
@@ -990,7 +990,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                   title: "Interoperabilidad",
                   desc: "Puentes Wormhole, LayerZero e IBC permiten mover CLP a EVM, Solana y otras cadenas.",
                   icon: "🌉",
-                  color: "#22E97A",
+                  color: "#00D4B8",
                 },
               ].map((item) => (
                 <div
@@ -1300,7 +1300,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                   <div
                     style={{
                       fontSize: "11px",
-                      color: "#22E97A",
+                      color: "#00D4B8",
                       display: "flex",
                       gap: "4px",
                     }}
@@ -1479,13 +1479,13 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             padding: "14px 32px",
             borderRadius: "10px",
-            background: "#22E97A",
+            background: "#00D4B8",
             border: "none",
             color: "#070B0A",
             fontSize: "15px",
             fontWeight: "700",
             cursor: "pointer",
-            boxShadow: "0 0 20px rgba(34,233,122,0.3)",
+            boxShadow: "0 0 20px rgba(0,212,184,0.3)",
           }}
           data-ocid="project.dashboard.primary_button"
         >
@@ -1512,8 +1512,8 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
 
       <style>{`
         @keyframes project-pulse {
-          0%, 100% { box-shadow: 0 0 30px rgba(34,233,122,0.3); }
-          50% { box-shadow: 0 0 50px rgba(34,233,122,0.5), 0 0 80px rgba(34,233,122,0.2); }
+          0%, 100% { box-shadow: 0 0 30px rgba(0,212,184,0.3); }
+          50% { box-shadow: 0 0 50px rgba(0,212,184,0.5), 0 0 80px rgba(0,212,184,0.2); }
         }
         @media (prefers-reduced-motion: reduce) {
           [style*="project-pulse"] { animation: none !important; }

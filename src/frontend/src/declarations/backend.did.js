@@ -32,8 +32,27 @@ export const Transaction = IDL.Record({
   'txType' : IDL.Text,
   'amount' : IDL.Float64,
 });
+export const http_header = IDL.Record({
+  'value' : IDL.Text,
+  'name' : IDL.Text,
+});
+export const http_request_result = IDL.Record({
+  'status' : IDL.Nat,
+  'body' : IDL.Vec(IDL.Nat8),
+  'headers' : IDL.Vec(http_header),
+});
+export const TransformationInput = IDL.Record({
+  'context' : IDL.Vec(IDL.Nat8),
+  'response' : http_request_result,
+});
+export const TransformationOutput = IDL.Record({
+  'status' : IDL.Nat,
+  'body' : IDL.Vec(IDL.Nat8),
+  'headers' : IDL.Vec(http_header),
+});
 
 export const idlService = IDL.Service({
+  'fetchExternalUrl' : IDL.Func([IDL.Text], [IDL.Text], []),
   'getBridgeFee' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Float64],
       [IDL.Float64, IDL.Nat],
@@ -46,6 +65,11 @@ export const idlService = IDL.Service({
       [IDL.Text, IDL.Text, IDL.Float64, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
       [IDL.Nat],
       [],
+    ),
+  'transform' : IDL.Func(
+      [TransformationInput],
+      [TransformationOutput],
+      ['query'],
     ),
 });
 
@@ -76,8 +100,24 @@ export const idlFactory = ({ IDL }) => {
     'txType' : IDL.Text,
     'amount' : IDL.Float64,
   });
+  const http_header = IDL.Record({ 'value' : IDL.Text, 'name' : IDL.Text });
+  const http_request_result = IDL.Record({
+    'status' : IDL.Nat,
+    'body' : IDL.Vec(IDL.Nat8),
+    'headers' : IDL.Vec(http_header),
+  });
+  const TransformationInput = IDL.Record({
+    'context' : IDL.Vec(IDL.Nat8),
+    'response' : http_request_result,
+  });
+  const TransformationOutput = IDL.Record({
+    'status' : IDL.Nat,
+    'body' : IDL.Vec(IDL.Nat8),
+    'headers' : IDL.Vec(http_header),
+  });
   
   return IDL.Service({
+    'fetchExternalUrl' : IDL.Func([IDL.Text], [IDL.Text], []),
     'getBridgeFee' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Float64],
         [IDL.Float64, IDL.Nat],
@@ -98,6 +138,11 @@ export const idlFactory = ({ IDL }) => {
         ],
         [IDL.Nat],
         [],
+      ),
+    'transform' : IDL.Func(
+        [TransformationInput],
+        [TransformationOutput],
+        ['query'],
       ),
   });
 };

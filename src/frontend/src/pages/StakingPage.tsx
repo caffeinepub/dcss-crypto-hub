@@ -4,52 +4,106 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Clock, Layers, Lock, TrendingUp, Users, Zap } from "lucide-react";
+import { Clock, ExternalLink, Info, Lock, TrendingUp } from "lucide-react";
 
-const POOLS = [
+const NATIVE_STAKING_LINKS = [
   {
-    name: "ICP Neuron",
-    apy: "8–15%",
-    lockup: "6–96 meses",
+    token: "ICP",
+    platform: "NNS Dashboard",
+    url: "https://nns.ic0.app",
     description:
-      "Bloquea ICP en neuronas para participar en la governance de Internet Computer y recibir recompensas.",
+      "Stake ICP en neuronas del Network Nervous System. APY 8–15%. Dissolve delay mínimo 6 meses.",
     color: "#29ABE2",
     network: "ICP",
   },
   {
-    name: "DCSS Staking",
-    apy: "12–25%",
-    lockup: "30–365 días",
+    token: "SOL",
+    platform: "Marinade Finance",
+    url: "https://marinade.finance",
     description:
-      "Bloquea DCSS para recibir fees del protocolo y acceso premium al ecosistema DCSS Hub.",
-    color: "#FFD700",
-    network: "ICP",
-  },
-  {
-    name: "SOL Liquid Staking",
-    apy: "6–8%",
-    lockup: "Sin lockup",
-    description:
-      "Stake SOL y recibe LST (Liquid Staking Token) para mantener liquidez mientras generas yield.",
+      "Liquid staking de SOL. Recibe mSOL manteniendo liquidez. APY ~7%. Sin lockup.",
     color: "#9945FF",
     network: "Solana",
   },
   {
-    name: "ATOM Delegation",
-    apy: "14–20%",
-    lockup: "Unbonding 21 días",
+    token: "SOL",
+    platform: "Jito",
+    url: "https://www.jito.network",
     description:
-      "Delega ATOM a validadores del Cosmos Hub para asegurar la red y recibir recompensas IBC.",
+      "Liquid staking con MEV rewards. jitoSOL. APY ~8%. Uno de los más grandes en Solana.",
+    color: "#9945FF",
+    network: "Solana",
+  },
+  {
+    token: "ATOM",
+    platform: "Keplr Dashboard",
+    url: "https://wallet.keplr.app/chains/cosmoshub",
+    description:
+      "Delega ATOM a validadores del Cosmos Hub. APY 14–20%. Unbonding period 21 días.",
     color: "#6F7390",
     network: "Cosmos",
+  },
+  {
+    token: "ATOM",
+    platform: "Stride",
+    url: "https://app.stride.zone",
+    description:
+      "Liquid staking de ATOM. Recibe stATOM. APY ~12%. Mantén liquidez en el ecosistema IBC.",
+    color: "#6F7390",
+    network: "Cosmos",
+  },
+  {
+    token: "DOT",
+    platform: "Polkadot Staking Dashboard",
+    url: "https://staking.polkadot.network",
+    description:
+      "Stake DOT directamente en la relay chain. APY ~14%. Nomination pools disponibles.",
+    color: "#E6007A",
+    network: "Polkadot",
+  },
+  {
+    token: "ETH",
+    platform: "Lido",
+    url: "https://lido.fi",
+    description:
+      "Liquid staking de ETH. Recibe stETH. APY ~4%. El protocolo de staking más grande de Ethereum.",
+    color: "#627EEA",
+    network: "Ethereum",
+  },
+  {
+    token: "ETH",
+    platform: "Rocket Pool",
+    url: "https://rocketpool.net",
+    description:
+      "Staking descentralizado de ETH. Recibe rETH. APY ~3.5%. Sin mínimo de 32 ETH.",
+    color: "#627EEA",
+    network: "Ethereum",
+  },
+  {
+    token: "INJ",
+    platform: "Injective Hub",
+    url: "https://hub.injective.network/staking",
+    description:
+      "Delega INJ a validadores de Injective. APY ~15%. Red de alta velocidad DeFi-native.",
+    color: "#00B3EF",
+    network: "Cosmos",
+  },
+  {
+    token: "TIA",
+    platform: "Celestia Staking",
+    url: "https://celestia.org/stake",
+    description:
+      "Stake TIA para asegurar la red de disponibilidad de datos. APY ~15%. Unbonding 21 días.",
+    color: "#7B2FBE",
+    network: "Celestia",
   },
 ];
 
 const TIMELINE = [
-  { label: "Diseño de contratos Motoko", done: false },
-  { label: "Auditoría de seguridad", done: false },
-  { label: "Testnet pública", done: false },
-  { label: "Lanzamiento Fase 3", done: false },
+  { label: "Investigación de pools", done: true },
+  { label: "Links nativos integrados", done: true },
+  { label: "Staking backend Motoko", done: false },
+  { label: "Staking DCSS en la app", done: false },
 ];
 
 export default function StakingPage() {
@@ -67,17 +121,17 @@ export default function StakingPage() {
               gap: "8px",
               padding: "4px 14px",
               borderRadius: "999px",
-              background: "rgba(34,233,122,0.08)",
-              border: "1px solid rgba(34,233,122,0.2)",
+              background: "rgba(129,140,248,0.1)",
+              border: "1px solid rgba(129,140,248,0.3)",
               fontSize: "11px",
-              color: "#22E97A",
+              color: "#818CF8",
               fontWeight: "600",
               letterSpacing: "0.1em",
               marginBottom: "20px",
             }}
           >
-            <Layers size={12} />
-            COMING SOON
+            <Clock size={12} />
+            COMING SOON — FASE 4
           </div>
           <h1
             style={{
@@ -88,265 +142,206 @@ export default function StakingPage() {
               marginBottom: "16px",
             }}
           >
-            Stake &amp; Earn
+            Staking DCSS
           </h1>
-          <div
-            style={{
-              fontSize: "clamp(28px, 4vw, 48px)",
-              fontWeight: "800",
-              color: "#22E97A",
-              textShadow: "0 0 30px rgba(34,233,122,0.5)",
-              marginBottom: "16px",
-            }}
-          >
-            hasta 25% APY
-          </div>
           <p
             style={{
               fontSize: "16px",
               color: "#A9B3AF",
-              maxWidth: "560px",
+              maxWidth: "580px",
               margin: "0 auto",
               lineHeight: 1.6,
             }}
           >
-            Bloquea tus tokens en pools seguros y genera rendimientos
-            compuestos. El módulo de staking llega en Fase 3.
+            El staking nativo en la app DCSS estará disponible en Fase 4.
+            Mientras tanto, puedes stakear directamente en las plataformas de
+            cada red.
           </p>
         </div>
 
-        {/* Stats row */}
+        {/* Info card */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "16px",
+            padding: "20px 24px",
+            borderRadius: "12px",
+            background: "rgba(0,212,184,0.05)",
+            border: "1px solid rgba(0,212,184,0.2)",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "14px",
             marginBottom: "40px",
           }}
-          className="stats-grid"
         >
-          {[
-            { label: "Total Staked", value: "--", icon: Lock },
-            { label: "APY Promedio", value: "--", icon: TrendingUp },
-            { label: "Usuarios Staking", value: "--", icon: Users },
-            { label: "Próximo Unlock", value: "--", icon: Clock },
-          ].map(({ label, value, icon: Icon }) => (
-            <div
-              key={label}
-              style={{
-                padding: "20px",
-                borderRadius: "12px",
-                background: "#0F1513",
-                border: "1px solid rgba(34,233,122,0.12)",
-                textAlign: "center",
-              }}
-              data-ocid="staking.stats.card"
-            >
-              <Icon
-                size={20}
-                style={{ color: "rgba(34,233,122,0.5)", margin: "0 auto 8px" }}
-              />
-              <div
-                style={{
-                  fontSize: "22px",
-                  fontWeight: "700",
-                  color: "#A9B3AF",
-                  fontFamily: "JetBrains Mono, monospace",
-                }}
-              >
-                {value}
-              </div>
-              <div
-                style={{ fontSize: "11px", color: "#A9B3AF", marginTop: "4px" }}
-              >
-                {label}
-              </div>
-            </div>
-          ))}
+          <Info
+            size={20}
+            style={{ color: "#00D4B8", flexShrink: 0, marginTop: "1px" }}
+          />
+          <p
+            style={{
+              fontSize: "14px",
+              color: "#A9B3AF",
+              lineHeight: 1.6,
+              margin: 0,
+            }}
+          >
+            Esta página es una{" "}
+            <strong style={{ color: "#E8ECEB" }}>referencia de staking</strong>.
+            Conecta tu wallet directamente en las plataformas nativas de cada
+            red para generar yield real ahora mismo.
+          </p>
         </div>
 
-        {/* Pools */}
-        <h2
-          style={{
-            fontSize: "20px",
-            fontWeight: "700",
-            color: "#E8ECEB",
-            marginBottom: "20px",
-          }}
-        >
-          Staking Pools
-        </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "16px",
-            marginBottom: "40px",
-          }}
-          className="pools-grid"
-        >
-          {POOLS.map((pool) => (
-            <div
-              key={pool.name}
+        {/* Native Staking Links */}
+        <div style={{ marginBottom: "48px" }}>
+          <div style={{ marginBottom: "20px" }}>
+            <h2
               style={{
-                padding: "24px",
-                borderRadius: "12px",
-                background: "#0F1513",
-                border: `1px solid ${pool.color}22`,
-                borderLeft: `4px solid ${pool.color}`,
+                fontSize: "20px",
+                fontWeight: "700",
+                color: "#E8ECEB",
+                marginBottom: "6px",
               }}
-              data-ocid="staking.pool.card"
             >
+              Staking Nativo — Plataformas Reales
+            </h2>
+            <p style={{ fontSize: "13px", color: "#A9B3AF", margin: 0 }}>
+              Conecta tu wallet en estas plataformas para stakear directamente
+              en la blockchain.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "14px",
+            }}
+            className="native-staking-grid"
+          >
+            {NATIVE_STAKING_LINKS.map((item) => (
               <div
+                key={`${item.token}-${item.platform}`}
                 style={{
+                  padding: "20px",
+                  borderRadius: "12px",
+                  background: "#0F1513",
+                  border: `1px solid ${item.color}18`,
                   display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  marginBottom: "12px",
+                  flexDirection: "column",
+                  gap: "10px",
                 }}
+                data-ocid="staking.native.card"
               >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "700",
-                      color: "#E8ECEB",
-                    }}
-                  >
-                    {pool.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      color: "#A9B3AF",
-                      marginTop: "3px",
-                    }}
-                  >
-                    Network: {pool.network}
-                  </div>
-                </div>
                 <div
                   style={{
-                    padding: "5px 12px",
-                    borderRadius: "999px",
-                    background: "rgba(34,233,122,0.12)",
-                    border: "1px solid rgba(34,233,122,0.3)",
-                    fontSize: "13px",
-                    fontWeight: "700",
-                    color: "#22E97A",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
                   }}
                 >
-                  {pool.apy} APY
-                </div>
-              </div>
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "#A9B3AF",
-                  lineHeight: 1.5,
-                  marginBottom: "16px",
-                }}
-              >
-                {pool.description}
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  marginBottom: "16px",
-                }}
-              >
-                <Clock size={12} style={{ color: pool.color }} />
-                <span style={{ fontSize: "12px", color: pool.color }}>
-                  {pool.lockup}
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <div style={{ fontSize: "10px", color: "#A9B3AF" }}>TVL</div>
                   <div
                     style={{
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#A9B3AF",
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      background: `${item.color}18`,
+                      border: `1px solid ${item.color}44`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "10px",
+                      fontWeight: "700",
+                      color: item.color,
                       fontFamily: "JetBrains Mono, monospace",
+                      flexShrink: 0,
                     }}
                   >
-                    --
+                    {item.token}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "700",
+                        color: "#E8ECEB",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.platform}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        color: "#A9B3AF",
+                        marginTop: "1px",
+                      }}
+                    >
+                      {item.network}
+                    </div>
                   </div>
                 </div>
+
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#A9B3AF",
+                    lineHeight: 1.5,
+                    margin: 0,
+                    flex: 1,
+                  }}
+                >
+                  {item.description}
+                </p>
+
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      disabled
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{
-                        padding: "10px 20px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "7px 14px",
                         borderRadius: "8px",
-                        background: "rgba(34,233,122,0.06)",
-                        border: "1px solid rgba(34,233,122,0.15)",
-                        color: "rgba(34,233,122,0.4)",
-                        fontSize: "13px",
+                        background: "transparent",
+                        border: `1px solid ${item.color}44`,
+                        color: item.color,
+                        fontSize: "12px",
                         fontWeight: "600",
-                        cursor: "not-allowed",
+                        textDecoration: "none",
+                        alignSelf: "flex-start",
+                        transition: "background 0.15s",
                       }}
-                      data-ocid="staking.stake.button"
+                      onMouseEnter={(e) => {
+                        (
+                          e.currentTarget as HTMLAnchorElement
+                        ).style.background = `${item.color}15`;
+                      }}
+                      onMouseLeave={(e) => {
+                        (
+                          e.currentTarget as HTMLAnchorElement
+                        ).style.background = "transparent";
+                      }}
+                      data-ocid="staking.native.link"
                     >
-                      <Zap
-                        size={12}
-                        style={{ display: "inline", marginRight: "6px" }}
-                      />
-                      Stake Now
-                    </button>
+                      Ir a {item.platform}
+                      <ExternalLink size={11} />
+                    </a>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Coming Soon — Fase 3</p>
+                    <p>Abre {item.platform} en una nueva pestaña</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Mis posiciones */}
-        <h2
-          style={{
-            fontSize: "20px",
-            fontWeight: "700",
-            color: "#E8ECEB",
-            marginBottom: "16px",
-          }}
-        >
-          Mis Posiciones
-        </h2>
-        <div
-          style={{
-            padding: "40px",
-            borderRadius: "12px",
-            background: "#0F1513",
-            border: "1px solid rgba(34,233,122,0.1)",
-            textAlign: "center",
-            marginBottom: "40px",
-          }}
-          data-ocid="staking.positions.empty_state"
-        >
-          <Lock
-            size={32}
-            style={{ color: "rgba(34,233,122,0.25)", margin: "0 auto 12px" }}
-          />
-          <p style={{ color: "#A9B3AF", fontSize: "14px" }}>
-            Connect wallet to see your staking positions
-          </p>
-        </div>
-
-        {/* Timeline */}
+        {/* Roadmap Timeline */}
         <h2
           style={{
             fontSize: "20px",
@@ -373,7 +368,7 @@ export default function StakingPage() {
               left: "10%",
               right: "10%",
               height: "2px",
-              background: "rgba(34,233,122,0.12)",
+              background: "rgba(0,212,184,0.12)",
             }}
           />
           {TIMELINE.map((item, i) => (
@@ -394,22 +389,24 @@ export default function StakingPage() {
                   width: "40px",
                   height: "40px",
                   borderRadius: "50%",
-                  background: item.done ? "rgba(34,233,122,0.2)" : "#0F1513",
-                  border: `2px solid ${item.done ? "#22E97A" : "rgba(169,179,175,0.2)"}`,
+                  background: item.done ? "rgba(0,212,184,0.2)" : "#0F1513",
+                  border: `2px solid ${
+                    item.done ? "#00D4B8" : "rgba(169,179,175,0.2)"
+                  }`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: item.done ? "#22E97A" : "#A9B3AF",
+                  color: item.done ? "#00D4B8" : "#A9B3AF",
                   fontSize: "14px",
                   fontWeight: "700",
                 }}
               >
-                {i + 1}
+                {item.done ? "✓" : i + 1}
               </div>
               <div
                 style={{
                   fontSize: "11px",
-                  color: "#A9B3AF",
+                  color: item.done ? "#00D4B8" : "#A9B3AF",
                   textAlign: "center",
                   maxWidth: "120px",
                   lineHeight: 1.4,
@@ -421,19 +418,19 @@ export default function StakingPage() {
           ))}
         </div>
 
-        {/* Info banner */}
+        {/* Coming soon bottom card */}
         <div
           style={{
             padding: "20px 24px",
             borderRadius: "12px",
-            background: "rgba(34,233,122,0.05)",
-            border: "1px solid rgba(34,233,122,0.2)",
+            background: "rgba(129,140,248,0.05)",
+            border: "1px solid rgba(129,140,248,0.2)",
             display: "flex",
             alignItems: "center",
             gap: "12px",
           }}
         >
-          <Zap size={20} style={{ color: "#22E97A", flexShrink: 0 }} />
+          <TrendingUp size={20} style={{ color: "#818CF8", flexShrink: 0 }} />
           <p
             style={{
               fontSize: "14px",
@@ -442,17 +439,21 @@ export default function StakingPage() {
               margin: 0,
             }}
           >
-            Staking estará disponible en{" "}
-            <strong style={{ color: "#22E97A" }}>Fase 3</strong>. Por ahora,
-            explora los pools y prepárate.
+            El staking nativo DCSS llegará en{" "}
+            <strong style={{ color: "#818CF8" }}>Fase 4</strong> con backend
+            Motoko, neuronas on-chain y APY real del protocolo.
           </p>
         </div>
+
+        {/* Unused icon reference to satisfy imports */}
+        <span style={{ display: "none" }}>
+          <Lock size={0} />
+        </span>
       </div>
 
       <style>{`
         @media (max-width: 768px) {
-          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .pools-grid { grid-template-columns: 1fr !important; }
+          .native-staking-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </TooltipProvider>

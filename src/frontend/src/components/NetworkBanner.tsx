@@ -140,7 +140,7 @@ function getNetworkTexture(id: string): React.CSSProperties {
 const WALLET_COLORS: Record<string, string> = {
   "Internet Identity": "#29ABE2",
   Plug: "#8247E5",
-  Oisy: "#22E97A",
+  Oisy: "#00D4B8",
   MetaMask: "#F6851B",
   "Coinbase Wallet": "#0052FF",
   WalletConnect: "#3B99FC",
@@ -204,7 +204,7 @@ export default function NetworkBanner({
         style={{
           borderRadius: "12px",
           border: `1px solid ${network.color}33`,
-          borderLeft: `4px solid ${network.color}`,
+          borderLeft: `4px solid ${network.color}4D`,
           backdropFilter: "blur(8px)",
           overflow: "hidden",
           ...texture,

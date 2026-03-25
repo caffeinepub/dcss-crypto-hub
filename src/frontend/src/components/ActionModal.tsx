@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Zap } from "lucide-react";
+import { ExternalLink, Loader2, Zap } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useTokens } from "../contexts/TokenContext";
@@ -23,6 +23,7 @@ import { useTransactions } from "../contexts/TransactionContext";
 import { useWallet } from "../contexts/WalletContext";
 import { type TokenMeta, formatBalance, truncateAddr } from "../data/tokens";
 import { useRecordTransaction } from "../hooks/useQueries";
+import { isEVMAvailable, sendEVMTransaction } from "../hooks/useRealWallet";
 
 type ActionType = "buy" | "swap" | "send";
 
@@ -38,6 +39,16 @@ const ACTION_LABELS: Record<ActionType, string> = {
   swap: "Swap",
   send: "Send",
 };
+
+const EVM_NETWORK_SET = new Set([
+  "Ethereum",
+  "Arbitrum",
+  "Base",
+  "Multichain",
+  "Avalanche",
+  "Stablecoins",
+  "0G",
+]);
 
 export default function ActionModal({
   open,
@@ -57,14 +68,21 @@ export default function ActionModal({
   const [selectedWalletAddr, setSelectedWalletAddr] = useState(
     activeWallet?.address ?? "",
   );
+  const [isSendingOnChain, setIsSendingOnChain] = useState(false);
+  const [lastTxHash, setLastTxHash] = useState<string | null>(null);
 
   const balance = activeWallet
     ? getBalance(activeWallet.network, activeWallet.address, token.symbol)
     : 0;
-
   const compatibleWallets = connectedWallets.filter(
     (w) => w.network === token.network || action === "buy",
   );
+
+  const canSendRealEVM =
+    action === "send" &&
+    activeWallet?.isReal === true &&
+    isEVMAvailable() &&
+    EVM_NETWORK_SET.has(activeWallet.network);
 
   function handleMax() {
     setAmount(formatBalance(balance));
@@ -96,6 +114,68 @@ export default function ActionModal({
         : selectedWalletAddr || activeWallet.address;
     const label = ACTION_LABELS[action];
 
+    // Real EVM on-chain path
+    if (canSendRealEVM && destAddress.trim()) {
+      setIsSendingOnChain(true);
+      const toastId = toast.loading("Waiting for MetaMask confirmation...");
+      try {
+        const txHash = await sendEVMTransaction(
+          from,
+          destAddress.trim(),
+          amount,
+        );
+        setLastTxHash(txHash);
+        toast.dismiss(toastId);
+        toast.success(`Transaction sent! Hash: ${txHash.slice(0, 14)}...`, {
+          description: (
+            <a
+              href={`https://etherscan.io/tx/${txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "#00D4B8",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+            >
+              View on Etherscan <ExternalLink size={12} />
+            </a>
+          ),
+          duration: 8000,
+        });
+        setBalance(
+          activeWallet.network,
+          activeWallet.address,
+          token.symbol,
+          Math.max(0, balance - numAmount),
+        );
+        addTransaction({
+          txType: label,
+          tokenSymbol: token.symbol,
+          amount: numAmount,
+          fromAddr: from,
+          toAddr: to,
+          network: activeWallet.network,
+          walletAddr: activeWallet.address,
+        });
+        setIsSendingOnChain(false);
+        onClose();
+        return;
+      } catch (err: unknown) {
+        toast.dismiss(toastId);
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes("User denied") || msg.includes("rejected")) {
+          toast.error("Transaction rejected by user");
+        } else {
+          toast.error(`Transaction failed: ${msg.slice(0, 60)}`);
+        }
+        setIsSendingOnChain(false);
+        return;
+      }
+    }
+
+    // Simulated / demo path
     try {
       await recordTx({
         txType: label,
@@ -107,7 +187,6 @@ export default function ActionModal({
         walletAddr: activeWallet.address,
       });
 
-      // Update balances
       if (action === "buy") {
         const current = getBalance(
           activeWallet.network,
@@ -158,7 +237,6 @@ export default function ActionModal({
         network: activeWallet.network,
         walletAddr: activeWallet.address,
       });
-
       toast.success(`${label} ${numAmount} ${token.symbol} confirmed!`);
       onClose();
     } catch {
@@ -166,14 +244,16 @@ export default function ActionModal({
     }
   }
 
+  const isLoading = isPending || isSendingOnChain;
+
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
         className="max-w-md"
         style={{
           background: "#0B1110",
-          border: "1px solid rgba(34,233,122,0.25)",
-          boxShadow: "0 0 40px rgba(34,233,122,0.12)",
+          border: "1px solid rgba(0,212,184,0.25)",
+          boxShadow: "0 0 40px rgba(0,212,184,0.12)",
         }}
         data-ocid="action.modal"
       >
@@ -198,11 +278,22 @@ export default function ActionModal({
               {token.symbol.slice(0, 3)}
             </span>
             {ACTION_LABELS[action]} {token.symbol}
+            {canSendRealEVM && (
+              <span
+                className="text-[9px] font-bold px-2 py-0.5 rounded-full ml-1"
+                style={{
+                  background: "rgba(0,212,184,0.15)",
+                  color: "#00D4B8",
+                  border: "1px solid rgba(0,212,184,0.3)",
+                }}
+              >
+                ON-CHAIN
+              </span>
+            )}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 mt-2">
-          {/* Amount */}
           <div className="space-y-1.5">
             <Label className="text-xs" style={{ color: "#A9B3AF" }}>
               Amount
@@ -218,7 +309,7 @@ export default function ActionModal({
                 className="flex-1 font-mono text-sm"
                 style={{
                   background: "#0F1513",
-                  border: "1px solid rgba(34,233,122,0.2)",
+                  border: "1px solid rgba(0,212,184,0.2)",
                   color: "#E8ECEB",
                 }}
                 data-ocid="action.input"
@@ -230,9 +321,9 @@ export default function ActionModal({
                   onClick={handleMax}
                   className="text-xs px-3"
                   style={{
-                    background: "rgba(34,233,122,0.08)",
-                    border: "1px solid rgba(34,233,122,0.3)",
-                    color: "#22E97A",
+                    background: "rgba(0,212,184,0.08)",
+                    border: "1px solid rgba(0,212,184,0.3)",
+                    color: "#FFF",
                   }}
                   data-ocid="action.max_button"
                 >
@@ -247,7 +338,6 @@ export default function ActionModal({
             )}
           </div>
 
-          {/* Swap to token */}
           {action === "swap" && (
             <div className="space-y-1.5">
               <Label className="text-xs" style={{ color: "#A9B3AF" }}>
@@ -257,7 +347,7 @@ export default function ActionModal({
                 <SelectTrigger
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(34,233,122,0.2)",
+                    border: "1px solid rgba(0,212,184,0.2)",
                     color: "#E8ECEB",
                   }}
                   data-ocid="action.swap_to.select"
@@ -267,7 +357,7 @@ export default function ActionModal({
                 <SelectContent
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(34,233,122,0.2)",
+                    border: "1px solid rgba(0,212,184,0.2)",
                   }}
                 >
                   {tokens
@@ -282,7 +372,6 @@ export default function ActionModal({
             </div>
           )}
 
-          {/* Send to address */}
           {action === "send" && (
             <div className="space-y-1.5">
               <Label className="text-xs" style={{ color: "#A9B3AF" }}>
@@ -295,15 +384,19 @@ export default function ActionModal({
                 className="font-mono text-xs"
                 style={{
                   background: "#0F1513",
-                  border: "1px solid rgba(34,233,122,0.2)",
+                  border: "1px solid rgba(0,212,184,0.2)",
                   color: "#E8ECEB",
                 }}
                 data-ocid="action.destination.input"
               />
+              {canSendRealEVM && destAddress && (
+                <p className="text-[10px]" style={{ color: "#00D4B8" }}>
+                  Real blockchain transaction via MetaMask
+                </p>
+              )}
             </div>
           )}
 
-          {/* Wallet selector */}
           {compatibleWallets.length > 0 && (
             <div className="space-y-1.5">
               <Label className="text-xs" style={{ color: "#A9B3AF" }}>
@@ -316,7 +409,7 @@ export default function ActionModal({
                 <SelectTrigger
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(34,233,122,0.2)",
+                    border: "1px solid rgba(0,212,184,0.2)",
                     color: "#E8ECEB",
                   }}
                   data-ocid="action.wallet.select"
@@ -326,12 +419,13 @@ export default function ActionModal({
                 <SelectContent
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(34,233,122,0.2)",
+                    border: "1px solid rgba(0,212,184,0.2)",
                   }}
                 >
                   {compatibleWallets.map((w) => (
                     <SelectItem key={w.address} value={w.address}>
-                      {w.walletType} · {truncateAddr(w.address)}
+                      {w.walletType} {w.isReal ? "" : ""} ·{" "}
+                      {truncateAddr(w.address)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -339,21 +433,46 @@ export default function ActionModal({
             </div>
           )}
 
-          {/* Cycles estimate */}
+          {lastTxHash && (
+            <div
+              className="flex items-center gap-2 px-3 py-2 rounded-lg"
+              style={{
+                background: "rgba(0,212,184,0.06)",
+                border: "1px solid rgba(0,212,184,0.2)",
+              }}
+            >
+              <span
+                className="text-[10px] font-mono"
+                style={{ color: "#00D4B8" }}
+              >
+                Last tx: {lastTxHash.slice(0, 20)}...
+              </span>
+              <a
+                href={`https://etherscan.io/tx/${lastTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#00D4B8" }}
+              >
+                <ExternalLink size={10} />
+              </a>
+            </div>
+          )}
+
           <div
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg"
             style={{
-              background: "rgba(34,233,122,0.04)",
-              border: "1px solid rgba(34,233,122,0.08)",
+              background: "rgba(0,212,184,0.04)",
+              border: "1px solid rgba(0,212,184,0.08)",
             }}
           >
-            <Zap size={12} style={{ color: "#22E97A" }} />
+            <Zap size={12} style={{ color: "#FFF" }} />
             <span className="text-[10px]" style={{ color: "#A9B3AF" }}>
-              Estimated cost: ~500 cycles
+              {canSendRealEVM
+                ? "Real ETH transaction — gas fees apply"
+                : "Estimated cost: ~500 cycles"}
             </span>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3">
             <Button
               variant="outline"
@@ -370,19 +489,24 @@ export default function ActionModal({
             </Button>
             <Button
               onClick={handleConfirm}
-              disabled={isPending}
+              disabled={isLoading}
               className="flex-1 text-sm font-semibold"
               style={{
-                background: "#22E97A",
-                color: "#070B0A",
+                background:
+                  "linear-gradient(135deg, #E8A49C, #C4837A, #A65E5E)",
+                color: "#FFF",
                 border: "none",
               }}
               data-ocid="action.confirm_button"
             >
-              {isPending ? (
+              {isLoading ? (
                 <Loader2 size={14} className="mr-1.5 animate-spin" />
               ) : null}
-              {isPending ? "Confirming..." : `Confirm ${ACTION_LABELS[action]}`}
+              {isLoading
+                ? isSendingOnChain
+                  ? "Waiting for MetaMask..."
+                  : "Confirming..."
+                : `Confirm ${ACTION_LABELS[action]}`}
             </Button>
           </div>
         </div>

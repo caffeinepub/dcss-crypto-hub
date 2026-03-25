@@ -43,7 +43,7 @@ export default function TokenDetailPage({
           onClick={onBack}
           style={{
             marginTop: "16px",
-            color: "#22E97A",
+            color: "#00D4B8",
             background: "none",
             border: "none",
             cursor: "pointer",
@@ -56,7 +56,7 @@ export default function TokenDetailPage({
     );
   }
 
-  const networkColor = NETWORK_COLORS[token.network] ?? "#22E97A";
+  const networkColor = NETWORK_COLORS[token.network] ?? "#00D4B8";
   const isPositive = token.change24h >= 0;
 
   const marketCap = token.price * 1_000_000_000;
@@ -205,7 +205,7 @@ export default function TokenDetailPage({
               style={{
                 fontSize: "28px",
                 fontWeight: "800",
-                color: "#22E97A",
+                color: "#00D4B8",
                 fontFamily: "JetBrains Mono, monospace",
               }}
             >
@@ -215,7 +215,7 @@ export default function TokenDetailPage({
               style={{
                 fontSize: "14px",
                 fontWeight: "600",
-                color: isPositive ? "#36F28A" : "#ef4444",
+                color: isPositive ? "#1DE9B6" : "#ef4444",
                 marginTop: "2px",
               }}
             >
@@ -238,10 +238,13 @@ export default function TokenDetailPage({
                   style={{
                     padding: "8px 16px",
                     borderRadius: "8px",
-                    background: a === "buy" ? "#C9A24A" : "transparent",
+                    background:
+                      a === "buy"
+                        ? "linear-gradient(135deg, #E8A49C, #C4837A, #A65E5E)"
+                        : "transparent",
                     border:
-                      a === "buy" ? "none" : "1px solid rgba(201,162,74,0.5)",
-                    color: a === "buy" ? "#070B0A" : "#C9A24A",
+                      a === "buy" ? "none" : "1px solid rgba(196,131,122,0.5)",
+                    color: a === "buy" ? "#FFF" : "#C4837A",
                     fontSize: "12px",
                     fontWeight: "700",
                     cursor: "pointer",
@@ -294,7 +297,7 @@ export default function TokenDetailPage({
           style={{
             borderRadius: "12px",
             background: "#0F1513",
-            border: "1px solid rgba(34,233,122,0.12)",
+            border: "1px solid rgba(0,212,184,0.12)",
             padding: "20px",
             marginBottom: "24px",
             position: "relative",
@@ -308,8 +311,8 @@ export default function TokenDetailPage({
           >
             <defs>
               <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="rgba(34,233,122,0.2)" />
-                <stop offset="100%" stopColor="rgba(34,233,122,0)" />
+                <stop offset="0%" stopColor="rgba(0,212,184,0.2)" />
+                <stop offset="100%" stopColor="rgba(0,212,184,0)" />
               </linearGradient>
             </defs>
             <path
@@ -319,7 +322,7 @@ export default function TokenDetailPage({
             <path
               d={FAKE_CHART_PATH}
               fill="none"
-              stroke="#22E97A"
+              stroke="#00D4B8"
               strokeWidth="2"
               strokeLinecap="round"
             />
@@ -338,7 +341,7 @@ export default function TokenDetailPage({
             <div style={{ textAlign: "center" }}>
               <TrendingUp
                 size={24}
-                style={{ color: "rgba(34,233,122,0.5)", margin: "0 auto 8px" }}
+                style={{ color: "rgba(0,212,184,0.5)", margin: "0 auto 8px" }}
               />
               <p
                 style={{
@@ -435,7 +438,7 @@ export default function TokenDetailPage({
                   padding: "16px",
                   borderRadius: "10px",
                   background: "#0F1513",
-                  border: "1px solid rgba(34,233,122,0.08)",
+                  border: "1px solid rgba(0,212,184,0.08)",
                 }}
               >
                 <div
@@ -536,7 +539,7 @@ export default function TokenDetailPage({
             padding: "20px",
             borderRadius: "10px",
             background: "#0F1513",
-            border: "1px solid rgba(34,233,122,0.12)",
+            border: "1px solid rgba(0,212,184,0.12)",
             marginBottom: "24px",
           }}
         >
@@ -544,7 +547,7 @@ export default function TokenDetailPage({
             style={{
               fontSize: "13px",
               fontWeight: "700",
-              color: "#22E97A",
+              color: "#00D4B8",
               letterSpacing: "0.1em",
               textTransform: "uppercase" as const,
               marginBottom: "12px",
@@ -565,10 +568,10 @@ export default function TokenDetailPage({
                 style={{
                   padding: "3px 10px",
                   borderRadius: "6px",
-                  background: "rgba(34,233,122,0.08)",
-                  border: "1px solid rgba(34,233,122,0.2)",
+                  background: "rgba(0,212,184,0.08)",
+                  border: "1px solid rgba(0,212,184,0.2)",
                   fontSize: "12px",
-                  color: "#22E97A",
+                  color: "#00D4B8",
                   fontWeight: "600",
                 }}
               >

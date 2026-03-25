@@ -11,7 +11,7 @@ export default function Footer() {
       className="w-full mt-auto"
       style={{
         background: "#070B0A",
-        borderTop: "1px solid rgba(34,233,122,0.1)",
+        borderTop: "1px solid rgba(0,212,184,0.1)",
       }}
     >
       <div className="max-w-[1200px] mx-auto px-4 py-8">
@@ -25,7 +25,7 @@ export default function Footer() {
             <div>
               <div
                 className="text-sm font-bold tracking-widest"
-                style={{ color: "#22E97A" }}
+                style={{ color: "#00D4B8" }}
               >
                 DCSS
               </div>
@@ -68,8 +68,8 @@ export default function Footer() {
                 aria-label={label}
                 className="w-8 h-8 rounded-full flex items-center justify-center border transition-all"
                 style={{
-                  background: "rgba(34,233,122,0.05)",
-                  borderColor: "rgba(34,233,122,0.12)",
+                  background: "rgba(0,212,184,0.05)",
+                  borderColor: "rgba(0,212,184,0.12)",
                 }}
               >
                 <Icon size={14} color={color} />
@@ -81,7 +81,7 @@ export default function Footer() {
         <div
           className="mt-6 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px]"
           style={{
-            borderTop: "1px solid rgba(34,233,122,0.06)",
+            borderTop: "1px solid rgba(0,212,184,0.06)",
             color: "#A9B3AF",
           }}
         >
@@ -92,7 +92,7 @@ export default function Footer() {
               href={caffeineUrl}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#22E97A" }}
+              style={{ color: "#00D4B8" }}
             >
               caffeine.ai
             </a>

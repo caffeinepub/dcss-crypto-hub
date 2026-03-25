@@ -71,8 +71,8 @@ export default function SplashOverlay() {
           100% { transform: translateY(-60px) scale(0.3); opacity: 0; }
         }
         @keyframes splash-glow-pulse {
-          0%, 100% { text-shadow: 0 0 20px rgba(34,233,122,0.6), 0 0 40px rgba(34,233,122,0.3); }
-          50% { text-shadow: 0 0 30px rgba(34,233,122,0.9), 0 0 60px rgba(34,233,122,0.5); }
+          0%, 100% { text-shadow: 0 0 20px rgba(0,212,184,0.6), 0 0 40px rgba(0,212,184,0.3); }
+          50% { text-shadow: 0 0 30px rgba(0,212,184,0.9), 0 0 60px rgba(0,212,184,0.5); }
         }
         @media (prefers-reduced-motion: reduce) {
           .splash-logo { animation: none !important; }
@@ -114,11 +114,11 @@ export default function SplashOverlay() {
               width: i % 3 === 0 ? "6px" : "4px",
               height: i % 3 === 0 ? "6px" : "4px",
               borderRadius: "50%",
-              background: "#22E97A",
+              background: "#00D4B8",
               left: `${10 + i * 11}%`,
               bottom: `${15 + (i % 4) * 12}%`,
               animation: `splash-particle ${1.5 + i * 0.3}s ease-in-out ${i * 0.2}s infinite`,
-              boxShadow: "0 0 8px rgba(34,233,122,0.8)",
+              boxShadow: "0 0 8px rgba(0,212,184,0.8)",
             }}
           />
         ))}
@@ -146,7 +146,7 @@ export default function SplashOverlay() {
               height: "100px",
               borderRadius: "50%",
               boxShadow:
-                "0 0 40px rgba(34,233,122,0.4), 0 0 80px rgba(34,233,122,0.15)",
+                "0 0 40px rgba(0,212,184,0.4), 0 0 80px rgba(0,212,184,0.15)",
             }}
           />
           <div style={{ textAlign: "center" }}>
@@ -156,7 +156,7 @@ export default function SplashOverlay() {
                 fontSize: "28px",
                 fontWeight: "800",
                 letterSpacing: "0.25em",
-                color: "#22E97A",
+                color: "#00D4B8",
                 fontFamily: "Plus Jakarta Sans, sans-serif",
                 animation: "splash-glow-pulse 2s ease-in-out infinite",
               }}

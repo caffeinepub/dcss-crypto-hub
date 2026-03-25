@@ -89,6 +89,20 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface http_request_result {
+    status: bigint;
+    body: Uint8Array;
+    headers: Array<http_header>;
+}
+export interface TransformationOutput {
+    status: bigint;
+    body: Uint8Array;
+    headers: Array<http_header>;
+}
+export interface TransformationInput {
+    context: Uint8Array;
+    response: http_request_result;
+}
 export interface Stats {
     cyclesConsumed: bigint;
     circulatingSupply: number;
@@ -102,6 +116,10 @@ export interface Token {
     price: number;
     symbol: string;
 }
+export interface http_header {
+    value: string;
+    name: string;
+}
 export interface Transaction {
     id: bigint;
     walletAddr: string;
@@ -114,14 +132,30 @@ export interface Transaction {
     amount: number;
 }
 export interface backendInterface {
+    fetchExternalUrl(url: string): Promise<string>;
     getBridgeFee(sourceChain: string, destChain: string, amount: number): Promise<[number, bigint]>;
     getStats(): Promise<Stats>;
     getTokenPrices(): Promise<Array<Token>>;
     getTransactions(walletAddr: string): Promise<Array<Transaction>>;
     recordTransaction(txType: string, tokenSymbol: string, amount: number, fromAddr: string, toAddr: string, network: string, walletAddr: string): Promise<bigint>;
+    transform(input: TransformationInput): Promise<TransformationOutput>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
+    async fetchExternalUrl(arg0: string): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.fetchExternalUrl(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.fetchExternalUrl(arg0);
+            return result;
+        }
+    }
     async getBridgeFee(arg0: string, arg1: string, arg2: number): Promise<[number, bigint]> {
         if (this.processError) {
             try {
@@ -195,6 +229,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.recordTransaction(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+            return result;
+        }
+    }
+    async transform(arg0: TransformationInput): Promise<TransformationOutput> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.transform(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.transform(arg0);
             return result;
         }
     }

@@ -1,81 +1,91 @@
-# DCSS Crypto Hub — Spec Fase 2
+# DCSS Crypto Hub — Spec Fase 2 (Delta sobre spec1)
 
-> **Referencia:** spec1.md es el baseline. Spec2 documenta mejoras implementadas en Draft v6.
-> **Estado:** IMPLEMENTADO en Draft v6.
-
----
-
-## Estado de implementación
-
-| Feature | Estado |
-|---------|--------|
-| tokenDeepData.ts — contenido profundo por 40 tokens | ✅ Implementado |
-| TokenVisual.tsx — 25+ visualizaciones únicas | ✅ Implementado |
-| TokenDetailPage.tsx — taglines, stats únicos, sección educativa | ✅ Implementado |
-| CLP whitepaper completo | ✅ Implementado |
-| ETH sistema solar CSS | ✅ Implementado |
-| BTC timeline halvings | ✅ Implementado |
-| SOL métricas de red | ✅ Implementado |
-| ICP galería de apps on-chain | ✅ Implementado |
-| PYTH ticker de precios | ✅ Implementado |
-| MINA comparativa 22KB vs 300GB | ✅ Implementado |
-| ATOM ecosistema IBC | ✅ Implementado |
-| INJ stats animados | ✅ Implementado |
-| LINK web de protocolos | ✅ Implementado |
-| NEAR diagrama Chain Abstraction | ✅ Implementado |
-| AKT calculadora Akash vs AWS | ✅ Implementado |
-| RENDER comparativa de costo | ✅ Implementado |
-| GRASS animación de partículas | ✅ Implementado |
-| TAO grid de subnets | ✅ Implementado |
-| AR timeline 2024→2224 | ✅ Implementado |
-| IP árbol de derivados | ✅ Implementado |
-| ASI Venn diagram fusión | ✅ Implementado |
-| KERNEL calculadora restaking | ✅ Implementado |
-| API3 diagrama first-party | ✅ Implementado |
-| USDT/USDC comparativa + flujo Chile | ✅ Implementado |
+> **Referencia:** spec1.md es el baseline completo. Este spec documenta SOLO lo agregado en Fase 2.
+> **Estado:** COMPLETADO — Draft v8.
 
 ---
 
-## Whitepaper CLP Token
+## Qué se agregó en Fase 2
 
-### Comparativa: CLP vs DAI vs USDC vs Terra
+### Token Detail Pages — visualizaciones únicas
 
+Cada token tiene página propia con: tagline de 3 palabras, stats únicos, visualización
+interactiva y sección educativa. No existían en Fase 1.
+
+| Token | Visualización |
+|-------|---------------|
+| ICP | Galería de apps on-chain (Caffeine, OISY, OpenChat, WaterNeuron) |
+| BTC | Timeline de halvings 2009 → 2028 |
+| ETH | Sistema solar CSS con L2s orbitando |
+| SOL | 4 métricas grandes de red (TPS, fees, validators, uptime) |
+| CLP | Whitepaper completo + tabla DAI/USDC/Terra + roadmap 5 fases |
+| PYTH | Ticker horizontal de precios en vivo (simulado) |
+| MINA | Comparativa 22KB vs 300GB |
+| ATOM | Ecosistema IBC como red de nodos |
+| INJ | Stats animados (Block time 0.64s, TPS, costo) |
+| LINK | Web de protocolos DeFi que lo usan |
+| NEAR | Diagrama Chain Abstraction |
+| AKT | Calculadora Akash vs AWS ($1.33 vs $3.93/hr) |
+| RENDER | Comparativa de costo de renderizado |
+| GRASS | Animación de partículas de ancho de banda |
+| TAO | Grid de 8 subnets de Bittensor |
+| AR | Timeline 2024 → 2224 |
+| IP | Árbol de derivados con flujo de royalties |
+| ASI | Venn diagram fusión FET+AGIX+OCEAN |
+| KERNEL | Calculadora APY restaking |
+| API3 | Diagrama first-party vs third-party oracle |
+| USDT/USDC | Comparativa + flujo fiat→DeFi Chile (ambos diagramas) |
+| DOT | Parachain network diagram |
+| TIA | Modular blockchain layers diagram |
+| 0G | AI data flow + stats reales (650M txs, 22M cuentas, 11k TPS) |
+| GRT | Subgraph indexing diagram |
+| DVPN | Global VPN node map |
+| NMR | Tournament leaderboard (simulado) |
+| KAITO | Mindshare leaderboard (simulado) |
+| VIRTUAL | Agent gallery (3 agentes demo) |
+| IO | GPU marketplace UI |
+| TRAC | Supply chain trace demo |
+| AVAX | Subnet architecture |
+| ADA | Peer-reviewed paper count timeline |
+| UP | Yield aggregation flow |
+
+---
+
+### Sección DePIN Universe en /project
+
+11 tokens DePIN del ecosistema con badge y hover glow mejorado.
+Tokens: AKT, RENDER, GRASS, IO, ATH, LPT, DVPN, TRAC, GRT, API3, PYTH
+
+---
+
+### Whitepaper CLP Token (en /token/CLP y /project)
+
+Documenta el modelo DAI aplicado al peso chileno en ICP.
+
+**Comparativa CLP vs stablecoins:**
 | Aspecto | CLP | DAI | USDC | Terra (colapsado) |
 |---------|-----|-----|------|-------------------|
-| Respaldo | USDT/USDC 1:1 | Colateral múltiple (ETH/USDC) | USD fiat auditado | Algorítmico (LUNA volátil) |
-| Emisión | Mint respaldado | Over-collateralized | Regulado Circle | Algorítmica sin respaldo real |
-| Gobernanza | Comité + guardianes + quórum | MakerDAO voting | Circle centralizado | Terra Labs centralizado |
-| Liquidez | 30-40% líquido, 60-70% staking | Variable por mercado | Alta (regulada) | Colapsó por bank run |
-| Riesgo | Bajo (reservas reales) | Medio (volatilidad colateral) | Bajo (regulado) | Colapsó en 2022 |
+| Respaldo | USDT/USDC 1:1 | Colateral múltiple | USD fiat auditado | Algorítmico (LUNA) |
+| Gobernanza | Comité + guardianes | MakerDAO | Circle centralizado | Terra Labs |
+| Liquidez | 30-40% líquido | Variable | Alta regulada | Colapsó por bank run |
+| Regulación bancaria | No requerida (DeFi) | No requerida | Sí (Circle) | No tenía |
 
-### Whitepaper Resumen (8 secciones)
-1. Introducción — CLP anclado 1:1 respaldado en USDT/USDC
-2. Arquitectura — contratos ICP, 30-40% líquido, 60-70% staking
-3. Gobernanza — comité validadores, quórum mínimo, guardianes emergencia
-4. Liquidez y APY — pool líquido, APY de comisiones reales (no inflacionario)
-5. Quema — cada redención destruye CLP, supply = reservas siempre
-6. Seguridad — reservas diversificadas, auditorías externas, código abierto
-7. Roadmap 5 fases — USDT → bancos chilenos → puentes EVM/Solana → DAO → adopción masiva
-8. Diferencias con Terra — respaldo real, liquidez garantizada, gobernanza filtrada
+**Sección educativa**: "¿Por qué no colapsará como Terra?"
+- Terra: algoritmo + colateral volátil (LUNA) → colapso 2022
+- CLP: reservas reales + liquidez mínima 30% + gobernanza filtrada
+
+**Roadmap CLP** — ver spec1 para la tabla completa. Fases 2 y 5 marcadas OPCIONAL.
 
 ---
 
-## Investigación de sitios oficiales (35+ tokens)
+### Investigación de 35+ sitios oficiales
 
-[Contenido completo preservado de la versión anterior — ver spec2.md histórico en Google Docs del usuario]
+Resumen de ideas clave extraídas y aplicadas a las visualizaciones:
+- **0G Labs**: 650M txs testnet, 22M cuentas, 11k TPS peak, partners Hack VC, Alibaba Cloud
+- **io.net**: "The Open Source AI Infrastructure Platform"
+- **virtuals.io**: "Society of AI Agents"
+- **Akash**: calculadora real de costos vs AWS/GCP ($1.33 vs $3.93/hr GPU)
+- **Pyth**: ticker de alta frecuencia, "world's fastest oracle"
+- **NEAR**: Chain Abstraction — Intent → NEAR resuelve → cualquier chain
 
----
-
-## Pendiente para Fase 3
-
-- [ ] Fonts específicas por red/token en banners (confirmar con devtools)
-- [ ] Oráculos de precios reales (Chainlink EVM, Pyth Solana)
-- [ ] Bridge SDK funcional (Wormhole)
-- [ ] Activity feed on-chain (The Graph)
-- [ ] Staking backend activo (Motoko)
-- [ ] MAX conectado a balance real de wallet
-- [ ] Portfolio analytics (charts P&L, allocation)
-- [ ] Price alerts
-- [ ] Multi-wallet simultáneo
-- [ ] Export CSV historial
-- [ ] Expansión LATAM (ARS, COP, PEN)
+Investigación completa preservada en Google Docs del usuario.

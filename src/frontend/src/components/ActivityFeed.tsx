@@ -26,7 +26,7 @@ function getTxIcon(txType: string) {
   switch (txType) {
     case "Buy":
     case "Receive":
-      return { icon: ArrowDownLeft, color: "#36F28A" };
+      return { icon: ArrowDownLeft, color: "#1DE9B6" };
     case "Sell":
       return { icon: TrendingDown, color: "#ef4444" };
     case "Swap":
@@ -43,7 +43,7 @@ function getTxIcon(txType: string) {
 function statusStyle(status: LocalTransaction["status"]) {
   switch (status) {
     case "confirmed":
-      return { bg: "rgba(34,233,122,0.12)", color: "#22E97A" };
+      return { bg: "rgba(0,212,184,0.12)", color: "#00D4B8" };
     case "pending":
       return { bg: "rgba(201,162,74,0.12)", color: "#C9A24A" };
     case "failed":
@@ -59,7 +59,7 @@ function TxRow({ tx, index }: { tx: LocalTransaction; index: number }) {
       className="flex items-center gap-3 px-4 py-3 rounded-xl"
       style={{
         background: "#0F1513",
-        border: "1px solid rgba(34,233,122,0.1)",
+        border: "1px solid rgba(0,212,184,0.1)",
       }}
       data-ocid={`activity.item.${index + 1}`}
     >
@@ -77,7 +77,7 @@ function TxRow({ tx, index }: { tx: LocalTransaction; index: number }) {
           </span>
           <span
             className="text-xs font-bold font-mono px-1.5 py-0.5 rounded"
-            style={{ background: "rgba(34,233,122,0.08)", color: "#22E97A" }}
+            style={{ background: "rgba(0,212,184,0.08)", color: "#00D4B8" }}
           >
             {tx.tokenSymbol}
           </span>
@@ -140,12 +140,12 @@ export default function ActivityFeed() {
             className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
             style={{
               background:
-                filter === f ? "rgba(34,233,122,0.18)" : "rgba(15,21,19,0.8)",
+                filter === f ? "rgba(0,212,184,0.18)" : "rgba(15,21,19,0.8)",
               border:
                 filter === f
-                  ? "1px solid rgba(34,233,122,0.5)"
-                  : "1px solid rgba(34,233,122,0.1)",
-              color: filter === f ? "#22E97A" : "#A9B3AF",
+                  ? "1px solid rgba(0,212,184,0.5)"
+                  : "1px solid rgba(0,212,184,0.1)",
+              color: filter === f ? "#00D4B8" : "#A9B3AF",
             }}
             data-ocid={`activity.${f.toLowerCase()}.tab`}
           >
@@ -159,14 +159,14 @@ export default function ActivityFeed() {
           className="py-16 text-center rounded-xl"
           style={{
             background: "#0F1513",
-            border: "1px solid rgba(34,233,122,0.1)",
+            border: "1px solid rgba(0,212,184,0.1)",
           }}
           data-ocid="activity.empty_state"
         >
           <Globe
             size={32}
             className="mx-auto mb-3"
-            style={{ color: "rgba(34,233,122,0.3)" }}
+            style={{ color: "rgba(0,212,184,0.3)" }}
           />
           <p className="font-medium" style={{ color: "#E8ECEB" }}>
             No {filter === "All" ? "" : filter} transactions yet

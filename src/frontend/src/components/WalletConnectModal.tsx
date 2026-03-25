@@ -9,6 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useWallet } from "../contexts/WalletContext";
 import { type Network, WALLETS_BY_NETWORK } from "../data/tokens";
+import { getWalletBadge, isWalletLive } from "../hooks/useRealWallet";
 
 interface WalletConnectModalProps {
   open: boolean;
@@ -42,12 +43,7 @@ const NETWORKS: { id: Network; label: string; desc: string; color: string }[] =
       desc: "IBC-connected chains",
       color: "#6F7390",
     },
-    {
-      id: "Bitcoin",
-      label: "Bitcoin",
-      desc: "Bitcoin L0",
-      color: "#F7931A",
-    },
+    { id: "Bitcoin", label: "Bitcoin", desc: "Bitcoin L0", color: "#F7931A" },
     {
       id: "Polkadot",
       label: "Polkadot",
@@ -59,13 +55,14 @@ const NETWORKS: { id: Network; label: string; desc: string; color: string }[] =
 const WALLET_COLORS: Record<string, string> = {
   "Internet Identity": "#29ABE2",
   Plug: "#8247E5",
-  Oisy: "#22E97A",
+  Oisy: "#00D4B8",
   MetaMask: "#F6851B",
   "Coinbase Wallet": "#0052FF",
   WalletConnect: "#3B99FC",
-  Binance: "#F0B90B",
+  "Binance Web3": "#F0B90B",
   Phantom: "#AB9FF2",
   Backpack: "#E33E3F",
+  Solflare: "#FC8C0C",
   Keplr: "#5C8BEB",
   Leap: "#8B5CF6",
   Nova: "#E6007A",
@@ -74,6 +71,17 @@ const WALLET_COLORS: Record<string, string> = {
   Unisat: "#F7931A",
   Xverse: "#6C52E7",
   OKX: "#AAAAAA",
+  ArConnect: "#FF6B35",
+  "Auro Wallet": "#594AF1",
+  Nami: "#349EA3",
+  Eternl: "#1877F2",
+  "NEAR Wallet": "#00EC97",
+  Meteor: "#9B59B6",
+  "Core Wallet": "#E84142",
+  "KuCoin Web3": "#2DCC8F",
+  Rabby: "#7B68EE",
+  "Trust Wallet": "#3375BB",
+  Rainbow: "#FF6B6B",
 };
 
 const ALL_WALLETS = [
@@ -81,9 +89,16 @@ const ALL_WALLETS = [
   "Plug",
   "Oisy",
   "MetaMask",
+  "Rabby",
   "Coinbase Wallet",
+  "Trust Wallet",
+  "Rainbow",
+  "KuCoin Web3",
+  "Binance Web3",
   "WalletConnect",
+  "OKX",
   "Phantom",
+  "Solflare",
   "Backpack",
   "Keplr",
   "Leap",
@@ -92,7 +107,20 @@ const ALL_WALLETS = [
   "Nova",
   "Talisman",
   "SubWallet",
+  "ArConnect",
+  "Auro Wallet",
+  "Nami",
+  "Eternl",
+  "Core Wallet",
+  "NEAR Wallet",
+  "Meteor",
 ];
+
+function getNetworkLiveStatus(network: Network | null): boolean {
+  if (!network) return false;
+  const wallets = WALLETS_BY_NETWORK[network] ?? [];
+  return wallets.some((w) => isWalletLive(w));
+}
 
 export default function WalletConnectModal({
   open,
@@ -114,12 +142,31 @@ export default function WalletConnectModal({
   async function handleWalletSelect(walletType: string) {
     if (!selectedNetwork) return;
     setConnecting(walletType);
-    await new Promise((r) => setTimeout(r, 900));
-    const wallet = connectWallet(selectedNetwork, walletType);
+    const wallet = await connectWallet(selectedNetwork, walletType);
     setConnecting(null);
-    toast.success(
-      `Connected ${walletType} on ${selectedNetwork}: ${wallet.address.slice(0, 12)}...`,
-    );
+
+    if ((wallet as any).redirected) {
+      if (["Oisy", "Nova", "NEAR Wallet", "Meteor"].includes(walletType)) {
+        toast.info(`Abriendo ${walletType} en nueva pestaña`);
+      } else {
+        toast.info(`Abre la extensión de ${walletType} en una nueva pestaña`, {
+          description: "Instala la extensión y vuelve a conectar",
+        });
+      }
+      setStep(1);
+      onClose();
+      return;
+    }
+
+    if (wallet.isReal) {
+      toast.success(
+        `Conectado ${walletType}: ${wallet.address.slice(0, 10)}...`,
+      );
+    } else {
+      toast(`Modo demo — instala ${walletType} para conexiones reales`, {
+        description: `Dirección demo: ${wallet.address.slice(0, 14)}...`,
+      });
+    }
     setStep(1);
     onClose();
   }
@@ -131,6 +178,7 @@ export default function WalletConnectModal({
   }
 
   const activeWallets = new Set(connectedWallets.map((w) => w.walletType));
+  const networkIsLive = getNetworkLiveStatus(selectedNetwork);
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
@@ -138,8 +186,8 @@ export default function WalletConnectModal({
         className="max-w-md"
         style={{
           background: "#0B1110",
-          border: "1px solid rgba(34,233,122,0.25)",
-          boxShadow: "0 0 40px rgba(34,233,122,0.12)",
+          border: "1px solid rgba(0,212,184,0.25)",
+          boxShadow: "0 0 40px rgba(0,212,184,0.12)",
         }}
         data-ocid="wallet.dialog"
       >
@@ -156,11 +204,27 @@ export default function WalletConnectModal({
               </button>
             )}
             <DialogTitle style={{ color: "#E8ECEB" }}>
-              {step === 1
-                ? "Choose Network"
-                : `Connect ${selectedNetwork} Wallet`}
+              {step === 1 ? "Elegir Red" : `Conectar ${selectedNetwork}`}
             </DialogTitle>
           </div>
+          {step === 2 && selectedNetwork && (
+            <div className="flex items-center gap-2 mt-1">
+              <span
+                className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                style={{
+                  background: networkIsLive
+                    ? "rgba(0,212,184,0.15)"
+                    : "rgba(100,100,100,0.15)",
+                  color: networkIsLive ? "#00D4B8" : "#888",
+                  border: `1px solid ${networkIsLive ? "rgba(0,212,184,0.3)" : "rgba(100,100,100,0.3)"}`,
+                }}
+              >
+                {networkIsLive
+                  ? "LIVE — Wallet detectada"
+                  : "Instala una wallet para conectar"}
+              </span>
+            </div>
+          )}
         </DialogHeader>
 
         {step === 1 && (
@@ -179,7 +243,7 @@ export default function WalletConnectModal({
                     background: "rgba(15,21,19,0.8)",
                     border: isConnected
                       ? `1px solid ${net.color}`
-                      : "1px solid rgba(34,233,122,0.15)",
+                      : "1px solid rgba(0,212,184,0.15)",
                     boxShadow: isConnected ? `0 0 14px ${net.color}33` : "none",
                   }}
                   data-ocid={`wallet.${net.id.toLowerCase()}.button`}
@@ -187,7 +251,7 @@ export default function WalletConnectModal({
                   {isConnected && (
                     <span
                       className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center"
-                      style={{ background: "#22E97A" }}
+                      style={{ background: "#00D4B8" }}
                     >
                       <Check size={10} color="#070B0A" />
                     </span>
@@ -216,10 +280,11 @@ export default function WalletConnectModal({
         )}
 
         {step === 2 && selectedNetwork && (
-          <div className="space-y-2 mt-2">
+          <div className="space-y-2 mt-2 max-h-[60vh] overflow-y-auto pr-1">
             {(WALLETS_BY_NETWORK[selectedNetwork] ?? []).map((walletType) => {
               const isActive = activeWallets.has(walletType);
               const isConnecting = connecting === walletType;
+              const badge = getWalletBadge(walletType);
               return (
                 <button
                   type="button"
@@ -229,11 +294,11 @@ export default function WalletConnectModal({
                   className="w-full flex items-center gap-3 p-3.5 rounded-xl transition-all"
                   style={{
                     background: isActive
-                      ? "rgba(34,233,122,0.08)"
+                      ? "rgba(0,212,184,0.08)"
                       : "rgba(15,21,19,0.8)",
                     border: isActive
-                      ? "1px solid rgba(34,233,122,0.4)"
-                      : "1px solid rgba(34,233,122,0.12)",
+                      ? "1px solid rgba(0,212,184,0.4)"
+                      : "1px solid rgba(0,212,184,0.12)",
                     opacity: connecting && !isConnecting ? 0.5 : 1,
                   }}
                   data-ocid={`wallet.${walletType.toLowerCase().replace(/\s+/g, "_")}.button`}
@@ -254,22 +319,34 @@ export default function WalletConnectModal({
                   >
                     {walletType}
                   </span>
+                  <span
+                    className="text-[9px] font-bold px-1.5 py-0.5 rounded-full mr-1"
+                    style={{
+                      background: badge.isLive
+                        ? "rgba(0,212,184,0.12)"
+                        : "rgba(80,80,80,0.2)",
+                      color: badge.isLive ? "#00D4B8" : "#888",
+                      border: `1px solid ${badge.isLive ? "rgba(0,212,184,0.25)" : "rgba(80,80,80,0.3)"}`,
+                    }}
+                  >
+                    {badge.label}
+                  </span>
                   {isActive && (
                     <span
                       className="text-[10px] font-medium px-2 py-0.5 rounded-full"
                       style={{
-                        background: "rgba(34,233,122,0.15)",
-                        color: "#22E97A",
+                        background: "rgba(0,212,184,0.15)",
+                        color: "#00D4B8",
                       }}
                     >
-                      Connected
+                      Conectado
                     </span>
                   )}
                   {isConnecting && (
                     <div
                       className="w-4 h-4 rounded-full border-2 animate-spin"
                       style={{
-                        borderColor: "#22E97A",
+                        borderColor: "#00D4B8",
                         borderTopColor: "transparent",
                       }}
                     />
@@ -282,7 +359,7 @@ export default function WalletConnectModal({
 
         <div
           className="mt-4 pt-3 flex flex-wrap gap-2 justify-center"
-          style={{ borderTop: "1px solid rgba(34,233,122,0.08)" }}
+          style={{ borderTop: "1px solid rgba(0,212,184,0.08)" }}
         >
           {ALL_WALLETS.map((w) => {
             const isActive = activeWallets.has(w);
@@ -296,9 +373,9 @@ export default function WalletConnectModal({
                     ? `${WALLET_COLORS[w] ?? "#555"}33`
                     : "rgba(34,34,34,0.5)",
                   border: isActive
-                    ? `1px solid ${WALLET_COLORS[w] ?? "#22E97A"}`
+                    ? `1px solid ${WALLET_COLORS[w] ?? "#00D4B8"}`
                     : "1px solid rgba(80,80,80,0.4)",
-                  color: isActive ? (WALLET_COLORS[w] ?? "#22E97A") : "#555",
+                  color: isActive ? (WALLET_COLORS[w] ?? "#00D4B8") : "#555",
                   filter: isActive ? "none" : "grayscale(1)",
                 }}
               >

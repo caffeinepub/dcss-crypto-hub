@@ -39,7 +39,7 @@ function PythTicker() {
     <div
       style={{
         background: "#000",
-        border: "1px solid #22E97A44",
+        border: "1px solid #00D4B844",
         borderRadius: "8px",
         padding: "12px 16px",
         fontFamily: "JetBrains Mono, monospace",
@@ -49,7 +49,7 @@ function PythTicker() {
       <div
         style={{
           fontSize: "10px",
-          color: "#22E97A",
+          color: "#00D4B8",
           letterSpacing: "0.15em",
           marginBottom: "10px",
           opacity: 0.7,
@@ -72,7 +72,7 @@ function PythTicker() {
                 style={{
                   fontSize: "13px",
                   fontWeight: "700",
-                  color: isUp ? "#22E97A" : "#ef4444",
+                  color: isUp ? "#00D4B8" : "#ef4444",
                 }}
               >
                 {isUp ? "▲" : "▼"}{" "}
@@ -117,8 +117,8 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                 style={{
                   fontSize: "clamp(20px, 4vw, 32px)",
                   fontWeight: "800",
-                  color: "#22E97A",
-                  textShadow: "0 0 20px rgba(34,233,122,0.5)",
+                  color: "#00D4B8",
+                  textShadow: "0 0 20px rgba(0,212,184,0.5)",
                   lineHeight: 1.3,
                 }}
               >
@@ -1195,7 +1195,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
             }}
           >
             {[
-              { label: "Tu App", color: "#22E97A" },
+              { label: "Tu App", color: "#00D4B8" },
               { label: "Query", color: "#6747ED" },
               { label: "Subgraph", color: "#F5A623" },
               { label: "Blockchain", color: "#627EEA" },
@@ -1252,15 +1252,15 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
         <div
           style={{
             borderRadius: "12px",
-            background: "rgba(34,233,122,0.04)",
-            border: "1px solid rgba(34,233,122,0.15)",
+            background: "rgba(0,212,184,0.04)",
+            border: "1px solid rgba(0,212,184,0.15)",
             padding: "24px",
           }}
         >
           <div
             style={{
               fontSize: "11px",
-              color: "#22E97A",
+              color: "#00D4B8",
               letterSpacing: "0.1em",
               marginBottom: "14px",
               textAlign: "center",
@@ -1284,7 +1284,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                     : symbol === "IO"
                       ? "ML Compute"
                       : "Web Data",
-                color: "#22E97A",
+                color: "#00D4B8",
               },
               {
                 label: "GPU Node 2",
@@ -1757,7 +1757,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
               },
               {
                 phase: "Fase 2",
-                desc: "Integración con bancos chilenos — respaldo en CLP fiat",
+                desc: "OPCIONAL (gov comunidad) — Integración bancaria CLP fiat",
                 done: false,
               },
               {
@@ -1772,7 +1772,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
               },
               {
                 phase: "Fase 5",
-                desc: "Auditorías externas + adopción masiva en pagos locales",
+                desc: "OPCIONAL (gov comunidad) — Auditorías externas y adopción masiva",
                 done: false,
               },
             ].map((phase, i) => (
@@ -2101,7 +2101,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                   marginTop: "8px",
                   textAlign: "center",
                   fontSize: "10px",
-                  color: "#22E97A",
+                  color: "#00D4B8",
                 }}
               >
                 2 saltos — sin intermediario
@@ -2206,7 +2206,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                 <div
                   style={{
                     fontSize: "10px",
-                    color: "#22E97A",
+                    color: "#00D4B8",
                     marginTop: "2px",
                   }}
                 >
@@ -2430,7 +2430,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                         x={x + dx}
                         y={y + 78}
                         textAnchor="middle"
-                        fill="#22E97A"
+                        fill="#00D4B8"
                         fontSize="7"
                       >
                         Royalties
@@ -2738,7 +2738,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
               >
                 1 ETH
               </div>
-              <div style={{ fontSize: "11px", color: "#22E97A" }}>
+              <div style={{ fontSize: "11px", color: "#00D4B8" }}>
                 +4% APY base
               </div>
             </div>
@@ -2753,7 +2753,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
           >
             {(
               [
-                { name: "Protocolo A", apy: "+2.5%", color: "#22E97A" },
+                { name: "Protocolo A", apy: "+2.5%", color: "#00D4B8" },
                 { name: "Protocolo B", apy: "+1.8%", color: "#29ABE2" },
                 { name: "Protocolo C", apy: "+1.2%", color: "#9945FF" },
               ] as Array<{ name: string; apy: string; color: string }>
@@ -2804,7 +2804,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
             >
               ~9.5%
             </div>
-            <div style={{ fontSize: "11px", color: "#22E97A" }}>
+            <div style={{ fontSize: "11px", color: "#00D4B8" }}>
               vs 4% staking simple
             </div>
           </div>
@@ -2913,7 +2913,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                   style={{
                     width: "42px",
                     fontSize: "10px",
-                    color: trend.startsWith("+") ? "#22E97A" : "#ef4444",
+                    color: trend.startsWith("+") ? "#00D4B8" : "#ef4444",
                     textAlign: "right",
                     flexShrink: 0,
                   }}
@@ -3043,7 +3043,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                   style={{
                     fontSize: "12px",
                     fontWeight: "700",
-                    color: "#22E97A",
+                    color: "#00D4B8",
                   }}
                 >
                   {income}
@@ -3204,7 +3204,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
             {/* Divider */}
             <div
               style={{
-                borderTop: "1px solid rgba(34,233,122,0.15)",
+                borderTop: "1px solid rgba(0,212,184,0.15)",
                 marginBottom: "14px",
               }}
             />
@@ -3213,7 +3213,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
               style={{
                 fontSize: "11px",
                 fontWeight: "700",
-                color: "#22E97A",
+                color: "#00D4B8",
                 marginBottom: "6px",
               }}
             >
@@ -3248,15 +3248,15 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                       background:
                         i === 2
                           ? "rgba(213,43,30,0.18)"
-                          : "rgba(34,233,122,0.12)",
-                      color: i === 2 ? "#D52B1E" : "#22E97A",
+                          : "rgba(0,212,184,0.12)",
+                      color: i === 2 ? "#D52B1E" : "#00D4B8",
                       fontWeight: i === 2 ? "700" : "400",
                     }}
                   >
                     {step}
                   </span>
                   {i < 3 && (
-                    <span style={{ color: "#22E97A", fontSize: "12px" }}>
+                    <span style={{ color: "#00D4B8", fontSize: "12px" }}>
                       →
                     </span>
                   )}
@@ -3388,7 +3388,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
                 style={{
                   fontSize: "12px",
                   fontWeight: "700",
-                  color: "#22E97A",
+                  color: "#00D4B8",
                 }}
               >
                 Ninguno
@@ -3440,7 +3440,7 @@ export default function TokenVisual({ symbol }: TokenVisualProps) {
             >
               {(
                 [
-                  { year: "2024", label: "Guardas datos", color: "#22E97A" },
+                  { year: "2024", label: "Guardas datos", color: "#00D4B8" },
                   { year: "2074", label: "+50 años", color: "#A9B3AF" },
                   { year: "2124", label: "+100 años", color: "#A9B3AF" },
                   { year: "2224", label: "Still here", color: "#FFD700" },

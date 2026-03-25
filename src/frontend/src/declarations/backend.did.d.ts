@@ -34,7 +34,23 @@ export interface Transaction {
   'txType' : string,
   'amount' : number,
 }
+export interface TransformationInput {
+  'context' : Uint8Array,
+  'response' : http_request_result,
+}
+export interface TransformationOutput {
+  'status' : bigint,
+  'body' : Uint8Array,
+  'headers' : Array<http_header>,
+}
+export interface http_header { 'value' : string, 'name' : string }
+export interface http_request_result {
+  'status' : bigint,
+  'body' : Uint8Array,
+  'headers' : Array<http_header>,
+}
 export interface _SERVICE {
+  'fetchExternalUrl' : ActorMethod<[string], string>,
   'getBridgeFee' : ActorMethod<[string, string, number], [number, bigint]>,
   'getStats' : ActorMethod<[], Stats>,
   'getTokenPrices' : ActorMethod<[], Array<Token>>,
@@ -43,6 +59,7 @@ export interface _SERVICE {
     [string, string, number, string, string, string, string],
     bigint
   >,
+  'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

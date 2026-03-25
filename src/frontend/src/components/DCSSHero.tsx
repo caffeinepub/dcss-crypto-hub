@@ -39,12 +39,12 @@ function WireframeEarth() {
     <group ref={groupRef}>
       <mesh>
         <sphereGeometry args={[1.02, 24, 16]} />
-        <meshBasicMaterial color="#22E97A" transparent opacity={0.04} />
+        <meshBasicMaterial color="#00D4B8" transparent opacity={0.04} />
       </mesh>
       <mesh>
         <sphereGeometry args={[1, 22, 16]} />
         <meshBasicMaterial
-          color="#22E97A"
+          color="#00D4B8"
           wireframe
           transparent
           opacity={0.38}
@@ -53,7 +53,7 @@ function WireframeEarth() {
       {nodes.map(({ key, pos }) => (
         <mesh key={key} position={pos}>
           <sphereGeometry args={[0.048, 7, 7]} />
-          <meshBasicMaterial color="#22E97A" />
+          <meshBasicMaterial color="#00D4B8" />
         </mesh>
       ))}
     </group>
@@ -77,18 +77,18 @@ function StatCard({
         className="flex items-center gap-1.5 text-xs"
         style={{ color: "#A9B3AF" }}
       >
-        <Icon size={12} style={{ color: "#22E97A" }} />
+        <Icon size={12} style={{ color: "#00D4B8" }} />
         {label}
       </div>
       {loading ? (
         <Skeleton
           className="h-5 w-24"
-          style={{ background: "rgba(34,233,122,0.1)" }}
+          style={{ background: "rgba(0,212,184,0.1)" }}
         />
       ) : (
         <span
           className="text-base font-bold font-mono"
-          style={{ color: "#22E97A" }}
+          style={{ color: "#00D4B8" }}
         >
           {value}
         </span>
@@ -138,14 +138,14 @@ export default function DCSSHero() {
       style={{
         background:
           "linear-gradient(180deg, #070B0A 0%, #0B1110 50%, #070B0A 100%)",
-        borderBottom: "1px solid rgba(34,233,122,0.1)",
+        borderBottom: "1px solid rgba(0,212,184,0.1)",
       }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 60% 55% at 50% 45%, rgba(34,233,122,0.07) 0%, transparent 70%)",
+            "radial-gradient(ellipse 60% 55% at 50% 45%, rgba(0,212,184,0.07) 0%, transparent 70%)",
         }}
       />
 
@@ -156,7 +156,7 @@ export default function DCSSHero() {
             style={{ color: "#E8ECEB" }}
           >
             Manage Your Assets
-            <span style={{ color: "#22E97A" }}> Across Chains</span>
+            <span style={{ color: "#00D4B8" }}> Across Chains</span>
           </h1>
           <p className="text-sm md:text-base" style={{ color: "#A9B3AF" }}>
             The DCSS multichain hub — ICP, EVM, Solana, Cosmos
@@ -179,9 +179,9 @@ export default function DCSSHero() {
           <div
             className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wider"
             style={{
-              background: "rgba(34,233,122,0.08)",
-              border: "1px solid rgba(34,233,122,0.25)",
-              color: "#22E97A",
+              background: "rgba(0,212,184,0.08)",
+              border: "1px solid rgba(0,212,184,0.25)",
+              color: "#00D4B8",
             }}
           >
             <img
@@ -197,7 +197,7 @@ export default function DCSSHero() {
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-4 rounded-xl"
           style={{
             background: "rgba(15,21,19,0.6)",
-            border: "1px solid rgba(34,233,122,0.1)",
+            border: "1px solid rgba(0,212,184,0.1)",
           }}
         >
           {statsItems.map((s) => (
