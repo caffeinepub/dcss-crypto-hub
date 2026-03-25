@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { Stats, Token } from "../backend.d";
+import type { Stats, TokenInfo } from "../backend.d";
 import { useActor } from "./useActor";
 
 export function useTokenPrices() {
   const { actor, isFetching } = useActor();
-  return useQuery<Token[]>({
+  return useQuery<TokenInfo[]>({
     queryKey: ["tokenPrices"],
     queryFn: async () => {
       if (!actor) return [];

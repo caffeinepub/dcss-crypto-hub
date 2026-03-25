@@ -103,18 +103,19 @@ export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
 }
+export interface TokenInfo {
+    id: bigint;
+    name: string;
+    lastUpdate: bigint;
+    price: number;
+    symbol: string;
+}
 export interface Stats {
     cyclesConsumed: bigint;
     circulatingSupply: number;
     totalSupply: number;
     txCount: bigint;
     holders: bigint;
-}
-export interface Token {
-    id: bigint;
-    name: string;
-    price: number;
-    symbol: string;
 }
 export interface http_header {
     value: string;
@@ -132,16 +133,32 @@ export interface Transaction {
     amount: number;
 }
 export interface backendInterface {
+    closeVault(id: bigint): Promise<void>;
     fetchExternalUrl(url: string): Promise<string>;
     getBridgeFee(sourceChain: string, destChain: string, amount: number): Promise<[number, bigint]>;
     getStats(): Promise<Stats>;
-    getTokenPrices(): Promise<Array<Token>>;
+    getTokenPrices(): Promise<Array<TokenInfo>>;
     getTransactions(walletAddr: string): Promise<Array<Transaction>>;
+    openVault(collateral: bigint): Promise<bigint>;
     recordTransaction(txType: string, tokenSymbol: string, amount: number, fromAddr: string, toAddr: string, network: string, walletAddr: string): Promise<bigint>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
+    async closeVault(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.closeVault(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.closeVault(arg0);
+            return result;
+        }
+    }
     async fetchExternalUrl(arg0: string): Promise<string> {
         if (this.processError) {
             try {
@@ -190,7 +207,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getTokenPrices(): Promise<Array<Token>> {
+    async getTokenPrices(): Promise<Array<TokenInfo>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getTokenPrices();
@@ -215,6 +232,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getTransactions(arg0);
+            return result;
+        }
+    }
+    async openVault(arg0: bigint): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.openVault(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.openVault(arg0);
             return result;
         }
     }

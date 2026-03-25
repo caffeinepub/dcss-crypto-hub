@@ -9,12 +9,14 @@ import Footer from "./components/Footer";
 import Navbar, { type Tab } from "./components/Navbar";
 import SplashOverlay from "./components/SplashOverlay";
 import TokenGrid from "./components/TokenGrid";
+import WalletConnectModal from "./components/WalletConnectModal";
 import { TokenProvider } from "./contexts/TokenContext";
 import { TransactionProvider } from "./contexts/TransactionContext";
 import { WalletProvider } from "./contexts/WalletContext";
 import { useWallet } from "./contexts/WalletContext";
 import { TOKEN_LIST } from "./data/tokens";
 import { useLivePrices } from "./hooks/useLivePrices";
+import DCSSCoinPage from "./pages/DCSSCoinPage";
 import ProjectPage from "./pages/ProjectPage";
 import StakingPage from "./pages/StakingPage";
 import TokenDetailPage from "./pages/TokenDetailPage";
@@ -43,21 +45,20 @@ function PortfolioBar() {
     }
   }
 
-  const walletLabel = `${activeWallet.walletType} (${activeWallet.network})`;
+  const walletLabel = `${activeWallet.walletType}`;
 
   return (
     <div
-      className="flex items-center gap-4 px-4 py-2 rounded-xl text-xs font-mono flex-wrap"
+      className="flex items-center gap-4 px-4 py-2 rounded-xl text-xs font-mono flex-wrap mb-3"
       style={{
-        background: "rgba(0,212,184,0.06)",
+        background: "var(--accent-dim)",
         border: "1px solid rgba(0,212,184,0.15)",
-        color: "#A9B3AF",
-        marginBottom: "12px",
+        color: "var(--text-muted)",
       }}
       data-ocid="portfolio.panel"
     >
-      <span style={{ color: "#00D4B8" }}>&#x1F4BC; Portfolio</span>
-      <span style={{ color: "#E8ECEB", fontWeight: 700 }}>
+      <span style={{ color: "var(--accent-color)" }}>&#x1F4BC; Portfolio</span>
+      <span style={{ color: "var(--text-primary)", fontWeight: 700 }}>
         $
         {totalUSD.toLocaleString("en-US", {
           minimumFractionDigits: 2,
@@ -65,13 +66,14 @@ function PortfolioBar() {
         })}{" "}
         USD
       </span>
-      <span style={{ color: "rgba(169,179,175,0.6)" }}>|</span>
+      <span style={{ color: "rgba(107,107,107,0.6)" }}>|</span>
       <span>
         {tokenCount} token{tokenCount !== 1 ? "s" : ""}
       </span>
-      <span style={{ color: "rgba(169,179,175,0.6)" }}>|</span>
+      <span style={{ color: "rgba(107,107,107,0.6)" }}>|</span>
       <span>
-        Conectado: <span style={{ color: "#1DE9B6" }}>{walletLabel}</span>
+        Conectado:{" "}
+        <span style={{ color: "var(--accent-color)" }}>{walletLabel}</span>
       </span>
     </div>
   );
@@ -83,31 +85,34 @@ function Dashboard({
   onBridge,
 }: {
   onNavigateToToken: (symbol: string) => void;
-  onConnectWallet: (network: string) => void;
+  onConnectWallet: () => void;
   onBridge: () => void;
 }) {
   return (
     <div>
-      <DCSSHero />
+      <DCSSHero onConnectWallet={onConnectWallet} />
       <section className="max-w-[1200px] mx-auto px-4 py-10">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2
               className="text-xl font-bold font-display"
-              style={{ color: "#E8ECEB" }}
+              style={{ color: "var(--text-primary)" }}
             >
               Todos los Tokens
             </h2>
-            <p className="text-xs mt-0.5" style={{ color: "#A9B3AF" }}>
+            <p
+              className="text-xs mt-0.5"
+              style={{ color: "var(--text-muted)" }}
+            >
               43 activos en ICP, EVM, Solana &amp; Cosmos
             </p>
           </div>
           <div
             className="text-xs px-3 py-1.5 rounded-full font-mono"
             style={{
-              background: "rgba(0,212,184,0.08)",
+              background: "var(--accent-dim)",
               border: "1px solid rgba(0,212,184,0.2)",
-              color: "#00D4B8",
+              color: "var(--accent-color)",
             }}
           >
             Precios en vivo • 30s
@@ -116,7 +121,7 @@ function Dashboard({
         <PortfolioBar />
         <TokenGrid
           onNavigateToToken={onNavigateToToken}
-          onConnectWallet={onConnectWallet}
+          onConnectWallet={() => onConnectWallet()}
           onBridge={onBridge}
         />
       </section>
@@ -134,11 +139,11 @@ function TokensPage({
       <div className="mb-6">
         <h2
           className="text-2xl font-bold font-display"
-          style={{ color: "#E8ECEB" }}
+          style={{ color: "var(--text-primary)" }}
         >
           Tokens
         </h2>
-        <p className="text-sm mt-1" style={{ color: "#A9B3AF" }}>
+        <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
           Busca y filtra entre los 43 activos soportados
         </p>
       </div>
@@ -168,6 +173,7 @@ function AppContent() {
   const [tokenDetailSymbol, setTokenDetailSymbol] = useState<string | null>(
     null,
   );
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
 
   function handleNavigateToToken(symbol: string) {
     setTokenDetailSymbol(symbol);
@@ -175,10 +181,6 @@ function AppContent() {
 
   function handleBackFromToken() {
     setTokenDetailSymbol(null);
-  }
-
-  function handleConnectWallet(_network: string) {
-    // Will open wallet connect modal with network pre-selected in future
   }
 
   function handleBridge() {
@@ -190,10 +192,13 @@ function AppContent() {
     setTokenDetailSymbol(null);
   }
 
+  // Show DCSS coin page when token is DCSS
+  const isDCSSPage = tokenDetailSymbol === "DCSS";
+
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ background: "#070B0A", position: "relative" }}
+      style={{ background: "var(--bg-base)", position: "relative" }}
     >
       <SplashOverlay />
       <CircuitBackground />
@@ -211,7 +216,9 @@ function AppContent() {
         <AnnouncementBanner />
 
         <main className="flex-1">
-          {tokenDetailSymbol ? (
+          {isDCSSPage ? (
+            <DCSSCoinPage onBack={handleBackFromToken} />
+          ) : tokenDetailSymbol ? (
             <TokenDetailPage
               symbol={tokenDetailSymbol}
               onBack={handleBackFromToken}
@@ -221,7 +228,7 @@ function AppContent() {
               {activeTab === "dashboard" && (
                 <Dashboard
                   onNavigateToToken={handleNavigateToToken}
-                  onConnectWallet={handleConnectWallet}
+                  onConnectWallet={() => setWalletModalOpen(true)}
                   onBridge={handleBridge}
                 />
               )}
@@ -244,13 +251,18 @@ function AppContent() {
           position="bottom-right"
           toastOptions={{
             style: {
-              background: "#0F1513",
-              border: "1px solid rgba(0,212,184,0.25)",
-              color: "#E8ECEB",
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
+              color: "var(--text-primary)",
             },
           }}
         />
       </div>
+
+      <WalletConnectModal
+        open={walletModalOpen}
+        onClose={() => setWalletModalOpen(false)}
+      />
     </div>
   );
 }

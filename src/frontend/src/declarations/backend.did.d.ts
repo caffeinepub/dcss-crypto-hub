@@ -17,9 +17,10 @@ export interface Stats {
   'txCount' : bigint,
   'holders' : bigint,
 }
-export interface Token {
+export interface TokenInfo {
   'id' : bigint,
   'name' : string,
+  'lastUpdate' : bigint,
   'price' : number,
   'symbol' : string,
 }
@@ -50,11 +51,13 @@ export interface http_request_result {
   'headers' : Array<http_header>,
 }
 export interface _SERVICE {
+  'closeVault' : ActorMethod<[bigint], undefined>,
   'fetchExternalUrl' : ActorMethod<[string], string>,
   'getBridgeFee' : ActorMethod<[string, string, number], [number, bigint]>,
   'getStats' : ActorMethod<[], Stats>,
-  'getTokenPrices' : ActorMethod<[], Array<Token>>,
+  'getTokenPrices' : ActorMethod<[], Array<TokenInfo>>,
   'getTransactions' : ActorMethod<[string], Array<Transaction>>,
+  'openVault' : ActorMethod<[bigint], bigint>,
   'recordTransaction' : ActorMethod<
     [string, string, number, string, string, string, string],
     bigint

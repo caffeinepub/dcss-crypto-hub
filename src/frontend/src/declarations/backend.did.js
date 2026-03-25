@@ -15,9 +15,10 @@ export const Stats = IDL.Record({
   'txCount' : IDL.Nat,
   'holders' : IDL.Nat,
 });
-export const Token = IDL.Record({
+export const TokenInfo = IDL.Record({
   'id' : IDL.Nat,
   'name' : IDL.Text,
+  'lastUpdate' : IDL.Int,
   'price' : IDL.Float64,
   'symbol' : IDL.Text,
 });
@@ -52,6 +53,7 @@ export const TransformationOutput = IDL.Record({
 });
 
 export const idlService = IDL.Service({
+  'closeVault' : IDL.Func([IDL.Nat], [], []),
   'fetchExternalUrl' : IDL.Func([IDL.Text], [IDL.Text], []),
   'getBridgeFee' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Float64],
@@ -59,8 +61,9 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getStats' : IDL.Func([], [Stats], ['query']),
-  'getTokenPrices' : IDL.Func([], [IDL.Vec(Token)], ['query']),
+  'getTokenPrices' : IDL.Func([], [IDL.Vec(TokenInfo)], ['query']),
   'getTransactions' : IDL.Func([IDL.Text], [IDL.Vec(Transaction)], ['query']),
+  'openVault' : IDL.Func([IDL.Nat], [IDL.Nat], []),
   'recordTransaction' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Float64, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
       [IDL.Nat],
@@ -83,9 +86,10 @@ export const idlFactory = ({ IDL }) => {
     'txCount' : IDL.Nat,
     'holders' : IDL.Nat,
   });
-  const Token = IDL.Record({
+  const TokenInfo = IDL.Record({
     'id' : IDL.Nat,
     'name' : IDL.Text,
+    'lastUpdate' : IDL.Int,
     'price' : IDL.Float64,
     'symbol' : IDL.Text,
   });
@@ -117,6 +121,7 @@ export const idlFactory = ({ IDL }) => {
   });
   
   return IDL.Service({
+    'closeVault' : IDL.Func([IDL.Nat], [], []),
     'fetchExternalUrl' : IDL.Func([IDL.Text], [IDL.Text], []),
     'getBridgeFee' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Float64],
@@ -124,8 +129,9 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getStats' : IDL.Func([], [Stats], ['query']),
-    'getTokenPrices' : IDL.Func([], [IDL.Vec(Token)], ['query']),
+    'getTokenPrices' : IDL.Func([], [IDL.Vec(TokenInfo)], ['query']),
     'getTransactions' : IDL.Func([IDL.Text], [IDL.Vec(Transaction)], ['query']),
+    'openVault' : IDL.Func([IDL.Nat], [IDL.Nat], []),
     'recordTransaction' : IDL.Func(
         [
           IDL.Text,

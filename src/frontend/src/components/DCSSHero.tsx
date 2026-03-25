@@ -1,9 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Globe, RefreshCw, TrendingUp, Users, Zap } from "lucide-react";
+import { useWallet } from "../contexts/WalletContext";
 import { useStats } from "../hooks/useQueries";
-import DCSSEcosystemDiagram from "./DCSSEcosystemDiagram";
 
-function StatCard({
+function StatPill({
   icon: Icon,
   label,
   value,
@@ -15,23 +15,29 @@ function StatCard({
   loading: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div
+      className="flex flex-col items-center gap-1 px-4 py-3 rounded-xl"
+      style={{
+        background: "var(--bg-surface)",
+        border: "1px solid var(--border-subtle)",
+      }}
+    >
       <div
         className="flex items-center gap-1.5 text-xs"
-        style={{ color: "#A9B3AF" }}
+        style={{ color: "var(--text-muted)" }}
       >
-        <Icon size={12} style={{ color: "#00D4B8" }} />
+        <Icon size={11} style={{ color: "var(--accent-color)" }} />
         {label}
       </div>
       {loading ? (
         <Skeleton
-          className="h-5 w-24"
-          style={{ background: "rgba(0,212,184,0.1)" }}
+          className="h-5 w-20"
+          style={{ background: "var(--bg-elevated)" }}
         />
       ) : (
         <span
-          className="text-base font-bold font-mono"
-          style={{ color: "#00D4B8" }}
+          className="text-sm font-bold font-mono"
+          style={{ color: "var(--accent-color)" }}
         >
           {value}
         </span>
@@ -40,8 +46,13 @@ function StatCard({
   );
 }
 
-export default function DCSSHero() {
+interface DCSSHeroProps {
+  onConnectWallet?: () => void;
+}
+
+export default function DCSSHero({ onConnectWallet }: DCSSHeroProps) {
   const { data: stats, isLoading } = useStats();
+  const { activeWallet } = useWallet();
 
   const statsItems = [
     {
@@ -63,86 +74,82 @@ export default function DCSSHero() {
     },
     {
       icon: Globe,
-      label: "Total TXs",
+      label: "Transacciones",
       value: stats ? Number(stats.txCount).toLocaleString() : "-",
     },
     {
       icon: Zap,
-      label: "Ciclos ICP",
-      value: stats
-        ? `${(Number(stats.cyclesConsumed) / 1_000_000_000).toFixed(2)}B`
-        : "-",
+      label: "Precios en vivo",
+      value: "~40 tokens",
     },
   ];
 
   return (
     <section
-      className="w-full relative overflow-hidden"
+      className="w-full"
       style={{
-        background:
-          "linear-gradient(180deg, #070B0A 0%, #0B1110 50%, #070B0A 100%)",
-        borderBottom: "1px solid rgba(0,212,184,0.1)",
+        background: "var(--bg-base)",
+        borderBottom: "1px solid var(--border-subtle)",
       }}
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 55% at 50% 45%, rgba(0,212,184,0.07) 0%, transparent 70%)",
-        }}
-      />
-
-      <div className="max-w-[1200px] mx-auto px-4 pt-12 pb-8">
-        <div className="text-center mb-6">
-          <h1
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 tracking-tight glow-green font-display"
-            style={{ color: "#E8ECEB" }}
+      <div className="max-w-[1200px] mx-auto px-4 pt-16 pb-12">
+        {/* Badge */}
+        <div className="flex justify-center mb-6">
+          <span
+            className="text-[11px] font-semibold tracking-widest px-3 py-1 rounded-full"
+            style={{
+              background: "var(--accent-dim)",
+              border: "1px solid rgba(0,212,184,0.25)",
+              color: "var(--accent-color)",
+            }}
           >
-            Gestiona tus Activos
-            <span style={{ color: "#00D4B8" }}> en Múltiples Cadenas</span>
+            DCSS CRYPTO HUB · POWERED BY ICP
+          </span>
+        </div>
+
+        {/* Title */}
+        <div className="text-center mb-4">
+          <h1
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight font-display"
+            style={{ color: "var(--text-primary)" }}
+          >
+            DCSS Crypto Hub
           </h1>
-          <p className="text-sm md:text-base" style={{ color: "#A9B3AF" }}>
-            El hub multichain DCSS — ICP, EVM, Solana, Cosmos
+          <p
+            className="text-base md:text-lg max-w-xl mx-auto"
+            style={{ color: "var(--text-muted)" }}
+          >
+            Infraestructura DeFi nativa para Chile
           </p>
         </div>
 
-        {/* Ecosystem Diagram replaces 3D globe */}
-        <div className="flex justify-center mb-4">
-          <DCSSEcosystemDiagram />
-        </div>
-
-        <div className="flex justify-center mb-8">
-          <div
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wider"
-            style={{
-              background: "rgba(0,212,184,0.08)",
-              border: "1px solid rgba(0,212,184,0.25)",
-              color: "#00D4B8",
-            }}
-          >
-            <img
-              src="/assets/generated/dcss-logo-transparent.dim_200x200.png"
-              alt="DCSS"
-              className="w-5 h-5 rounded-full"
-            />
-            ECOSISTEMA DCSS · POWERED BY ICP
+        {/* CTA */}
+        {!activeWallet && onConnectWallet && (
+          <div className="flex justify-center mb-10">
+            <button
+              type="button"
+              onClick={onConnectWallet}
+              className="px-8 py-3 rounded-xl font-semibold text-sm transition-all"
+              style={{
+                background: "var(--accent-color)",
+                color: "#0A0A0A",
+              }}
+              data-ocid="hero.connect.primary_button"
+            >
+              Conectar Wallet
+            </button>
           </div>
-        </div>
+        )}
 
-        <div
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-4 rounded-xl"
-          style={{
-            background: "rgba(15,21,19,0.6)",
-            border: "1px solid rgba(0,212,184,0.1)",
-          }}
-        >
+        {/* Stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {statsItems.map((s) => (
-            <StatCard
+            <StatPill
               key={s.label}
               icon={s.icon}
               label={s.label}
               value={s.value}
-              loading={isLoading}
+              loading={isLoading && s.label !== "Precios en vivo"}
             />
           ))}
         </div>

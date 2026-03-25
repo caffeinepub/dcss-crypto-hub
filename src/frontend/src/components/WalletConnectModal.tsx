@@ -4,408 +4,261 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Check, ChevronLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useWallet } from "../contexts/WalletContext";
-import { type Network, WALLETS_BY_NETWORK } from "../data/tokens";
-import { getWalletBadge, isWalletLive } from "../hooks/useRealWallet";
+import {
+  SUPPORTED_WALLETS,
+  detectBrowser,
+  useWallet,
+} from "../contexts/WalletContext";
 
 interface WalletConnectModalProps {
   open: boolean;
   onClose: () => void;
-  preselectedNetwork?: Network;
+  preselectedNetwork?: string;
 }
 
-const NETWORKS: { id: Network; label: string; desc: string; color: string }[] =
-  [
-    {
-      id: "ICP",
-      label: "ICP",
-      desc: "Internet Computer Protocol",
-      color: "#29ABE2",
-    },
-    {
-      id: "Ethereum",
-      label: "Ethereum",
-      desc: "Ethereum, Arbitrum, Base",
-      color: "#627EEA",
-    },
-    {
-      id: "Solana",
-      label: "Solana",
-      desc: "Solana ecosystem",
-      color: "#9945FF",
-    },
-    {
-      id: "Cosmos",
-      label: "Cosmos",
-      desc: "IBC-connected chains",
-      color: "#6F7390",
-    },
-    { id: "Bitcoin", label: "Bitcoin", desc: "Bitcoin L0", color: "#F7931A" },
-    {
-      id: "Polkadot",
-      label: "Polkadot",
-      desc: "Relay chain + parachains",
-      color: "#E6007A",
-    },
-  ];
-
-const WALLET_COLORS: Record<string, string> = {
-  "Internet Identity": "#29ABE2",
-  Plug: "#8247E5",
-  Oisy: "#00D4B8",
-  MetaMask: "#F6851B",
-  "Coinbase Wallet": "#0052FF",
-  WalletConnect: "#3B99FC",
-  "Binance Web3": "#F0B90B",
-  Phantom: "#AB9FF2",
-  Backpack: "#E33E3F",
-  Solflare: "#FC8C0C",
-  Keplr: "#5C8BEB",
-  Leap: "#8B5CF6",
-  Nova: "#E6007A",
-  Talisman: "#D4FF00",
-  SubWallet: "#00B7FF",
-  Unisat: "#F7931A",
-  Xverse: "#6C52E7",
-  OKX: "#AAAAAA",
-  ArConnect: "#FF6B35",
-  "Auro Wallet": "#594AF1",
-  Nami: "#349EA3",
-  Eternl: "#1877F2",
-  "NEAR Wallet": "#00EC97",
-  Meteor: "#9B59B6",
-  "Core Wallet": "#E84142",
-  "KuCoin Web3": "#2DCC8F",
-  Rabby: "#7B68EE",
-  "Trust Wallet": "#3375BB",
-  Rainbow: "#FF6B6B",
+const WALLET_ICONS: Record<string, string> = {
+  "Internet Identity": "II",
+  Oisy: "OI",
 };
 
-const ALL_WALLETS = [
-  "Internet Identity",
-  "Plug",
-  "Oisy",
-  "MetaMask",
-  "Rabby",
-  "Coinbase Wallet",
-  "Trust Wallet",
-  "Rainbow",
-  "KuCoin Web3",
-  "Binance Web3",
-  "WalletConnect",
-  "OKX",
-  "Phantom",
-  "Solflare",
-  "Backpack",
-  "Keplr",
-  "Leap",
-  "Unisat",
-  "Xverse",
-  "Nova",
-  "Talisman",
-  "SubWallet",
-  "ArConnect",
-  "Auro Wallet",
-  "Nami",
-  "Eternl",
-  "Core Wallet",
-  "NEAR Wallet",
-  "Meteor",
-];
+const WALLET_DESC: Record<string, string> = {
+  "Internet Identity": "Login con Internet Computer — sin seed phrase",
+  Oisy: "Wallet multi-chain nativa de ICP",
+};
 
-function getNetworkLiveStatus(network: Network | null): boolean {
-  if (!network) return false;
-  const wallets = WALLETS_BY_NETWORK[network] ?? [];
-  return wallets.some((w) => isWalletLive(w));
+function OisyInstallInstructions() {
+  const browser = detectBrowser();
+  if (browser === "edge") {
+    return (
+      <div
+        className="text-[11px] p-3 rounded-lg mt-1"
+        style={{
+          background: "rgba(0,212,184,0.06)",
+          border: "1px solid rgba(0,212,184,0.2)",
+          color: "var(--text-muted)",
+        }}
+      >
+        <p
+          className="font-semibold mb-1"
+          style={{ color: "var(--accent-color)" }}
+        >
+          Instalación en Edge
+        </p>
+        <ol className="list-decimal ml-3 space-y-0.5">
+          <li>Ve a Chrome Web Store (se abrirá automáticamente)</li>
+          <li>
+            En Edge, activa{" "}
+            <span style={{ color: "var(--text-primary)" }}>
+              &ldquo;Permitir extensiones de otras tiendas&rdquo;
+            </span>{" "}
+            en la barra inferior
+          </li>
+          <li>
+            Haz clic en &ldquo;Agregar a Chrome&rdquo; — funciona en Edge
+            también
+          </li>
+          <li>Regresa aquí y conecta</li>
+        </ol>
+      </div>
+    );
+  }
+  if (browser === "firefox" || browser === "safari") {
+    return (
+      <div
+        className="text-[11px] p-3 rounded-lg mt-1"
+        style={{
+          background: "rgba(255,100,100,0.06)",
+          border: "1px solid rgba(255,100,100,0.2)",
+          color: "var(--text-muted)",
+        }}
+      >
+        Oisy no tiene extensión para{" "}
+        {browser === "firefox" ? "Firefox" : "Safari"} aún. Usa la versión web
+        en{" "}
+        <a
+          href="https://oisy.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "var(--accent-color)" }}
+        >
+          oisy.com
+        </a>
+      </div>
+    );
+  }
+  return null;
 }
 
 export default function WalletConnectModal({
   open,
   onClose,
-  preselectedNetwork,
 }: WalletConnectModalProps) {
   const { connectWallet, connectedWallets } = useWallet();
-  const [step, setStep] = useState<1 | 2>(() => (preselectedNetwork ? 2 : 1));
-  const [selectedNetwork, setSelectedNetwork] = useState<Network | null>(
-    preselectedNetwork ?? null,
-  );
   const [connecting, setConnecting] = useState<string | null>(null);
 
-  function handleNetworkSelect(network: Network) {
-    setSelectedNetwork(network);
-    setStep(2);
-  }
-
-  async function handleWalletSelect(walletType: string) {
-    if (!selectedNetwork) return;
-    setConnecting(walletType);
-    const wallet = await connectWallet(selectedNetwork, walletType);
+  async function handleConnect(walletId: string) {
+    setConnecting(walletId);
+    const wallet = await connectWallet("ICP", walletId);
     setConnecting(null);
 
-    // Redirected to install page or web app
-    if ((wallet as any).redirected) {
-      if (["Oisy", "Nova", "NEAR Wallet", "Meteor"].includes(walletType)) {
-        toast.info(`Abriendo ${walletType} en nueva pestaña`);
-      } else {
-        toast.info(`Abre la extensión de ${walletType} en una nueva pestaña`, {
-          description: "Instala la extensión y vuelve a conectar",
-        });
-      }
-      setStep(1);
-      onClose();
-      return;
-    }
-
-    // No address returned — wallet not installed or user rejected
-    if (!wallet.address) {
-      toast.error("Wallet no encontrada — instala la extensión", {
-        description: `${walletType} no está instalada o el usuario rechazó la conexión`,
-      });
-      return; // Don't close modal, let user try another wallet
-    }
-
-    if (wallet.isReal) {
-      toast.success(
-        `Conectado ${walletType}: ${wallet.address.slice(0, 10)}...`,
-      );
-    } else {
-      toast.error(`No se pudo conectar ${walletType}`, {
-        description: "Instala la extensión para conectarte",
+    if ((wallet as { redirected?: boolean; installNote?: string }).redirected) {
+      const note = (wallet as { installNote?: string }).installNote;
+      toast.info(`Instalar ${walletId}`, {
+        description:
+          note ?? "Instala la extensión en tu navegador y vuelve a conectar",
+        duration: 8000,
       });
       return;
     }
-    setStep(1);
+
+    if (!wallet.address || !wallet.isReal) {
+      toast.error(`No se pudo conectar ${walletId}`, {
+        description:
+          "Verifica que la extensión esté instalada y activa, luego intenta de nuevo",
+      });
+      return;
+    }
+
+    toast.success(`Conectado: ${wallet.address.slice(0, 16)}...`);
     onClose();
   }
 
-  function handleClose() {
-    setStep(preselectedNetwork ? 2 : 1);
-    setSelectedNetwork(preselectedNetwork ?? null);
-    onClose();
-  }
-
-  const activeWallets = new Set(connectedWallets.map((w) => w.walletType));
-  const networkIsLive = getNetworkLiveStatus(selectedNetwork);
+  const activeAddrs = new Set(connectedWallets.map((w) => w.walletType));
+  const browser = detectBrowser();
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        className="max-w-md"
+        className="max-w-sm"
         style={{
-          background: "#0B1110",
-          border: "1px solid rgba(0,212,184,0.25)",
-          boxShadow: "0 0 40px rgba(0,212,184,0.12)",
+          background: "var(--bg-surface)",
+          border: "1px solid var(--border-subtle)",
         }}
         data-ocid="wallet.dialog"
       >
         <DialogHeader>
-          <div className="flex items-center gap-2">
-            {step === 2 && !preselectedNetwork && (
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="p-1 rounded-md transition-colors"
-                style={{ color: "#A9B3AF" }}
-              >
-                <ChevronLeft size={16} />
-              </button>
-            )}
-            <DialogTitle style={{ color: "#E8ECEB" }}>
-              {step === 1 ? "Elegir Red" : `Conectar ${selectedNetwork}`}
-            </DialogTitle>
-          </div>
-          {step === 2 && selectedNetwork && (
-            <div className="flex items-center gap-2 mt-1">
-              <span
-                className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                style={{
-                  background: networkIsLive
-                    ? "rgba(0,212,184,0.15)"
-                    : "rgba(100,100,100,0.15)",
-                  color: networkIsLive ? "#00D4B8" : "#888",
-                  border: `1px solid ${
-                    networkIsLive
-                      ? "rgba(0,212,184,0.3)"
-                      : "rgba(100,100,100,0.3)"
-                  }`,
-                }}
-              >
-                {networkIsLive
-                  ? "LIVE — Wallet detectada"
-                  : "Instala una wallet para conectar"}
-              </span>
-            </div>
-          )}
+          <DialogTitle style={{ color: "var(--text-primary)" }}>
+            Conectar Wallet
+          </DialogTitle>
+          <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
+            Conecta tu wallet de Internet Computer para ver balances y hacer
+            transacciones.
+          </p>
         </DialogHeader>
 
-        {step === 1 && (
-          <div className="grid grid-cols-2 gap-3 mt-2">
-            {NETWORKS.map((net) => {
-              const isConnected = connectedWallets.some(
-                (w) => w.network === net.id,
-              );
-              return (
-                <button
-                  type="button"
-                  key={net.id}
-                  onClick={() => handleNetworkSelect(net.id)}
-                  className="relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all"
-                  style={{
-                    background: "rgba(15,21,19,0.8)",
-                    border: isConnected
-                      ? `1px solid ${net.color}`
-                      : "1px solid rgba(0,212,184,0.15)",
-                    boxShadow: isConnected ? `0 0 14px ${net.color}33` : "none",
-                  }}
-                  data-ocid={`wallet.${net.id.toLowerCase()}.button`}
-                >
-                  {isConnected && (
-                    <span
-                      className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center"
-                      style={{ background: "#00D4B8" }}
-                    >
-                      <Check size={10} color="#070B0A" />
-                    </span>
-                  )}
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                    style={{ background: `${net.color}22`, color: net.color }}
-                  >
-                    {net.label.slice(0, 3)}
-                  </div>
-                  <div>
-                    <div
-                      className="text-sm font-semibold"
-                      style={{ color: "#E8ECEB" }}
-                    >
-                      {net.label}
-                    </div>
-                    <div className="text-[10px]" style={{ color: "#A9B3AF" }}>
-                      {net.desc}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        )}
+        <div className="space-y-3 mt-2">
+          {SUPPORTED_WALLETS.map((adapter) => {
+            const isConnected = activeAddrs.has(adapter.id);
+            const isConnecting = connecting === adapter.id;
+            const isOisy = adapter.id === "Oisy";
+            const oisyNotInstalled = isOisy && !adapter.isAvailable();
 
-        {step === 2 && selectedNetwork && (
-          <div className="space-y-2 mt-2 max-h-[60vh] overflow-y-auto pr-1">
-            {(WALLETS_BY_NETWORK[selectedNetwork] ?? []).map((walletType) => {
-              const isActive = activeWallets.has(walletType);
-              const isConnecting = connecting === walletType;
-              const badge = getWalletBadge(walletType);
-              return (
+            return (
+              <div key={adapter.id}>
                 <button
                   type="button"
-                  key={walletType}
-                  onClick={() => handleWalletSelect(walletType)}
+                  onClick={() => handleConnect(adapter.id)}
                   disabled={!!connecting}
-                  className="w-full flex items-center gap-3 p-3.5 rounded-xl transition-all"
+                  className="w-full flex items-center gap-4 p-4 rounded-xl transition-all text-left"
                   style={{
-                    background: isActive
-                      ? "rgba(0,212,184,0.08)"
-                      : "rgba(15,21,19,0.8)",
-                    border: isActive
+                    background: isConnected
+                      ? "var(--accent-dim)"
+                      : "var(--bg-elevated)",
+                    border: isConnected
                       ? "1px solid rgba(0,212,184,0.4)"
-                      : "1px solid rgba(0,212,184,0.12)",
+                      : "1px solid var(--border-subtle)",
                     opacity: connecting && !isConnecting ? 0.5 : 1,
+                    cursor: connecting ? "not-allowed" : "pointer",
                   }}
-                  data-ocid={`wallet.${walletType
-                    .toLowerCase()
-                    .replace(/\s+/g, "_")}.button`}
+                  data-ocid={`wallet.${adapter.id.toLowerCase().replace(/\s+/g, "_")}.button`}
                 >
+                  {/* Icon */}
                   <div
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 font-mono"
                     style={{
-                      background: `${WALLET_COLORS[walletType] ?? "#555"}22`,
-                      color: WALLET_COLORS[walletType] ?? "#A9B3AF",
-                      border: `1px solid ${
-                        WALLET_COLORS[walletType] ?? "#555"
-                      }44`,
+                      background: "var(--bg-base)",
+                      border: "1px solid var(--border-subtle)",
+                      color: "var(--accent-color)",
                     }}
                   >
-                    {walletType.slice(0, 2).toUpperCase()}
+                    {WALLET_ICONS[adapter.id] ??
+                      adapter.id.slice(0, 2).toUpperCase()}
                   </div>
-                  <span
-                    className="text-sm font-medium flex-1 text-left"
-                    style={{ color: "#E8ECEB" }}
-                  >
-                    {walletType}
-                  </span>
-                  <span
-                    className="text-[9px] font-bold px-1.5 py-0.5 rounded-full mr-1"
-                    style={{
-                      background: badge.isLive
-                        ? "rgba(0,212,184,0.12)"
-                        : "rgba(80,80,80,0.2)",
-                      color: badge.isLive ? "#00D4B8" : "#888",
-                      border: `1px solid ${
-                        badge.isLive
-                          ? "rgba(0,212,184,0.25)"
-                          : "rgba(80,80,80,0.3)"
-                      }`,
-                    }}
-                  >
-                    {badge.label}
-                  </span>
-                  {isActive && (
-                    <span
-                      className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                      style={{
-                        background: "rgba(0,212,184,0.15)",
-                        color: "#00D4B8",
-                      }}
+
+                  {/* Labels */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="text-sm font-semibold"
+                        style={{ color: "var(--text-primary)" }}
+                      >
+                        {adapter.label}
+                      </span>
+                      {isConnected && (
+                        <span
+                          className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+                          style={{
+                            background: "rgba(0,212,184,0.15)",
+                            color: "var(--accent-color)",
+                          }}
+                        >
+                          Conectado
+                        </span>
+                      )}
+                      {oisyNotInstalled && (
+                        <span
+                          className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+                          style={{
+                            background: "rgba(255,180,0,0.12)",
+                            color: "#ffb400",
+                          }}
+                        >
+                          {browser === "edge"
+                            ? "Instalar en Edge"
+                            : browser === "firefox"
+                              ? "Sin extensión"
+                              : browser === "safari"
+                                ? "Sin extensión"
+                                : "No instalado"}
+                        </span>
+                      )}
+                    </div>
+                    <p
+                      className="text-xs mt-0.5 truncate"
+                      style={{ color: "var(--text-muted)" }}
                     >
-                      Conectado
-                    </span>
-                  )}
+                      {oisyNotInstalled && browser === "edge"
+                        ? "Click para abrir Chrome Web Store (compatible con Edge)"
+                        : WALLET_DESC[adapter.id]}
+                    </p>
+                  </div>
+
+                  {/* Spinner */}
                   {isConnecting && (
-                    <div
-                      className="w-4 h-4 rounded-full border-2 animate-spin"
-                      style={{
-                        borderColor: "#00D4B8",
-                        borderTopColor: "transparent",
-                      }}
+                    <Loader2
+                      size={16}
+                      className="animate-spin shrink-0"
+                      style={{ color: "var(--accent-color)" }}
                     />
                   )}
                 </button>
-              );
-            })}
-          </div>
-        )}
 
-        <div
-          className="mt-4 pt-3 flex flex-wrap gap-2 justify-center"
-          style={{ borderTop: "1px solid rgba(0,212,184,0.08)" }}
-        >
-          {ALL_WALLETS.map((w) => {
-            const isActive = activeWallets.has(w);
-            return (
-              <div
-                key={w}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold transition-all"
-                title={w}
-                style={{
-                  background: isActive
-                    ? `${WALLET_COLORS[w] ?? "#555"}33`
-                    : "rgba(34,34,34,0.5)",
-                  border: isActive
-                    ? `1px solid ${WALLET_COLORS[w] ?? "#00D4B8"}`
-                    : "1px solid rgba(80,80,80,0.4)",
-                  color: isActive ? (WALLET_COLORS[w] ?? "#00D4B8") : "#555",
-                  filter: isActive ? "none" : "grayscale(1)",
-                }}
-              >
-                {w.slice(0, 2).toUpperCase()}
+                {/* Edge / Firefox / Safari install instructions */}
+                {isOisy && oisyNotInstalled && <OisyInstallInstructions />}
               </div>
             );
           })}
         </div>
+
+        <p
+          className="text-[11px] text-center mt-3"
+          style={{ color: "var(--text-muted)" }}
+        >
+          Más wallets disponibles próximamente
+        </p>
       </DialogContent>
     </Dialog>
   );

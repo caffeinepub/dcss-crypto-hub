@@ -21,18 +21,19 @@ export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
 }
+export interface TokenInfo {
+    id: bigint;
+    name: string;
+    lastUpdate: bigint;
+    price: number;
+    symbol: string;
+}
 export interface Stats {
     cyclesConsumed: bigint;
     circulatingSupply: number;
     totalSupply: number;
     txCount: bigint;
     holders: bigint;
-}
-export interface Token {
-    id: bigint;
-    name: string;
-    price: number;
-    symbol: string;
 }
 export interface http_header {
     value: string;
@@ -50,11 +51,13 @@ export interface Transaction {
     amount: number;
 }
 export interface backendInterface {
+    closeVault(id: bigint): Promise<void>;
     fetchExternalUrl(url: string): Promise<string>;
     getBridgeFee(sourceChain: string, destChain: string, amount: number): Promise<[number, bigint]>;
     getStats(): Promise<Stats>;
-    getTokenPrices(): Promise<Array<Token>>;
+    getTokenPrices(): Promise<Array<TokenInfo>>;
     getTransactions(walletAddr: string): Promise<Array<Transaction>>;
+    openVault(collateral: bigint): Promise<bigint>;
     recordTransaction(txType: string, tokenSymbol: string, amount: number, fromAddr: string, toAddr: string, network: string, walletAddr: string): Promise<bigint>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
 }

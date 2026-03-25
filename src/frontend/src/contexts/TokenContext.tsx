@@ -1,11 +1,4 @@
-import {
-  type ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type ReactNode, createContext, useContext, useMemo } from "react";
 import { type Network, TOKEN_LIST, type TokenMeta } from "../data/tokens";
 import { useLivePrices } from "../hooks/useLivePrices";
 import { useTokenPrices } from "../hooks/useQueries";
@@ -25,34 +18,9 @@ export interface TokenContextType {
 
 const TokenCtx = createContext<TokenContextType | null>(null);
 
-const CHANGE_MAP: Record<string, number> = TOKEN_LIST.reduce(
-  (acc, t) => {
-    acc[t.symbol] = Number.parseFloat(((Math.random() - 0.5) * 10).toFixed(2));
-    return acc;
-  },
-  {} as Record<string, number>,
-);
-
 export function TokenProvider({ children }: { children: ReactNode }) {
   const { data: backendTokens } = useTokenPrices();
   const { prices: livePrices, isLive } = useLivePrices();
-  const [priceVariations, setPriceVariations] = useState<
-    Record<string, number>
-  >({});
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPriceVariations((prev) => {
-        const next: Record<string, number> = {};
-        for (const t of TOKEN_LIST) {
-          const prevVar = prev[t.symbol] ?? 1;
-          next[t.symbol] = prevVar * (1 + (Math.random() - 0.5) * 0.04);
-        }
-        return next;
-      });
-    }, 30_000);
-    return () => clearInterval(interval);
-  }, []);
 
   const tokens = useMemo<TokenWithMeta[]>(() => {
     return TOKEN_LIST.map((meta) => {
@@ -67,12 +35,12 @@ export function TokenProvider({ children }: { children: ReactNode }) {
         price = live.usd;
         change24h = live.usd_24h_change;
         isLivePrice = true;
+      } else if (backend && backend.price > 0) {
+        price = backend.price;
+        change24h = 0;
       } else {
-        const basePrice =
-          backend && backend.price > 0 ? backend.price : meta.defaultPrice;
-        const variation = priceVariations[meta.symbol] ?? 1;
-        price = basePrice * variation;
-        change24h = CHANGE_MAP[meta.symbol] ?? 0;
+        price = meta.defaultPrice ?? 0;
+        change24h = 0;
       }
 
       return {
@@ -84,7 +52,7 @@ export function TokenProvider({ children }: { children: ReactNode }) {
         network: meta.network as Network,
       };
     });
-  }, [backendTokens, livePrices, priceVariations]);
+  }, [backendTokens, livePrices]);
 
   const getToken = useMemo(
     () =>
