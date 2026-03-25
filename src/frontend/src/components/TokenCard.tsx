@@ -1,3 +1,4 @@
+import { Bell, Lock } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { TokenWithMeta } from "../contexts/TokenContext";
@@ -30,6 +31,7 @@ export default function TokenCard({
 }: TokenCardProps) {
   const { activeWallet, getBalance } = useWallet();
   const [hovered, setHovered] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const balance = activeWallet
     ? getBalance(activeWallet.network, activeWallet.address, token.symbol)
@@ -51,7 +53,10 @@ export default function TokenCard({
         position: "relative",
       }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={() => {
+        setHovered(false);
+        setAlertOpen(false);
+      }}
       data-ocid={`token.item.${index + 1}`}
     >
       {/* Network badge */}
@@ -87,6 +92,67 @@ export default function TokenCard({
           {token.network}
         </span>
       </div>
+
+      {/* Price alert bell — top-left corner, visible on hover */}
+      {hovered && (
+        <div
+          style={{
+            position: "absolute",
+            top: "8px",
+            left: "8px",
+          }}
+        >
+          <div style={{ position: "relative" }}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setAlertOpen((v) => !v);
+              }}
+              className="flex items-center justify-center transition-colors"
+              style={{
+                width: "22px",
+                height: "22px",
+                borderRadius: "50%",
+                background: alertOpen
+                  ? "rgba(0,212,184,0.2)"
+                  : "rgba(0,212,184,0.08)",
+                border: "1px solid rgba(0,212,184,0.25)",
+                color: "#00D4B8",
+              }}
+              title="Alertas de precio"
+              data-ocid={`token.bell.${index + 1}.button`}
+            >
+              <Bell size={11} />
+            </button>
+            {alertOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "28px",
+                  left: 0,
+                  zIndex: 50,
+                  background: "#0B1110",
+                  border: "1px solid rgba(0,212,184,0.3)",
+                  borderRadius: "8px",
+                  padding: "8px 12px",
+                  whiteSpace: "nowrap",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "11px",
+                  color: "#A9B3AF",
+                }}
+              >
+                <Lock size={10} style={{ color: "#C4837A" }} />
+                Alertas de precio · Próximamente
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {token.depin && (
         <div
           style={{

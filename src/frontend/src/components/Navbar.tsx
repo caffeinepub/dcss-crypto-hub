@@ -30,7 +30,8 @@ export type Tab =
   | "bridge"
   | "activity"
   | "project"
-  | "staking";
+  | "staking"
+  | "wallets";
 
 const NAV_ITEMS: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -39,6 +40,7 @@ const NAV_ITEMS: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "activity", label: "Activity", icon: Activity },
   { id: "project", label: "Project", icon: BookOpen },
   { id: "staking", label: "Staking", icon: Layers },
+  { id: "wallets", label: "Wallets", icon: Wallet },
 ];
 
 const NETWORK_NATIVE: Record<string, string> = {
@@ -66,8 +68,15 @@ interface NavbarProps {
 }
 
 export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
-  const { connectedWallets, activeWallet, setActiveWallet, disconnectWallet } =
-    useWallet();
+  const {
+    connectedWallets,
+    activeWallet,
+    setActiveWallet,
+    disconnectWallet,
+    balanceTick,
+  } = useWallet();
+  // Consume balanceTick so Navbar re-renders when balances arrive
+  void balanceTick;
   const { prices } = useLivePrices();
   const [walletModalOpen, setWalletModalOpen] = useState(false);
 
@@ -275,12 +284,22 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
                     style={{ background: "rgba(0,212,184,0.1)" }}
                   />
                   <DropdownMenuItem
-                    onClick={() => setWalletModalOpen(true)}
+                    onClick={() => {
+                      setWalletModalOpen(true);
+                    }}
                     style={{ color: "#00D4B8" }}
                     data-ocid="nav.connect_wallet.button"
                   >
                     <Wallet size={13} className="mr-2" />
                     Add Wallet
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onTabChange("wallets")}
+                    style={{ color: "#00D4B8" }}
+                    data-ocid="nav.wallets.link"
+                  >
+                    <Wallet size={13} className="mr-2" />
+                    Manage Wallets
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => disconnectWallet(activeWallet.address)}

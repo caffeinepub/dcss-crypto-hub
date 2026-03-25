@@ -1,64 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Canvas, useFrame } from "@react-three/fiber";
 import { Globe, RefreshCw, TrendingUp, Users, Zap } from "lucide-react";
-import { useMemo, useRef } from "react";
-import type { Group } from "three";
 import { useStats } from "../hooks/useQueries";
-
-interface NodePos {
-  key: string;
-  pos: [number, number, number];
-}
-
-function WireframeEarth() {
-  const groupRef = useRef<Group>(null);
-
-  const nodes = useMemo<NodePos[]>(() => {
-    const count = 14;
-    return Array.from({ length: count }, (_, i) => {
-      const phi = Math.acos(-1 + (2 * i) / count);
-      const theta = Math.sqrt(count * Math.PI) * phi;
-      return {
-        key: `node-${i}`,
-        pos: [
-          Math.sin(phi) * Math.cos(theta),
-          Math.cos(phi),
-          Math.sin(phi) * Math.sin(theta),
-        ] as [number, number, number],
-      };
-    });
-  }, []);
-
-  useFrame((_, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.28;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      <mesh>
-        <sphereGeometry args={[1.02, 24, 16]} />
-        <meshBasicMaterial color="#00D4B8" transparent opacity={0.04} />
-      </mesh>
-      <mesh>
-        <sphereGeometry args={[1, 22, 16]} />
-        <meshBasicMaterial
-          color="#00D4B8"
-          wireframe
-          transparent
-          opacity={0.38}
-        />
-      </mesh>
-      {nodes.map(({ key, pos }) => (
-        <mesh key={key} position={pos}>
-          <sphereGeometry args={[0.048, 7, 7]} />
-          <meshBasicMaterial color="#00D4B8" />
-        </mesh>
-      ))}
-    </group>
-  );
-}
+import DCSSEcosystemDiagram from "./DCSSEcosystemDiagram";
 
 function StatCard({
   icon: Icon,
@@ -108,7 +51,7 @@ export default function DCSSHero() {
     },
     {
       icon: RefreshCw,
-      label: "Circulating",
+      label: "Circulando",
       value: stats
         ? `${(stats.circulatingSupply / 1_000_000).toFixed(1)}M`
         : "-",
@@ -125,7 +68,7 @@ export default function DCSSHero() {
     },
     {
       icon: Zap,
-      label: "Cycles Used",
+      label: "Ciclos ICP",
       value: stats
         ? `${(Number(stats.cyclesConsumed) / 1_000_000_000).toFixed(2)}B`
         : "-",
@@ -152,27 +95,20 @@ export default function DCSSHero() {
       <div className="max-w-[1200px] mx-auto px-4 pt-12 pb-8">
         <div className="text-center mb-6">
           <h1
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 tracking-tight glow-green"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 tracking-tight glow-green font-display"
             style={{ color: "#E8ECEB" }}
           >
-            Manage Your Assets
-            <span style={{ color: "#00D4B8" }}> Across Chains</span>
+            Gestiona tus Activos
+            <span style={{ color: "#00D4B8" }}> en Múltiples Cadenas</span>
           </h1>
           <p className="text-sm md:text-base" style={{ color: "#A9B3AF" }}>
-            The DCSS multichain hub — ICP, EVM, Solana, Cosmos
+            El hub multichain DCSS — ICP, EVM, Solana, Cosmos
           </p>
         </div>
 
-        <div className="flex justify-center mb-6">
-          <div style={{ width: "220px", height: "220px" }}>
-            <Canvas
-              gl={{ alpha: true, antialias: true }}
-              camera={{ position: [0, 0, 2.9], fov: 48 }}
-              style={{ background: "transparent" }}
-            >
-              <WireframeEarth />
-            </Canvas>
-          </div>
+        {/* Ecosystem Diagram replaces 3D globe */}
+        <div className="flex justify-center mb-4">
+          <DCSSEcosystemDiagram />
         </div>
 
         <div className="flex justify-center mb-8">
@@ -189,7 +125,7 @@ export default function DCSSHero() {
               alt="DCSS"
               className="w-5 h-5 rounded-full"
             />
-            DCSS ECOSYSTEM · POWERED BY ICP
+            ECOSISTEMA DCSS · POWERED BY ICP
           </div>
         </div>
 

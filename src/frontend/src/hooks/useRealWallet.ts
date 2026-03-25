@@ -14,16 +14,23 @@ declare global {
     };
     phantom?: {
       solana?: {
-        connect: () => Promise<{ publicKey: { toString(): string } }>;
+        connect: (opts?: { onlyIfTrusted?: boolean }) => Promise<{
+          publicKey: { toString(): string };
+        }>;
+        disconnect: () => Promise<void>;
         isPhantom?: boolean;
       };
     };
     solana?: {
-      connect: () => Promise<{ publicKey: { toString(): string } }>;
+      connect: (opts?: { onlyIfTrusted?: boolean }) => Promise<{
+        publicKey: { toString(): string };
+      }>;
+      disconnect: () => Promise<void>;
       isPhantom?: boolean;
     };
     solflare?: {
-      connect: () => Promise<void>;
+      connect: (opts?: { onlyIfTrusted?: boolean }) => Promise<void>;
+      disconnect: () => Promise<void>;
       publicKey: { toString(): string };
       isConnected: boolean;
     };
@@ -340,7 +347,13 @@ export async function connectSolana(): Promise<{
   const provider = window.phantom?.solana ?? window.solana;
   if (!provider) return { address: "", isReal: false };
   try {
-    const resp = await provider.connect();
+    // Disconnect first to always force the permission popup
+    try {
+      await (provider as any).disconnect();
+    } catch {
+      /* ignore — provider may not support disconnect or already disconnected */
+    }
+    const resp = await provider.connect({ onlyIfTrusted: false });
     return { address: resp.publicKey.toString(), isReal: true };
   } catch {
     return { address: "", isReal: false };
@@ -374,7 +387,13 @@ export async function connectSolflare(): Promise<{
 }> {
   if (!isSolflareAvailable()) return { address: "", isReal: false };
   try {
-    await window.solflare!.connect();
+    // Disconnect first to force permission popup
+    try {
+      await window.solflare!.disconnect();
+    } catch {
+      /* ignore */
+    }
+    await window.solflare!.connect({ onlyIfTrusted: false });
     return { address: window.solflare!.publicKey.toString(), isReal: true };
   } catch {
     return { address: "", isReal: false };

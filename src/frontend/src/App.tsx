@@ -4,7 +4,6 @@ import ActivityFeed from "./components/ActivityFeed";
 import AnnouncementBanner from "./components/AnnouncementBanner";
 import BridgePanel from "./components/BridgePanel";
 import CircuitBackground from "./components/CircuitBackground";
-import DCSSEcosystemDiagram from "./components/DCSSEcosystemDiagram";
 import DCSSHero from "./components/DCSSHero";
 import Footer from "./components/Footer";
 import Navbar, { type Tab } from "./components/Navbar";
@@ -19,9 +18,11 @@ import { useLivePrices } from "./hooks/useLivePrices";
 import ProjectPage from "./pages/ProjectPage";
 import StakingPage from "./pages/StakingPage";
 import TokenDetailPage from "./pages/TokenDetailPage";
+import WalletPage from "./pages/WalletPage";
 
 function PortfolioBar() {
-  const { activeWallet, getBalance } = useWallet();
+  const { activeWallet, getBalance, balanceTick } = useWallet();
+  void balanceTick;
   const { prices } = useLivePrices();
 
   if (!activeWallet) return null;
@@ -70,7 +71,7 @@ function PortfolioBar() {
       </span>
       <span style={{ color: "rgba(169,179,175,0.6)" }}>|</span>
       <span>
-        Connected: <span style={{ color: "#1DE9B6" }}>{walletLabel}</span>
+        Conectado: <span style={{ color: "#1DE9B6" }}>{walletLabel}</span>
       </span>
     </div>
   );
@@ -85,19 +86,20 @@ function Dashboard({
   onConnectWallet: (network: string) => void;
   onBridge: () => void;
 }) {
-  const [showEcosystem, setShowEcosystem] = useState(true);
-
   return (
     <div>
       <DCSSHero />
       <section className="max-w-[1200px] mx-auto px-4 py-10">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-bold" style={{ color: "#E8ECEB" }}>
-              All Tokens
+            <h2
+              className="text-xl font-bold font-display"
+              style={{ color: "#E8ECEB" }}
+            >
+              Todos los Tokens
             </h2>
             <p className="text-xs mt-0.5" style={{ color: "#A9B3AF" }}>
-              43 assets across ICP, EVM, Solana &amp; Cosmos
+              43 activos en ICP, EVM, Solana &amp; Cosmos
             </p>
           </div>
           <div
@@ -108,38 +110,10 @@ function Dashboard({
               color: "#00D4B8",
             }}
           >
-            Live prices • 30s refresh
+            Precios en vivo • 30s
           </div>
         </div>
         <PortfolioBar />
-
-        {/* Ecosystem Diagram Toggle */}
-        <div style={{ marginBottom: "24px" }}>
-          <button
-            type="button"
-            onClick={() => setShowEcosystem((p) => !p)}
-            style={{
-              background: "transparent",
-              border: "1px solid rgba(0,212,184,0.25)",
-              color: "#00D4B8",
-              fontSize: "12px",
-              padding: "6px 16px",
-              borderRadius: "999px",
-              cursor: "pointer",
-              fontFamily: "JetBrains Mono, monospace",
-              transition: "background 0.2s",
-            }}
-            data-ocid="ecosystem.toggle"
-          >
-            {showEcosystem ? "▲ Ocultar Ecosistema" : "▼ Ver Ecosistema DCSS"}
-          </button>
-          {showEcosystem && (
-            <div style={{ marginTop: "16px" }}>
-              <DCSSEcosystemDiagram />
-            </div>
-          )}
-        </div>
-
         <TokenGrid
           onNavigateToToken={onNavigateToToken}
           onConnectWallet={onConnectWallet}
@@ -158,11 +132,14 @@ function TokensPage({
   return (
     <section className="max-w-[1200px] mx-auto px-4 py-10">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold" style={{ color: "#E8ECEB" }}>
+        <h2
+          className="text-2xl font-bold font-display"
+          style={{ color: "#E8ECEB" }}
+        >
           Tokens
         </h2>
         <p className="text-sm mt-1" style={{ color: "#A9B3AF" }}>
-          Search and filter across all 43 supported assets
+          Busca y filtra entre los 43 activos soportados
         </p>
       </div>
       <TokenGrid showSearch onNavigateToToken={onNavigateToToken} />
@@ -191,6 +168,7 @@ function AppContent() {
   const [tokenDetailSymbol, setTokenDetailSymbol] = useState<string | null>(
     null,
   );
+
   function handleNavigateToToken(symbol: string) {
     setTokenDetailSymbol(symbol);
   }
@@ -220,7 +198,6 @@ function AppContent() {
       <SplashOverlay />
       <CircuitBackground />
 
-      {/* All content sits above the circuit background */}
       <div
         style={{
           position: "relative",
@@ -257,6 +234,7 @@ function AppContent() {
                 <ProjectPage onNavigateToTab={handleTabChange} />
               )}
               {activeTab === "staking" && <StakingPage />}
+              {activeTab === "wallets" && <WalletPage />}
             </>
           )}
         </main>

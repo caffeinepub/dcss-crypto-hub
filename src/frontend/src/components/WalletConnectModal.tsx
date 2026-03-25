@@ -145,6 +145,7 @@ export default function WalletConnectModal({
     const wallet = await connectWallet(selectedNetwork, walletType);
     setConnecting(null);
 
+    // Redirected to install page or web app
     if ((wallet as any).redirected) {
       if (["Oisy", "Nova", "NEAR Wallet", "Meteor"].includes(walletType)) {
         toast.info(`Abriendo ${walletType} en nueva pestaña`);
@@ -158,14 +159,23 @@ export default function WalletConnectModal({
       return;
     }
 
+    // No address returned — wallet not installed or user rejected
+    if (!wallet.address) {
+      toast.error("Wallet no encontrada — instala la extensión", {
+        description: `${walletType} no está instalada o el usuario rechazó la conexión`,
+      });
+      return; // Don't close modal, let user try another wallet
+    }
+
     if (wallet.isReal) {
       toast.success(
         `Conectado ${walletType}: ${wallet.address.slice(0, 10)}...`,
       );
     } else {
-      toast(`Modo demo — instala ${walletType} para conexiones reales`, {
-        description: `Dirección demo: ${wallet.address.slice(0, 14)}...`,
+      toast.error(`No se pudo conectar ${walletType}`, {
+        description: "Instala la extensión para conectarte",
       });
+      return;
     }
     setStep(1);
     onClose();
@@ -216,7 +226,11 @@ export default function WalletConnectModal({
                     ? "rgba(0,212,184,0.15)"
                     : "rgba(100,100,100,0.15)",
                   color: networkIsLive ? "#00D4B8" : "#888",
-                  border: `1px solid ${networkIsLive ? "rgba(0,212,184,0.3)" : "rgba(100,100,100,0.3)"}`,
+                  border: `1px solid ${
+                    networkIsLive
+                      ? "rgba(0,212,184,0.3)"
+                      : "rgba(100,100,100,0.3)"
+                  }`,
                 }}
               >
                 {networkIsLive
@@ -301,14 +315,18 @@ export default function WalletConnectModal({
                       : "1px solid rgba(0,212,184,0.12)",
                     opacity: connecting && !isConnecting ? 0.5 : 1,
                   }}
-                  data-ocid={`wallet.${walletType.toLowerCase().replace(/\s+/g, "_")}.button`}
+                  data-ocid={`wallet.${walletType
+                    .toLowerCase()
+                    .replace(/\s+/g, "_")}.button`}
                 >
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                     style={{
                       background: `${WALLET_COLORS[walletType] ?? "#555"}22`,
                       color: WALLET_COLORS[walletType] ?? "#A9B3AF",
-                      border: `1px solid ${WALLET_COLORS[walletType] ?? "#555"}44`,
+                      border: `1px solid ${
+                        WALLET_COLORS[walletType] ?? "#555"
+                      }44`,
                     }}
                   >
                     {walletType.slice(0, 2).toUpperCase()}
@@ -326,7 +344,11 @@ export default function WalletConnectModal({
                         ? "rgba(0,212,184,0.12)"
                         : "rgba(80,80,80,0.2)",
                       color: badge.isLive ? "#00D4B8" : "#888",
-                      border: `1px solid ${badge.isLive ? "rgba(0,212,184,0.25)" : "rgba(80,80,80,0.3)"}`,
+                      border: `1px solid ${
+                        badge.isLive
+                          ? "rgba(0,212,184,0.25)"
+                          : "rgba(80,80,80,0.3)"
+                      }`,
                     }}
                   >
                     {badge.label}

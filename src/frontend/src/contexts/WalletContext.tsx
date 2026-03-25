@@ -77,6 +77,7 @@ export interface WalletContextType {
     symbol: string,
     amount: number,
   ) => void;
+  balanceTick: number;
   isEVMAvailable: () => boolean;
   isSolanaAvailable: () => boolean;
   isKeplrAvailable: () => boolean;
@@ -109,10 +110,9 @@ async function connectEVMWallet(
   let evmBalanceFetched = false;
   try {
     const bal = await getEVMBalance(r.address, walletType);
-    if (bal > 0) {
-      localStorage.setItem(`dcss_${network}_${r.address}_ETH`, bal.toFixed(6));
-      evmBalanceFetched = true;
-    }
+    // Always store balance — even 0 is a valid real balance
+    localStorage.setItem(`dcss_${network}_${r.address}_ETH`, bal.toFixed(6));
+    evmBalanceFetched = true;
   } catch {
     /* ignore */
   }
@@ -120,49 +120,102 @@ async function connectEVMWallet(
 }
 
 async function fetchCosmosBalance(address: string): Promise<void> {
-  try {
-    const res = await fetch(
-      `https://api.cosmos.network/cosmos/bank/v1beta1/balances/${address}`,
-    );
-    if (!res.ok) return;
-    const data = await res.json();
-    const uatom = data?.balances?.find(
-      (b: { denom: string; amount: string }) => b.denom === "uatom",
-    );
-    if (uatom) {
-      const atom = Number.parseFloat(uatom.amount) / 1_000_000;
-      if (atom > 0) {
+  // Ordered by reliability — publicnode and cosmos.directory have better CORS
+  const endpoints = [
+    `https://cosmos-rest.publicnode.com/cosmos/bank/v1beta1/balances/${address}`,
+    `https://rest.cosmos.directory/cosmoshub/cosmos/bank/v1beta1/balances/${address}`,
+    `https://api.cosmos.network/cosmos/bank/v1beta1/balances/${address}`,
+  ];
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const uatom = data?.balances?.find(
+        (b: { denom: string; amount: string }) => b.denom === "uatom",
+      );
+      if (uatom) {
+        const atom = Number.parseFloat(uatom.amount) / 1_000_000;
+        // Store real balance — including 0 (wallet has no ATOM)
         localStorage.setItem(`dcss_Cosmos_${address}_ATOM`, atom.toFixed(6));
+        return;
       }
+    } catch {
+      /* try next endpoint */
     }
-  } catch {
-    /* ignore — don't store fake 0 */
   }
 }
 
 async function fetchSolanaBalance(address: string): Promise<void> {
+  // Multiple endpoints ordered by CORS/rate-limit reliability
+  const endpoints = [
+    "https://solana-mainnet.g.alchemy.com/v2/demo",
+    "https://rpc.ankr.com/solana",
+    "https://api.mainnet-beta.solana.com",
+  ];
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: 1,
+          method: "getBalance",
+          params: [address],
+        }),
+      });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const lamports = data?.result?.value;
+      if (typeof lamports === "number") {
+        const sol = lamports / 1_000_000_000;
+        // Always store — 0 is a valid real balance
+        localStorage.setItem(`dcss_Solana_${address}_SOL`, sol.toFixed(6));
+        return; // success — stop trying more endpoints
+      }
+    } catch {
+      /* try next endpoint */
+    }
+  }
+}
+
+async function fetchDotBalance(address: string): Promise<void> {
   try {
-    const res = await fetch("https://api.mainnet-beta.solana.com", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: 1,
-        method: "getBalance",
-        params: [address],
-      }),
-    });
+    const res = await fetch(
+      "https://polkadot.api.subscan.io/api/v2/scan/search",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: address }),
+      },
+    );
     if (!res.ok) return;
     const data = await res.json();
-    const lamports = data?.result?.value;
-    if (typeof lamports === "number") {
-      const sol = lamports / 1_000_000_000;
-      if (sol > 0) {
-        localStorage.setItem(`dcss_Solana_${address}_SOL`, sol.toFixed(6));
-      }
+    const planck = data?.data?.account?.balance;
+    if (planck) {
+      const dot = Number.parseFloat(planck);
+      if (dot > 0)
+        localStorage.setItem(`dcss_Polkadot_${address}_DOT`, dot.toFixed(6));
     }
   } catch {
-    /* ignore — don't store fake 0 */
+    /* ignore */
+  }
+}
+
+async function fetchBtcBalance(address: string): Promise<void> {
+  try {
+    const res = await fetch(`https://mempool.space/api/address/${address}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const sats =
+      (data?.chain_stats?.funded_txo_sum ?? 0) -
+      (data?.chain_stats?.spent_txo_sum ?? 0);
+    const btc = sats / 100_000_000;
+    if (btc > 0)
+      localStorage.setItem(`dcss_Bitcoin_${address}_BTC`, btc.toFixed(8));
+  } catch {
+    /* ignore */
   }
 }
 
@@ -173,6 +226,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [activeWallet, setActiveWallet] = useState<ConnectedWallet | null>(
     null,
   );
+  const [balanceTick, setBalanceTick] = useState(0);
+
+  const bumpTick = useCallback(() => setBalanceTick((t) => t + 1), []);
 
   // NOTE: No localStorage wipe on mount — balances persist across page refreshes.
 
@@ -195,8 +251,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       const key = `dcss_${network}_${address}_${symbol}`;
       if (amount <= 0) localStorage.removeItem(key);
       else localStorage.setItem(key, amount.toString());
+      bumpTick();
     },
-    [],
+    [bumpTick],
   );
 
   const connectWallet = useCallback(
@@ -250,6 +307,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
               address = r.address;
               isReal = true;
               _evmBalanceFetched = r.evmBalanceFetched;
+              bumpTick();
             }
           } else {
             openInstallUrl(walletType);
@@ -264,6 +322,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
               address = r.address;
               isReal = true;
               _evmBalanceFetched = r.evmBalanceFetched;
+              bumpTick();
             }
           } else {
             openInstallUrl("KuCoin Web3");
@@ -284,6 +343,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
               if (accts?.[0]) {
                 address = accts[0];
                 isReal = true;
+                bumpTick();
               }
             } catch {
               /* fall through */
@@ -297,6 +357,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
                 address = r.address;
                 isReal = true;
                 _evmBalanceFetched = r.evmBalanceFetched;
+                bumpTick();
               }
             }
           }
@@ -318,7 +379,14 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
-              fetchSolanaBalance(r.address);
+              // Use try/finally to guarantee bumpTick fires even if fetch fails
+              (async () => {
+                try {
+                  await fetchSolanaBalance(r.address);
+                } finally {
+                  bumpTick();
+                }
+              })();
             }
           } else {
             openInstallUrl("Phantom");
@@ -332,7 +400,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
-              fetchSolanaBalance(r.address);
+              (async () => {
+                try {
+                  await fetchSolanaBalance(r.address);
+                } finally {
+                  bumpTick();
+                }
+              })();
             }
           } else {
             openInstallUrl("Solflare");
@@ -346,7 +420,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
-              fetchSolanaBalance(r.address);
+              (async () => {
+                try {
+                  await fetchSolanaBalance(r.address);
+                } finally {
+                  bumpTick();
+                }
+              })();
             }
           } else {
             openInstallUrl("Backpack");
@@ -362,7 +442,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
-              if (network !== "Celestia") fetchCosmosBalance(r.address);
+              if (network !== "Celestia") {
+                (async () => {
+                  try {
+                    await fetchCosmosBalance(r.address);
+                  } finally {
+                    bumpTick();
+                  }
+                })();
+              }
             }
           } else {
             openInstallUrl("Keplr");
@@ -377,7 +465,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
-              if (network !== "Celestia") fetchCosmosBalance(r.address);
+              if (network !== "Celestia") {
+                (async () => {
+                  try {
+                    await fetchCosmosBalance(r.address);
+                  } finally {
+                    bumpTick();
+                  }
+                })();
+              }
             }
           } else {
             openInstallUrl("Leap");
@@ -397,6 +493,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
+              (async () => {
+                try {
+                  await fetchDotBalance(r.address);
+                } finally {
+                  bumpTick();
+                }
+              })();
             }
           } else {
             openInstallUrl("Talisman");
@@ -410,6 +513,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
+              (async () => {
+                try {
+                  await fetchDotBalance(r.address);
+                } finally {
+                  bumpTick();
+                }
+              })();
             }
           } else {
             openInstallUrl("SubWallet");
@@ -424,6 +534,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
+              (async () => {
+                try {
+                  await fetchBtcBalance(r.address);
+                } finally {
+                  bumpTick();
+                }
+              })();
             }
           } else {
             openInstallUrl("Unisat");
@@ -437,6 +554,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
+              (async () => {
+                try {
+                  await fetchBtcBalance(r.address);
+                } finally {
+                  bumpTick();
+                }
+              })();
             }
           } else {
             openInstallUrl("Xverse");
@@ -450,6 +574,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
+              (async () => {
+                try {
+                  await fetchBtcBalance(r.address);
+                } finally {
+                  bumpTick();
+                }
+              })();
             }
           } else {
             openInstallUrl("OKX");
@@ -522,6 +653,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             if (r.isReal) {
               address = r.address;
               isReal = true;
+              bumpTick();
             }
           }
         }
@@ -547,25 +679,29 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setActiveWallet({ network, walletType, address, isReal });
       return wallet;
     },
-    [],
+    [bumpTick],
   );
 
-  const disconnectWallet = useCallback((address: string): void => {
-    setConnectedWallets((prev) => {
-      const wallet = prev.find((w) => w.address === address);
-      if (wallet) {
-        const keysToRemove: string[] = [];
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key?.startsWith(`dcss_${wallet.network}_${address}_`))
-            keysToRemove.push(key);
+  const disconnectWallet = useCallback(
+    (address: string): void => {
+      setConnectedWallets((prev) => {
+        const wallet = prev.find((w) => w.address === address);
+        if (wallet) {
+          const keysToRemove: string[] = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key?.startsWith(`dcss_${wallet.network}_${address}_`))
+              keysToRemove.push(key);
+          }
+          for (const k of keysToRemove) localStorage.removeItem(k);
         }
-        for (const k of keysToRemove) localStorage.removeItem(k);
-      }
-      return prev.filter((w) => w.address !== address);
-    });
-    setActiveWallet((prev) => (prev?.address === address ? null : prev));
-  }, []);
+        return prev.filter((w) => w.address !== address);
+      });
+      setActiveWallet((prev) => (prev?.address === address ? null : prev));
+      bumpTick();
+    },
+    [bumpTick],
+  );
 
   const value = useMemo(
     () => ({
@@ -576,6 +712,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       disconnectWallet,
       getBalance,
       setBalance,
+      balanceTick,
       isEVMAvailable,
       isSolanaAvailable,
       isKeplrAvailable,
@@ -587,6 +724,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       disconnectWallet,
       getBalance,
       setBalance,
+      balanceTick,
     ],
   );
 

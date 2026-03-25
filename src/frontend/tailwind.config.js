@@ -17,7 +17,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Plus Jakarta Sans", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        mono: ["Geist Mono", "JetBrains Mono", "monospace"],
+        display: ["Bricolage Grotesque", "Plus Jakarta Sans", "sans-serif"],
       },
       colors: {
         border: "oklch(var(--border))",
@@ -71,8 +72,8 @@ export default {
           ring: "oklch(var(--sidebar-ring))",
         },
         neon: {
-          DEFAULT: "#22E97A",
-          dim: "rgba(34,233,122,0.15)",
+          DEFAULT: "#00D4B8",
+          dim: "rgba(0,212,184,0.15)",
         },
         gold: {
           DEFAULT: "#C9A24A",
@@ -86,8 +87,8 @@ export default {
       },
       boxShadow: {
         xs: "0 1px 2px 0 rgba(0,0,0,0.05)",
-        neon: "0 0 20px rgba(34,233,122,0.25)",
-        "neon-sm": "0 0 12px rgba(34,233,122,0.15)",
+        neon: "0 0 20px rgba(0,212,184,0.25)",
+        "neon-sm": "0 0 12px rgba(0,212,184,0.15)",
         gold: "0 0 16px rgba(201,162,74,0.3)",
       },
       keyframes: {
