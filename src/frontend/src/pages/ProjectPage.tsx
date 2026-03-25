@@ -1340,8 +1340,8 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                 },
                 {
                   phase: "Fase 2",
-                  desc: "Integración con bancos chilenos — respaldo en CLP fiat auditado",
-                  status: "Pendiente",
+                  desc: "OPCIONAL (comunitaria): Respaldo en CLP fiat — activable por gobernanza",
+                  status: "Opcional",
                 },
                 {
                   phase: "Fase 3",
@@ -1355,8 +1355,8 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                 },
                 {
                   phase: "Fase 5",
-                  desc: "Auditorías externas + adopción masiva en pagos locales Chile",
-                  status: "Pendiente",
+                  desc: "OPCIONAL (comunitaria): Auditorías externas + adopción masiva — activable por gobernanza",
+                  status: "Opcional",
                 },
               ].map((phase, i, arr) => (
                 <div
