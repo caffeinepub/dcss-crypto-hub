@@ -1,16 +1,30 @@
 import { Toaster } from "@/components/ui/sonner";
 import { useState } from "react";
 import ActivityFeed from "./components/ActivityFeed";
+import AnnouncementBanner from "./components/AnnouncementBanner";
 import BridgePanel from "./components/BridgePanel";
+import CircuitBackground from "./components/CircuitBackground";
 import DCSSHero from "./components/DCSSHero";
 import Footer from "./components/Footer";
 import Navbar, { type Tab } from "./components/Navbar";
+import SplashOverlay from "./components/SplashOverlay";
 import TokenGrid from "./components/TokenGrid";
 import { TokenProvider } from "./contexts/TokenContext";
 import { TransactionProvider } from "./contexts/TransactionContext";
 import { WalletProvider } from "./contexts/WalletContext";
+import ProjectPage from "./pages/ProjectPage";
+import StakingPage from "./pages/StakingPage";
+import TokenDetailPage from "./pages/TokenDetailPage";
 
-function Dashboard() {
+function Dashboard({
+  onNavigateToToken,
+  onConnectWallet,
+  onBridge,
+}: {
+  onNavigateToToken: (symbol: string) => void;
+  onConnectWallet: (network: string) => void;
+  onBridge: () => void;
+}) {
   return (
     <div>
       <DCSSHero />
@@ -21,7 +35,7 @@ function Dashboard() {
               All Tokens
             </h2>
             <p className="text-xs mt-0.5" style={{ color: "#A9B3AF" }}>
-              40 assets across ICP, EVM, Solana &amp; Cosmos
+              43 assets across ICP, EVM, Solana &amp; Cosmos
             </p>
           </div>
           <div
@@ -35,13 +49,21 @@ function Dashboard() {
             Live prices • 30s refresh
           </div>
         </div>
-        <TokenGrid />
+        <TokenGrid
+          onNavigateToToken={onNavigateToToken}
+          onConnectWallet={onConnectWallet}
+          onBridge={onBridge}
+        />
       </section>
     </div>
   );
 }
 
-function TokensPage() {
+function TokensPage({
+  onNavigateToToken,
+}: {
+  onNavigateToToken: (symbol: string) => void;
+}) {
   return (
     <section className="max-w-[1200px] mx-auto px-4 py-10">
       <div className="mb-6">
@@ -49,10 +71,10 @@ function TokensPage() {
           Tokens
         </h2>
         <p className="text-sm mt-1" style={{ color: "#A9B3AF" }}>
-          Search and filter across all 40 supported assets
+          Search and filter across all 43 supported assets
         </p>
       </div>
-      <TokenGrid showSearch />
+      <TokenGrid showSearch onNavigateToToken={onNavigateToToken} />
     </section>
   );
 }
@@ -75,32 +97,91 @@ function ActivityPage() {
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
+  const [tokenDetailSymbol, setTokenDetailSymbol] = useState<string | null>(
+    null,
+  );
+  function handleNavigateToToken(symbol: string) {
+    setTokenDetailSymbol(symbol);
+  }
+
+  function handleBackFromToken() {
+    setTokenDetailSymbol(null);
+  }
+
+  function handleConnectWallet(_network: string) {
+    // Will open wallet connect modal with network pre-selected in future
+  }
+
+  function handleBridge() {
+    setActiveTab("bridge");
+  }
+
+  function handleTabChange(tab: Tab) {
+    setActiveTab(tab);
+    setTokenDetailSymbol(null);
+  }
 
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ background: "#070B0A" }}
+      style={{ background: "#070B0A", position: "relative" }}
     >
-      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+      <SplashOverlay />
+      <CircuitBackground />
 
-      <main className="flex-1">
-        {activeTab === "dashboard" && <Dashboard />}
-        {activeTab === "tokens" && <TokensPage />}
-        {activeTab === "bridge" && <BridgePage />}
-        {activeTab === "activity" && <ActivityPage />}
-      </main>
-
-      <Footer />
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            background: "#0F1513",
-            border: "1px solid rgba(34,233,122,0.25)",
-            color: "#E8ECEB",
-          },
+      {/* All content sits above the circuit background */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
         }}
-      />
+      >
+        <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
+        <AnnouncementBanner />
+
+        <main className="flex-1">
+          {tokenDetailSymbol ? (
+            <TokenDetailPage
+              symbol={tokenDetailSymbol}
+              onBack={handleBackFromToken}
+            />
+          ) : (
+            <>
+              {activeTab === "dashboard" && (
+                <Dashboard
+                  onNavigateToToken={handleNavigateToToken}
+                  onConnectWallet={handleConnectWallet}
+                  onBridge={handleBridge}
+                />
+              )}
+              {activeTab === "tokens" && (
+                <TokensPage onNavigateToToken={handleNavigateToToken} />
+              )}
+              {activeTab === "bridge" && <BridgePage />}
+              {activeTab === "activity" && <ActivityPage />}
+              {activeTab === "project" && (
+                <ProjectPage onNavigateToTab={handleTabChange} />
+              )}
+              {activeTab === "staking" && <StakingPage />}
+            </>
+          )}
+        </main>
+
+        <Footer />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: "#0F1513",
+              border: "1px solid rgba(34,233,122,0.25)",
+              color: "#E8ECEB",
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }

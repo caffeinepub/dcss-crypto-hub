@@ -9,8 +9,10 @@ import {
 import {
   Activity,
   ArrowLeftRight,
+  BookOpen,
   ChevronDown,
   Coins,
+  Layers,
   LayoutDashboard,
   LogOut,
   Wallet,
@@ -20,13 +22,21 @@ import { useWallet } from "../contexts/WalletContext";
 import { truncateAddr } from "../data/tokens";
 import WalletConnectModal from "./WalletConnectModal";
 
-export type Tab = "dashboard" | "tokens" | "bridge" | "activity";
+export type Tab =
+  | "dashboard"
+  | "tokens"
+  | "bridge"
+  | "activity"
+  | "project"
+  | "staking";
 
 const NAV_ITEMS: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "tokens", label: "Tokens", icon: Coins },
   { id: "bridge", label: "Bridge", icon: ArrowLeftRight },
   { id: "activity", label: "Activity", icon: Activity },
+  { id: "project", label: "Project", icon: BookOpen },
+  { id: "staking", label: "Staking", icon: Layers },
 ];
 
 interface NavbarProps {
@@ -73,7 +83,7 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
             </span>
           </button>
 
-          {/* Center nav */}
+          {/* Center nav — desktop */}
           <nav className="hidden md:flex items-center gap-1">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
@@ -84,7 +94,7 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
                   key={item.id}
                   onClick={() => onTabChange(item.id)}
                   data-ocid={`nav.${item.id}.link`}
-                  className="relative flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md transition-colors"
+                  className="relative flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-md transition-colors"
                   style={{
                     color: isActive ? "#22E97A" : "rgba(169,179,175,1)",
                     background: isActive
@@ -92,7 +102,7 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
                       : "transparent",
                   }}
                 >
-                  <Icon size={14} />
+                  <Icon size={13} />
                   {item.label}
                   {isActive && (
                     <span
@@ -199,10 +209,15 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
           </div>
         </div>
 
-        {/* Mobile nav */}
+        {/* Mobile nav — horizontal scroll */}
         <div
-          className="flex md:hidden border-t items-center justify-around px-2 py-1"
-          style={{ borderColor: "rgba(34,233,122,0.08)" }}
+          className="flex md:hidden border-t items-center px-2 py-1"
+          style={{
+            borderColor: "rgba(34,233,122,0.08)",
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch" as never,
+            scrollbarWidth: "none" as never,
+          }}
         >
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -212,7 +227,7 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
                 type="button"
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
-                className="flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium"
+                className="flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium shrink-0"
                 style={{ color: isActive ? "#22E97A" : "#A9B3AF" }}
                 data-ocid={`nav.${item.id}.link`}
               >

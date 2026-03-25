@@ -13,6 +13,7 @@ import { type Network, WALLETS_BY_NETWORK } from "../data/tokens";
 interface WalletConnectModalProps {
   open: boolean;
   onClose: () => void;
+  preselectedNetwork?: Network;
 }
 
 const NETWORKS: { id: Network; label: string; desc: string; color: string }[] =
@@ -24,8 +25,8 @@ const NETWORKS: { id: Network; label: string; desc: string; color: string }[] =
       color: "#29ABE2",
     },
     {
-      id: "EVM",
-      label: "EVM",
+      id: "Ethereum",
+      label: "Ethereum",
       desc: "Ethereum, Arbitrum, Base",
       color: "#627EEA",
     },
@@ -41,6 +42,18 @@ const NETWORKS: { id: Network; label: string; desc: string; color: string }[] =
       desc: "IBC-connected chains",
       color: "#6F7390",
     },
+    {
+      id: "Bitcoin",
+      label: "Bitcoin",
+      desc: "Bitcoin L0",
+      color: "#F7931A",
+    },
+    {
+      id: "Polkadot",
+      label: "Polkadot",
+      desc: "Relay chain + parachains",
+      color: "#E6007A",
+    },
   ];
 
 const WALLET_COLORS: Record<string, string> = {
@@ -54,17 +67,43 @@ const WALLET_COLORS: Record<string, string> = {
   Phantom: "#AB9FF2",
   Backpack: "#E33E3F",
   Keplr: "#5C8BEB",
+  Leap: "#8B5CF6",
+  Nova: "#E6007A",
+  Talisman: "#D4FF00",
+  SubWallet: "#00B7FF",
+  Unisat: "#F7931A",
+  Xverse: "#6C52E7",
+  OKX: "#AAAAAA",
 };
 
-const ALL_WALLETS = Object.values(WALLETS_BY_NETWORK).flat();
+const ALL_WALLETS = [
+  "Internet Identity",
+  "Plug",
+  "Oisy",
+  "MetaMask",
+  "Coinbase Wallet",
+  "WalletConnect",
+  "Phantom",
+  "Backpack",
+  "Keplr",
+  "Leap",
+  "Unisat",
+  "Xverse",
+  "Nova",
+  "Talisman",
+  "SubWallet",
+];
 
 export default function WalletConnectModal({
   open,
   onClose,
+  preselectedNetwork,
 }: WalletConnectModalProps) {
   const { connectWallet, connectedWallets } = useWallet();
-  const [step, setStep] = useState<1 | 2>(1);
-  const [selectedNetwork, setSelectedNetwork] = useState<Network | null>(null);
+  const [step, setStep] = useState<1 | 2>(() => (preselectedNetwork ? 2 : 1));
+  const [selectedNetwork, setSelectedNetwork] = useState<Network | null>(
+    preselectedNetwork ?? null,
+  );
   const [connecting, setConnecting] = useState<string | null>(null);
 
   function handleNetworkSelect(network: Network) {
@@ -86,8 +125,8 @@ export default function WalletConnectModal({
   }
 
   function handleClose() {
-    setStep(1);
-    setSelectedNetwork(null);
+    setStep(preselectedNetwork ? 2 : 1);
+    setSelectedNetwork(preselectedNetwork ?? null);
     onClose();
   }
 
@@ -106,7 +145,7 @@ export default function WalletConnectModal({
       >
         <DialogHeader>
           <div className="flex items-center gap-2">
-            {step === 2 && (
+            {step === 2 && !preselectedNetwork && (
               <button
                 type="button"
                 onClick={() => setStep(1)}
@@ -178,7 +217,7 @@ export default function WalletConnectModal({
 
         {step === 2 && selectedNetwork && (
           <div className="space-y-2 mt-2">
-            {WALLETS_BY_NETWORK[selectedNetwork]?.map((walletType) => {
+            {(WALLETS_BY_NETWORK[selectedNetwork] ?? []).map((walletType) => {
               const isActive = activeWallets.has(walletType);
               const isConnecting = connecting === walletType;
               return (

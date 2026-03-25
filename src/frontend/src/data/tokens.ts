@@ -1,4 +1,22 @@
-export type Network = "ICP" | "EVM" | "Solana" | "Cosmos";
+export type Network =
+  | "ICP"
+  | "Bitcoin"
+  | "Polkadot"
+  | "Cosmos"
+  | "Celestia"
+  | "0G"
+  | "Ethereum"
+  | "Arbitrum"
+  | "Base"
+  | "Multichain"
+  | "Solana"
+  | "Near"
+  | "Avalanche"
+  | "Cardano"
+  | "Mina"
+  | "Bittensor"
+  | "Arweave"
+  | "Stablecoins";
 
 export interface TokenMeta {
   symbol: string;
@@ -6,15 +24,46 @@ export interface TokenMeta {
   color: string;
   network: Network;
   defaultPrice: number;
+  description: string;
+  officialUrl: string;
+  explorerUrl?: string;
+  layer?: string;
+  depin?: boolean;
+  ath?: number;
 }
 
+export const NETWORK_COLORS: Record<string, string> = {
+  ICP: "#29ABE2",
+  Bitcoin: "#F7931A",
+  Polkadot: "#E6007A",
+  Cosmos: "#6F7390",
+  Celestia: "#7B2FBE",
+  "0G": "#00D4FF",
+  Ethereum: "#627EEA",
+  Arbitrum: "#12AAFF",
+  Base: "#0052FF",
+  Multichain: "#F5A623",
+  Solana: "#9945FF",
+  Near: "#00C08B",
+  Avalanche: "#E84142",
+  Cardano: "#0033AD",
+  Mina: "#E7AC57",
+  Bittensor: "#36A18B",
+  Arweave: "#888888",
+  Stablecoins: "#26A17B",
+};
+
 export const TOKEN_LIST: TokenMeta[] = [
+  // ICP
   {
     symbol: "DCSS",
     name: "DCSS Token",
     color: "#FFD700",
     network: "ICP",
     defaultPrice: 0.085,
+    description:
+      "El token nativo del ecosistema DCSS. Centro de governance y recompensas construido sobre Internet Computer.",
+    officialUrl: "https://dcss.io",
   },
   {
     symbol: "ICP",
@@ -22,76 +71,89 @@ export const TOKEN_LIST: TokenMeta[] = [
     color: "#29ABE2",
     network: "ICP",
     defaultPrice: 12.45,
+    description:
+      "Blockchain que permite aplicaciones web completas 100% on-chain sin servidores centralizados. Velocidad submilisegundo.",
+    officialUrl: "https://internetcomputer.org",
+    explorerUrl: "https://dashboard.internetcomputer.org",
   },
   {
-    symbol: "ETH",
-    name: "Ethereum",
-    color: "#627EEA",
-    network: "EVM",
-    defaultPrice: 3420.5,
+    symbol: "CLP",
+    name: "Chilean Peso Token",
+    color: "#D52B1E",
+    network: "ICP",
+    defaultPrice: 0.0011,
+    description:
+      "Representación simbólica del peso chileno en el ecosistema blockchain. Token educativo y comunitario.",
+    officialUrl: "https://dcss.io",
   },
+  // Bitcoin
   {
     symbol: "BTC",
     name: "Bitcoin",
     color: "#F7931A",
-    network: "EVM",
-    defaultPrice: 67800.0,
+    network: "Bitcoin",
+    defaultPrice: 67800,
+    description:
+      "La primera criptomoneda creada por Satoshi Nakamoto en 2009. El oro digital del siglo XXI, suministro máximo 21 millones.",
+    officialUrl: "https://bitcoin.org",
+    explorerUrl: "https://mempool.space",
   },
-  {
-    symbol: "SOL",
-    name: "Solana",
-    color: "#9945FF",
-    network: "Solana",
-    defaultPrice: 185.3,
-  },
-  {
-    symbol: "AVAX",
-    name: "Avalanche",
-    color: "#E84142",
-    network: "EVM",
-    defaultPrice: 38.75,
-  },
-  {
-    symbol: "NEAR",
-    name: "NEAR Protocol",
-    color: "#00C08B",
-    network: "EVM",
-    defaultPrice: 7.2,
-  },
-  {
-    symbol: "ARB",
-    name: "Arbitrum",
-    color: "#12AAFF",
-    network: "EVM",
-    defaultPrice: 1.85,
-  },
-  {
-    symbol: "BASE",
-    name: "Base",
-    color: "#0052FF",
-    network: "EVM",
-    defaultPrice: 0.95,
-  },
-  {
-    symbol: "LINK",
-    name: "Chainlink",
-    color: "#375BD2",
-    network: "EVM",
-    defaultPrice: 18.6,
-  },
+  // Polkadot
   {
     symbol: "DOT",
     name: "Polkadot",
     color: "#E6007A",
-    network: "EVM",
+    network: "Polkadot",
     defaultPrice: 8.9,
+    description:
+      "Red de parachains soberanas con seguridad compartida. Creada por co-fundador de Ethereum Gavin Wood.",
+    officialUrl: "https://polkadot.network",
+    explorerUrl: "https://polkadot.subscan.io",
   },
+  {
+    symbol: "TRAC",
+    name: "OriginTrail",
+    color: "#3EAFDD",
+    network: "Polkadot",
+    defaultPrice: 0.85,
+    description:
+      "Protocolo de trazabilidad y conocimiento descentralizado en Polkadot. Grafos de conocimiento verificables on-chain.",
+    officialUrl: "https://origintrail.io",
+    depin: true,
+  },
+  // Cosmos
   {
     symbol: "ATOM",
     name: "Cosmos Hub",
     color: "#6F7390",
     network: "Cosmos",
     defaultPrice: 11.2,
+    description:
+      "El centro de la internet de blockchains. El protocolo IBC permite que blockchains soberanas se comuniquen entre sí.",
+    officialUrl: "https://cosmos.network",
+    explorerUrl: "https://mintscan.io",
+  },
+  {
+    symbol: "ASI",
+    name: "Fetch.ai / ASI",
+    color: "#1B2B4B",
+    network: "Cosmos",
+    defaultPrice: 0.85,
+    description:
+      "Plataforma de IA descentralizada en Cosmos. Agentes autónomos de IA operan servicios económicos sin intervención humana.",
+    officialUrl: "https://fetch.ai",
+    depin: true,
+  },
+  {
+    symbol: "AKT",
+    name: "Akash Network",
+    color: "#FF414C",
+    network: "Cosmos",
+    defaultPrice: 3.5,
+    description:
+      "Mercado descentralizado de computación en la nube. Alternativa descentralizada a AWS sin intermediarios.",
+    officialUrl: "https://akash.network",
+    depin: true,
   },
   {
     symbol: "DVPN",
@@ -99,153 +161,10 @@ export const TOKEN_LIST: TokenMeta[] = [
     color: "#4AB44A",
     network: "Cosmos",
     defaultPrice: 0.0042,
-  },
-  {
-    symbol: "ZEC",
-    name: "Zcash",
-    color: "#ECB244",
-    network: "EVM",
-    defaultPrice: 28.5,
-  },
-  {
-    symbol: "LTC",
-    name: "Litecoin",
-    color: "#A0A0A0",
-    network: "EVM",
-    defaultPrice: 92.0,
-  },
-  {
-    symbol: "MATIC",
-    name: "Polygon",
-    color: "#8247E5",
-    network: "EVM",
-    defaultPrice: 0.88,
-  },
-  {
-    symbol: "OP",
-    name: "Optimism",
-    color: "#FF0420",
-    network: "EVM",
-    defaultPrice: 2.75,
-  },
-  {
-    symbol: "FTM",
-    name: "Fantom",
-    color: "#1969FF",
-    network: "EVM",
-    defaultPrice: 0.72,
-  },
-  {
-    symbol: "ALGO",
-    name: "Algorand",
-    color: "#3A3A3A",
-    network: "EVM",
-    defaultPrice: 0.18,
-  },
-  {
-    symbol: "XRP",
-    name: "XRP",
-    color: "#00AAE4",
-    network: "EVM",
-    defaultPrice: 0.58,
-  },
-  {
-    symbol: "ADA",
-    name: "Cardano",
-    color: "#0033AD",
-    network: "EVM",
-    defaultPrice: 0.45,
-  },
-  {
-    symbol: "TRX",
-    name: "TRON",
-    color: "#FF0013",
-    network: "EVM",
-    defaultPrice: 0.13,
-  },
-  {
-    symbol: "DOGE",
-    name: "Dogecoin",
-    color: "#C2A633",
-    network: "EVM",
-    defaultPrice: 0.165,
-  },
-  {
-    symbol: "SHIB",
-    name: "Shiba Inu",
-    color: "#FFA409",
-    network: "EVM",
-    defaultPrice: 0.0000245,
-  },
-  {
-    symbol: "UNI",
-    name: "Uniswap",
-    color: "#FF007A",
-    network: "EVM",
-    defaultPrice: 10.3,
-  },
-  {
-    symbol: "AAVE",
-    name: "Aave",
-    color: "#B6509E",
-    network: "EVM",
-    defaultPrice: 285.0,
-  },
-  {
-    symbol: "CRV",
-    name: "Curve DAO",
-    color: "#3966CC",
-    network: "EVM",
-    defaultPrice: 0.52,
-  },
-  {
-    symbol: "MKR",
-    name: "Maker",
-    color: "#1AAB9B",
-    network: "EVM",
-    defaultPrice: 2850.0,
-  },
-  {
-    symbol: "SNX",
-    name: "Synthetix",
-    color: "#00D1FF",
-    network: "EVM",
-    defaultPrice: 2.85,
-  },
-  {
-    symbol: "COMP",
-    name: "Compound",
-    color: "#00D395",
-    network: "EVM",
-    defaultPrice: 62.5,
-  },
-  {
-    symbol: "YFI",
-    name: "Yearn Finance",
-    color: "#006AE3",
-    network: "EVM",
-    defaultPrice: 7200.0,
-  },
-  {
-    symbol: "SUSHI",
-    name: "SushiSwap",
-    color: "#FA52A0",
-    network: "EVM",
-    defaultPrice: 1.45,
-  },
-  {
-    symbol: "BAL",
-    name: "Balancer",
-    color: "#7B7B7B",
-    network: "EVM",
-    defaultPrice: 3.8,
-  },
-  {
-    symbol: "1INCH",
-    name: "1inch",
-    color: "#D82122",
-    network: "EVM",
-    defaultPrice: 0.42,
+    description:
+      "Red descentralizada de VPN sobre Cosmos. Infraestructura de privacidad de internet imposible de censurar.",
+    officialUrl: "https://sentinel.co",
+    depin: true,
   },
   {
     symbol: "INJ",
@@ -253,56 +172,367 @@ export const TOKEN_LIST: TokenMeta[] = [
     color: "#00F2FE",
     network: "Cosmos",
     defaultPrice: 28.5,
+    description:
+      "Blockchain para DeFi avanzado: derivados, futuros y opciones on-chain sin gas fees de trading.",
+    officialUrl: "https://injective.com",
+  },
+  // Celestia
+  {
+    symbol: "TIA",
+    name: "Celestia",
+    color: "#7B2FBE",
+    network: "Celestia",
+    defaultPrice: 6.2,
+    description:
+      "Primera red modular de disponibilidad de datos. Separa consenso de ejecución para blockchains más baratas y escalables.",
+    officialUrl: "https://celestia.org",
+  },
+  // 0G
+  {
+    symbol: "0G",
+    name: "0G Labs",
+    color: "#00D4FF",
+    network: "0G",
+    defaultPrice: 2.5,
+    description:
+      "Infraestructura modular para IA y datos on-chain. Habilita entrenamiento y almacenamiento descentralizado de modelos de IA.",
+    officialUrl: "https://0g.ai",
+    depin: true,
+  },
+  // Ethereum
+  {
+    symbol: "ETH",
+    name: "Ethereum",
+    color: "#627EEA",
+    network: "Ethereum",
+    defaultPrice: 3420,
+    description:
+      "La blockchain que inventó los smart contracts y el DeFi moderno. Mayor ecosistema de desarrolladores del mundo.",
+    officialUrl: "https://ethereum.org",
+    explorerUrl: "https://etherscan.io",
   },
   {
-    symbol: "RUNE",
-    name: "THORChain",
-    color: "#33FF99",
-    network: "Cosmos",
-    defaultPrice: 5.8,
+    symbol: "LINK",
+    name: "Chainlink",
+    color: "#375BD2",
+    network: "Ethereum",
+    defaultPrice: 18.6,
+    description:
+      "Infraestructura de oráculos que conecta smart contracts con datos del mundo real. Sin Chainlink, el DeFi no funcionaría.",
+    officialUrl: "https://chain.link",
   },
   {
-    symbol: "OSMO",
-    name: "Osmosis",
-    color: "#750BBB",
-    network: "Cosmos",
+    symbol: "GRT",
+    name: "The Graph",
+    color: "#6747ED",
+    network: "Ethereum",
+    defaultPrice: 0.25,
+    description:
+      "Protocolo de indexación descentralizada para blockchains. Permite consultar datos on-chain eficientemente via subgraphs.",
+    officialUrl: "https://thegraph.com",
+    depin: true,
+  },
+  {
+    symbol: "API3",
+    name: "API3",
+    color: "#3643D9",
+    network: "Ethereum",
+    defaultPrice: 2.8,
+    description:
+      "Oráculos de primera parte: APIs conectan directamente con smart contracts. Elimina el riesgo del oráculo de terceros.",
+    officialUrl: "https://api3.org",
+  },
+  {
+    symbol: "NMR",
+    name: "Numerai",
+    color: "#00D4C4",
+    network: "Ethereum",
+    defaultPrice: 18.0,
+    description:
+      "Torneo de ciencia de datos financieros descentralizado. Data scientists compiten creando modelos predictivos.",
+    officialUrl: "https://numer.ai",
+  },
+  {
+    symbol: "SAHARA",
+    name: "Sahara AI",
+    color: "#FF6B35",
+    network: "Ethereum",
     defaultPrice: 0.85,
+    description:
+      "Plataforma blockchain para monetización de datos e IA. Permite controlar y monetizar contribuciones a modelos de inteligencia artificial.",
+    officialUrl: "https://saharalabs.ai",
   },
   {
-    symbol: "SCRT",
-    name: "Secret Network",
-    color: "#555555",
-    network: "Cosmos",
-    defaultPrice: 0.62,
+    symbol: "IP",
+    name: "Story Protocol",
+    color: "#8B5CF6",
+    network: "Ethereum",
+    defaultPrice: 1.2,
+    description:
+      "Infraestructura para propiedad intelectual programable en blockchain. Registra, licencia y monetiza IP automáticamente.",
+    officialUrl: "https://story.foundation",
+  },
+  // Arbitrum
+  {
+    symbol: "LPT",
+    name: "Livepeer",
+    color: "#00A55F",
+    network: "Arbitrum",
+    defaultPrice: 8.5,
+    description:
+      "Red descentralizada de transcodificación de video. Reduce el costo del streaming usando capacidad GPU ociosa.",
+    officialUrl: "https://livepeer.org",
+    depin: true,
   },
   {
-    symbol: "JUNO",
-    name: "Juno",
-    color: "#F0827D",
-    network: "Cosmos",
+    symbol: "SHELL",
+    name: "Shell",
+    color: "#7EC8E3",
+    network: "Arbitrum",
+    defaultPrice: 0.5,
+    description:
+      "Protocolo de liquidez en Arbitrum. Infraestructura DeFi modular para intercambios y gestión de activos on-chain.",
+    officialUrl: "https://shellprotocol.io",
+  },
+  {
+    symbol: "ATH",
+    name: "Aethir",
+    color: "#6EFF6E",
+    network: "Arbitrum",
+    defaultPrice: 0.14,
+    description:
+      "Infraestructura descentralizada de GPU para IA y gaming. Conecta proveedores GPU con consumidores globalmente.",
+    officialUrl: "https://aethir.com",
+    depin: true,
+  },
+  // Base
+  {
+    symbol: "KAITO",
+    name: "Kaito",
+    color: "#0052FF",
+    network: "Base",
+    defaultPrice: 1.2,
+    description:
+      "Motor de búsqueda e inteligencia crypto basado en IA. Agrega y analiza información Web3 en tiempo real.",
+    officialUrl: "https://kaito.ai",
+  },
+  {
+    symbol: "VIRTUAL",
+    name: "Virtuals Protocol",
+    color: "#9B59B6",
+    network: "Base",
+    defaultPrice: 1.8,
+    description:
+      "Plataforma para crear agentes de IA con personalidad propia en Base. Los agentes generan ingresos autónomos.",
+    officialUrl: "https://virtuals.io",
+  },
+  // Multichain
+  {
+    symbol: "KERNEL",
+    name: "Kernel",
+    color: "#F5A623",
+    network: "Multichain",
+    defaultPrice: 0.15,
+    description:
+      "Protocolo de restaking multichain. Reutiliza stake de ETH para asegurar múltiples protocolos maximizando rendimiento.",
+    officialUrl: "https://kerneldao.com",
+  },
+  {
+    symbol: "UP",
+    name: "Superform",
+    color: "#FF6B6B",
+    network: "Multichain",
+    defaultPrice: 0.05,
+    description:
+      "Agregador de yield multichain. Una sola interfaz para las mejores oportunidades de rendimiento en todas las redes.",
+    officialUrl: "https://superform.xyz",
+  },
+  // Solana
+  {
+    symbol: "SOL",
+    name: "Solana",
+    color: "#9945FF",
+    network: "Solana",
+    defaultPrice: 185.3,
+    description:
+      "65,000 TPS con fees de fracciones de centavo. Proof of History para ordenar transacciones sin cuellos de botella.",
+    officialUrl: "https://solana.com",
+    explorerUrl: "https://explorer.solana.com",
+  },
+  {
+    symbol: "RENDER",
+    name: "Render Network",
+    color: "#FF4500",
+    network: "Solana",
+    defaultPrice: 8.5,
+    description:
+      "Red descentralizada de renderizado GPU. Artistas acceden a capacidad gráfica distribuida para renders 3D y VFX.",
+    officialUrl: "https://rendernetwork.com",
+    depin: true,
+  },
+  {
+    symbol: "IO",
+    name: "io.net",
+    color: "#00D4FF",
+    network: "Solana",
+    defaultPrice: 4.0,
+    description:
+      "Mercado descentralizado de GPU para ML e IA. Agrega capacidad de cómputo de data centers e individuos.",
+    officialUrl: "https://io.net",
+    depin: true,
+  },
+  {
+    symbol: "GRASS",
+    name: "Grass",
+    color: "#4CAF50",
+    network: "Solana",
+    defaultPrice: 2.5,
+    description:
+      "Red descentralizada de datos web. Usuarios comparten ancho de banda para recopilar datos de entrenamiento de IA.",
+    officialUrl: "https://getgrass.io",
+    depin: true,
+  },
+  {
+    symbol: "PYTH",
+    name: "Pyth Network",
+    color: "#E6DAFE",
+    network: "Solana",
     defaultPrice: 0.45,
+    description:
+      "Oráculos de alta frecuencia para datos financieros en tiempo real. Alimenta precios a DeFi en múltiples blockchains.",
+    officialUrl: "https://pyth.network",
+  },
+  // Near
+  {
+    symbol: "NEAR",
+    name: "NEAR Protocol",
+    color: "#00C08B",
+    network: "Near",
+    defaultPrice: 7.2,
+    description:
+      "Blockchain con cuentas de nombres legibles y fees casi nulos. Compatible con Ethereum via Aurora. Sharding automático.",
+    officialUrl: "https://near.org",
+  },
+  // Avalanche
+  {
+    symbol: "AVAX",
+    name: "Avalanche",
+    color: "#E84142",
+    network: "Avalanche",
+    defaultPrice: 38.75,
+    description:
+      "Alta velocidad con finalidad menor a 2 segundos. Arquitectura de subredes para blockchains personalizadas.",
+    officialUrl: "https://avax.network",
+  },
+  // Cardano
+  {
+    symbol: "ADA",
+    name: "Cardano",
+    color: "#0033AD",
+    network: "Cardano",
+    defaultPrice: 0.45,
+    description:
+      "La blockchain académica. Cada feature respaldada por papers peer-reviewed. Fundada por Charles Hoskinson.",
+    officialUrl: "https://cardano.org",
+  },
+  // Mina
+  {
+    symbol: "MINA",
+    name: "Mina Protocol",
+    color: "#E7AC57",
+    network: "Mina",
+    defaultPrice: 0.55,
+    description:
+      "La blockchain más liviana del mundo (22kb). Usa zk-SNARKs para verificar el estado completo. Privacy by design.",
+    officialUrl: "https://minaprotocol.com",
+  },
+  // Bittensor
+  {
+    symbol: "TAO",
+    name: "Bittensor",
+    color: "#36A18B",
+    network: "Bittensor",
+    defaultPrice: 380,
+    description:
+      "Red descentralizada de inteligencia artificial. Los modelos de ML compiten y se recompensan por su utilidad real.",
+    officialUrl: "https://bittensor.com",
+    depin: true,
+  },
+  // Arweave
+  {
+    symbol: "AR",
+    name: "Arweave",
+    color: "#888888",
+    network: "Arweave",
+    defaultPrice: 18.0,
+    description:
+      "Almacenamiento permanente de datos on-chain. Pago único para guardar datos para siempre. La biblioteca permanente de internet.",
+    officialUrl: "https://arweave.org",
+    depin: true,
+  },
+  // Stablecoins
+  {
+    symbol: "USDT",
+    name: "Tether",
+    color: "#26A17B",
+    network: "Stablecoins",
+    defaultPrice: 1.0,
+    description:
+      "Stablecoin más utilizada del mundo, anclada 1:1 al dólar. El dólar digital del ecosistema crypto.",
+    officialUrl: "https://tether.to",
   },
   {
-    symbol: "STARS",
-    name: "Stargaze",
-    color: "#DB2777",
-    network: "Cosmos",
-    defaultPrice: 0.018,
+    symbol: "USDC",
+    name: "USD Coin",
+    color: "#2775CA",
+    network: "Stablecoins",
+    defaultPrice: 1.0,
+    description:
+      "Stablecoin regulada de Circle/Coinbase. Transparencia total de reservas. Compatible con DeFi institucional.",
+    officialUrl: "https://circle.com/usdc",
   },
 ];
 
 export const WALLETS_BY_NETWORK: Record<string, string[]> = {
   ICP: ["Internet Identity", "Plug", "Oisy"],
-  EVM: ["MetaMask", "Coinbase Wallet", "WalletConnect", "Binance"],
+  Bitcoin: ["Unisat", "Xverse", "OKX"],
+  Polkadot: ["Nova", "Talisman", "SubWallet"],
+  Cosmos: ["Keplr", "Leap"],
+  Celestia: ["Keplr", "Leap"],
+  "0G": ["Binance", "Mask Network"],
+  Ethereum: ["MetaMask", "Coinbase Wallet", "WalletConnect"],
+  Arbitrum: ["MetaMask", "Coinbase Wallet"],
+  Base: ["Coinbase Wallet", "Phantom"],
+  Multichain: ["MetaMask", "WalletConnect"],
   Solana: ["Phantom", "Backpack"],
-  Cosmos: ["Keplr"],
+  Near: ["NEAR Wallet", "Meteor"],
+  Avalanche: ["MetaMask", "Core Wallet"],
+  Cardano: ["Nami", "Eternl"],
+  Mina: ["Auro Wallet"],
+  Bittensor: ["Binance", "SubWallet"],
+  Arweave: ["ArConnect"],
+  Stablecoins: ["MetaMask", "Coinbase Wallet"],
 };
 
 export const NETWORK_PRIMARY_TOKENS: Record<string, string[]> = {
-  ICP: ["DCSS", "ICP"],
-  EVM: ["ETH", "BTC", "LINK", "UNI", "AAVE", "MATIC", "ARB"],
-  Solana: ["SOL"],
-  Cosmos: ["ATOM", "OSMO", "JUNO", "INJ", "RUNE"],
+  ICP: ["DCSS", "ICP", "CLP"],
+  Bitcoin: ["BTC"],
+  Polkadot: ["DOT", "TRAC"],
+  Cosmos: ["ATOM", "ASI", "AKT", "DVPN", "INJ"],
+  Celestia: ["TIA"],
+  "0G": ["0G"],
+  Ethereum: ["ETH", "LINK", "GRT", "API3", "NMR", "SAHARA", "IP"],
+  Arbitrum: ["LPT", "SHELL", "ATH"],
+  Base: ["KAITO", "VIRTUAL"],
+  Multichain: ["KERNEL", "UP"],
+  Solana: ["SOL", "RENDER", "IO", "GRASS", "PYTH"],
+  Near: ["NEAR"],
+  Avalanche: ["AVAX"],
+  Cardano: ["ADA"],
+  Mina: ["MINA"],
+  Bittensor: ["TAO"],
+  Arweave: ["AR"],
+  Stablecoins: ["USDT", "USDC"],
 };
 
 export function getTokenMeta(symbol: string): TokenMeta | undefined {

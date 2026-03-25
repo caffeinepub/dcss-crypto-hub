@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { TokenWithMeta } from "../contexts/TokenContext";
 import { useWallet } from "../contexts/WalletContext";
 import {
+  NETWORK_COLORS,
   type TokenMeta,
   formatBalance,
   formatPrice,
@@ -14,11 +15,17 @@ type ActionType = "buy" | "swap" | "send";
 interface TokenCardProps {
   token: TokenWithMeta;
   index: number;
+  onNavigateToToken?: (symbol: string) => void;
 }
 
-export default function TokenCard({ token, index }: TokenCardProps) {
+export default function TokenCard({
+  token,
+  index,
+  onNavigateToToken,
+}: TokenCardProps) {
   const { activeWallet, getBalance } = useWallet();
   const [action, setAction] = useState<ActionType | null>(null);
+  const [hovered, setHovered] = useState(false);
 
   const balance = activeWallet
     ? getBalance(activeWallet.network, activeWallet.address, token.symbol)
@@ -26,14 +33,78 @@ export default function TokenCard({ token, index }: TokenCardProps) {
 
   const isPositive = token.change24h >= 0;
   const textColor = getTextColorForBg(token.color);
+  const networkColor = NETWORK_COLORS[token.network] ?? "#22E97A";
 
   return (
     <>
       <article
         className="neon-border rounded-xl p-4 flex flex-col gap-3 transition-all duration-200"
-        style={{ background: "#0F1513" }}
+        style={{
+          background: "#0F1513",
+          boxShadow: hovered
+            ? `0 0 20px ${token.color}60, 0 0 0 1px ${token.color}44`
+            : `0 0 0px ${token.color}00`,
+          transform: hovered ? "translateY(-2px)" : "translateY(0)",
+          position: "relative",
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         data-ocid={`token.item.${index + 1}`}
       >
+        {/* Network badge */}
+        <div
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+          }}
+          title={token.network}
+        >
+          <div
+            style={{
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              background: networkColor,
+              boxShadow: `0 0 4px ${networkColor}88`,
+            }}
+          />
+          <span
+            style={{
+              fontSize: "9px",
+              fontWeight: "700",
+              color: networkColor,
+              letterSpacing: "0.06em",
+              opacity: 0.85,
+            }}
+          >
+            {token.network}
+          </span>
+        </div>
+        {token.depin && (
+          <div
+            style={{
+              position: "absolute",
+              top: "28px",
+              right: "10px",
+              padding: "1px 6px",
+              borderRadius: "4px",
+              background: "rgba(34,233,122,0.12)",
+              border: "1px solid rgba(34,233,122,0.35)",
+              fontSize: "8px",
+              fontWeight: "700",
+              color: "#22E97A",
+              letterSpacing: "0.06em",
+            }}
+            title="Decentralized Physical Infrastructure"
+          >
+            DePIN
+          </div>
+        )}
+
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2.5">
             <div
@@ -43,18 +114,30 @@ export default function TokenCard({ token, index }: TokenCardProps) {
               {token.symbol.slice(0, 3)}
             </div>
             <div>
-              <div
-                className="text-sm font-semibold"
-                style={{ color: "#E8ECEB" }}
+              <button
+                type="button"
+                className="text-sm font-semibold text-left"
+                style={{
+                  color: "#E8ECEB",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: onNavigateToToken ? "pointer" : "default",
+                  textDecoration:
+                    onNavigateToToken && hovered ? "underline" : "none",
+                  textUnderlineOffset: "2px",
+                }}
+                onClick={() => onNavigateToToken?.(token.symbol)}
+                data-ocid={`token.detail.${index + 1}.button`}
               >
                 {token.name}
-              </div>
+              </button>
               <div className="text-xs font-mono" style={{ color: "#A9B3AF" }}>
                 {token.symbol}
               </div>
             </div>
           </div>
-          <div className="text-right">
+          <div className="text-right" style={{ paddingRight: "4px" }}>
             <div
               className="text-sm font-bold font-mono"
               style={{ color: "#22E97A" }}

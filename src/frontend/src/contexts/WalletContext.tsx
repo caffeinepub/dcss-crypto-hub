@@ -59,12 +59,36 @@ function generateMockAddress(network: Network): string {
   switch (network) {
     case "ICP":
       return `rdmx6-jaaaa-aaaah-${rHex(6)}-cai`;
-    case "EVM":
+    case "Ethereum":
+    case "Arbitrum":
+    case "Base":
+    case "Multichain":
+    case "Avalanche":
+    case "Stablecoins":
       return `0x${rHex(40)}`;
     case "Solana":
       return rB58(44);
     case "Cosmos":
+    case "Celestia":
       return `cosmos1${rB58(38)}`;
+    case "Bitcoin":
+      return `bc1q${rB58(39)}`;
+    case "Polkadot":
+      return `1${rB58(47)}`;
+    case "Near":
+      return `${rB58(10)}.near`;
+    case "Cardano":
+      return `addr1${rHex(58)}`;
+    case "Mina":
+      return `B62q${rB58(51)}`;
+    case "Bittensor":
+      return `5${rB58(47)}`;
+    case "Arweave":
+      return rB58(43);
+    case "0G":
+      return `0x${rHex(40)}`;
+    default:
+      return `0x${rHex(40)}`;
   }
 }
 
