@@ -37,7 +37,7 @@ export default function TokenDetailPage({
           textAlign: "center",
         }}
       >
-        <p style={{ color: "#A9B3AF" }}>Token no encontrado: {symbol}</p>
+        <p style={{ color: "#5A4A47" }}>Token no encontrado: {symbol}</p>
         <button
           type="button"
           onClick={onBack}
@@ -97,7 +97,7 @@ export default function TokenDetailPage({
               gap: "4px",
               background: "none",
               border: "none",
-              color: "#A9B3AF",
+              color: "#5A4A47",
               cursor: "pointer",
               fontSize: "13px",
               padding: "4px 8px",
@@ -118,7 +118,7 @@ export default function TokenDetailPage({
             /
           </span>
           <span
-            style={{ color: "#E8ECEB", fontSize: "13px", fontWeight: "600" }}
+            style={{ color: "#1C1C1C", fontSize: "13px", fontWeight: "600" }}
           >
             {token.symbol}
           </span>
@@ -159,7 +159,7 @@ export default function TokenDetailPage({
                 style={{
                   fontSize: "24px",
                   fontWeight: "800",
-                  color: "#E8ECEB",
+                  color: "#1C1C1C",
                   lineHeight: 1.2,
                 }}
               >
@@ -190,7 +190,7 @@ export default function TokenDetailPage({
                 <span
                   style={{
                     fontSize: "12px",
-                    color: "#A9B3AF",
+                    color: "#5A4A47",
                     fontFamily: "JetBrains Mono, monospace",
                   }}
                 >
@@ -296,7 +296,7 @@ export default function TokenDetailPage({
         <div
           style={{
             borderRadius: "12px",
-            background: "#0F1513",
+            background: "#FFF8F5",
             border: "1px solid rgba(0,212,184,0.12)",
             padding: "20px",
             marginBottom: "24px",
@@ -334,7 +334,7 @@ export default function TokenDetailPage({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "rgba(7,11,10,0.75)",
+              background: "rgba(255,248,245,0.85)",
               backdropFilter: "blur(4px)",
             }}
           >
@@ -345,7 +345,7 @@ export default function TokenDetailPage({
               />
               <p
                 style={{
-                  color: "#A9B3AF",
+                  color: "#5A4A47",
                   fontSize: "14px",
                   fontWeight: "600",
                 }}
@@ -392,7 +392,7 @@ export default function TokenDetailPage({
                 <div
                   style={{
                     fontSize: "11px",
-                    color: "#E8ECEB",
+                    color: "#1C1C1C",
                     marginTop: "4px",
                     fontWeight: "600",
                   }}
@@ -403,7 +403,7 @@ export default function TokenDetailPage({
                   <div
                     style={{
                       fontSize: "10px",
-                      color: "#A9B3AF",
+                      color: "#5A4A47",
                       marginTop: "2px",
                     }}
                   >
@@ -437,14 +437,14 @@ export default function TokenDetailPage({
                 style={{
                   padding: "16px",
                   borderRadius: "10px",
-                  background: "#0F1513",
+                  background: "#FFF8F5",
                   border: "1px solid rgba(0,212,184,0.08)",
                 }}
               >
                 <div
                   style={{
                     fontSize: "11px",
-                    color: "#A9B3AF",
+                    color: "#5A4A47",
                     marginBottom: "6px",
                   }}
                 >
@@ -454,7 +454,7 @@ export default function TokenDetailPage({
                   style={{
                     fontSize: "15px",
                     fontWeight: "700",
-                    color: "#E8ECEB",
+                    color: "#1C1C1C",
                     fontFamily: "JetBrains Mono, monospace",
                   }}
                 >
@@ -476,7 +476,7 @@ export default function TokenDetailPage({
             style={{
               padding: "20px 24px",
               borderRadius: "10px",
-              background: "#0F1513",
+              background: "#FFF8F5",
               borderLeft: `4px solid ${networkColor}`,
               border: `1px solid ${networkColor}22`,
               borderLeftWidth: "4px",
@@ -497,7 +497,7 @@ export default function TokenDetailPage({
             >
               {deepData.educationalSection.title}
             </h3>
-            <p style={{ fontSize: "14px", color: "#A9B3AF", lineHeight: 1.75 }}>
+            <p style={{ fontSize: "14px", color: "#5A4A47", lineHeight: 1.75 }}>
               {deepData.educationalSection.content}
             </p>
           </div>
@@ -508,7 +508,7 @@ export default function TokenDetailPage({
           style={{
             padding: "20px",
             borderRadius: "10px",
-            background: "#0F1513",
+            background: "#FFF8F5",
             borderLeft: `4px solid ${networkColor}`,
             border: `1px solid ${networkColor}22`,
             borderLeftWidth: "4px",
@@ -528,7 +528,7 @@ export default function TokenDetailPage({
           >
             Acerca de {token.name}
           </h3>
-          <p style={{ fontSize: "14px", color: "#A9B3AF", lineHeight: 1.7 }}>
+          <p style={{ fontSize: "14px", color: "#5A4A47", lineHeight: 1.7 }}>
             {token.description}
           </p>
         </div>
@@ -538,7 +538,7 @@ export default function TokenDetailPage({
           style={{
             padding: "20px",
             borderRadius: "10px",
-            background: "#0F1513",
+            background: "#FFF8F5",
             border: "1px solid rgba(0,212,184,0.12)",
             marginBottom: "24px",
           }}
@@ -556,7 +556,7 @@ export default function TokenDetailPage({
             Integración DCSS
           </h3>
           <p
-            style={{ fontSize: "13px", color: "#A9B3AF", marginBottom: "12px" }}
+            style={{ fontSize: "13px", color: "#5A4A47", marginBottom: "12px" }}
           >
             Disponible en DCSS Hub vía{" "}
             <strong style={{ color: networkColor }}>{token.network}</strong>
@@ -602,7 +602,7 @@ export default function TokenDetailPage({
               borderRadius: "8px",
               background: "transparent",
               border: "1px solid rgba(169,179,175,0.25)",
-              color: "#A9B3AF",
+              color: "#5A4A47",
               fontSize: "13px",
               fontWeight: "600",
               textDecoration: "none",
@@ -643,7 +643,7 @@ export default function TokenDetailPage({
               style={{
                 fontSize: "16px",
                 fontWeight: "700",
-                color: "#E8ECEB",
+                color: "#1C1C1C",
                 marginBottom: "16px",
               }}
             >

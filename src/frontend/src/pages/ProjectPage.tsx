@@ -60,7 +60,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             fontSize: "clamp(28px, 5vw, 48px)",
             fontWeight: "800",
-            color: "#E8ECEB",
+            color: "#1C1C1C",
             lineHeight: 1.2,
             marginBottom: "16px",
           }}
@@ -107,7 +107,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             fontSize: "24px",
             fontWeight: "700",
-            color: "#E8ECEB",
+            color: "#1C1C1C",
             marginBottom: "24px",
             textAlign: "center",
           }}
@@ -128,7 +128,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               style={{
                 padding: "24px",
                 borderRadius: "12px",
-                background: "#0F1513",
+                background: "#FFF8F5",
                 border: "1px solid rgba(0,212,184,0.12)",
                 display: "flex",
                 gap: "16px",
@@ -156,7 +156,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                   style={{
                     fontSize: "15px",
                     fontWeight: "700",
-                    color: "#E8ECEB",
+                    color: "#1C1C1C",
                     marginBottom: "6px",
                   }}
                 >
@@ -165,7 +165,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                 <p
                   style={{
                     fontSize: "13px",
-                    color: "#A9B3AF",
+                    color: "#5A4A47",
                     lineHeight: 1.5,
                   }}
                 >
@@ -183,7 +183,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             fontSize: "24px",
             fontWeight: "700",
-            color: "#E8ECEB",
+            color: "#1C1C1C",
             marginBottom: "24px",
             textAlign: "center",
           }}
@@ -204,7 +204,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               style={{
                 padding: "20px",
                 borderRadius: "12px",
-                background: "#0F1513",
+                background: "#FFF8F5",
                 borderLeft: `4px solid ${n.color}`,
                 border: `1px solid ${n.color}22`,
                 borderLeftWidth: "4px",
@@ -244,7 +244,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               <p
                 style={{
                   fontSize: "12px",
-                  color: "#A9B3AF",
+                  color: "#5A4A47",
                   lineHeight: 1.5,
                   marginBottom: "12px",
                 }}
@@ -279,7 +279,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             fontSize: "24px",
             fontWeight: "700",
-            color: "#E8ECEB",
+            color: "#1C1C1C",
             marginBottom: "24px",
             textAlign: "center",
           }}
@@ -409,7 +409,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             fontSize: "24px",
             fontWeight: "700",
-            color: "#E8ECEB",
+            color: "#1C1C1C",
             marginBottom: "24px",
             textAlign: "center",
           }}
@@ -420,7 +420,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             padding: "28px",
             borderRadius: "12px",
-            background: "#0F1513",
+            background: "#FFF8F5",
             border: "1px solid rgba(255,215,0,0.2)",
           }}
         >
@@ -444,7 +444,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               >
                 DCSS
               </div>
-              <div style={{ fontSize: "12px", color: "#A9B3AF" }}>
+              <div style={{ fontSize: "12px", color: "#5A4A47" }}>
                 {DCSS_TOKEN_INFO.network}
               </div>
             </div>
@@ -468,7 +468,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               style={{
                 fontSize: "13px",
                 fontWeight: "700",
-                color: "#A9B3AF",
+                color: "#5A4A47",
                 marginBottom: "10px",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
@@ -493,7 +493,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                     alignItems: "flex-start",
                     gap: "8px",
                     fontSize: "13px",
-                    color: "#A9B3AF",
+                    color: "#5A4A47",
                   }}
                 >
                   <span
@@ -516,7 +516,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               style={{
                 fontSize: "13px",
                 fontWeight: "700",
-                color: "#A9B3AF",
+                color: "#5A4A47",
                 marginBottom: "12px",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
@@ -536,7 +536,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                       marginBottom: "4px",
                     }}
                   >
-                    <span style={{ fontSize: "12px", color: "#A9B3AF" }}>
+                    <span style={{ fontSize: "12px", color: "#5A4A47" }}>
                       {item.label}
                     </span>
                     <span
@@ -579,7 +579,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             padding: "32px",
             borderRadius: "12px",
-            background: "#0F1513",
+            background: "#FFF8F5",
             border: "1px solid rgba(213,43,30,0.25)",
             position: "relative",
             overflow: "hidden",
@@ -603,7 +603,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
             style={{
               fontSize: "22px",
               fontWeight: "700",
-              color: "#E8ECEB",
+              color: "#1C1C1C",
               marginBottom: "16px",
             }}
           >
@@ -614,7 +614,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               key={p.slice(0, 20)}
               style={{
                 fontSize: "14px",
-                color: "#A9B3AF",
+                color: "#5A4A47",
                 lineHeight: 1.7,
                 marginBottom: "14px",
               }}
@@ -656,7 +656,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           style={{
             fontSize: "24px",
             fontWeight: "700",
-            color: "#E8ECEB",
+            color: "#1C1C1C",
             marginBottom: "24px",
             textAlign: "center",
           }}
@@ -674,7 +674,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               value={`edu-${i}`}
               style={{
                 borderRadius: "10px",
-                background: "#0F1513",
+                background: "#FFF8F5",
                 border: "1px solid rgba(0,212,184,0.12)",
                 paddingLeft: "0",
                 overflow: "hidden",
@@ -686,7 +686,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                   padding: "16px 20px",
                   fontSize: "15px",
                   fontWeight: "600",
-                  color: "#E8ECEB",
+                  color: "#1C1C1C",
                   textDecoration: "none",
                 }}
               >
@@ -696,7 +696,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                 style={{
                   padding: "0 20px 16px",
                   fontSize: "14px",
-                  color: "#A9B3AF",
+                  color: "#5A4A47",
                   lineHeight: 1.7,
                 }}
               >
@@ -724,7 +724,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
             style={{
               fontSize: "clamp(22px, 4vw, 32px)",
               fontWeight: "800",
-              color: "#E8ECEB",
+              color: "#1C1C1C",
               marginBottom: "12px",
             }}
           >
@@ -733,7 +733,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
           <p
             style={{
               fontSize: "15px",
-              color: "#A9B3AF",
+              color: "#5A4A47",
               maxWidth: "580px",
               margin: "0 auto",
               lineHeight: 1.6,
@@ -836,7 +836,7 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
               style={{
                 padding: "16px",
                 borderRadius: "12px",
-                background: "#0F1513",
+                background: "#FFF8F5",
                 border: `1px solid ${token.color}22`,
                 borderTop: `3px solid ${token.color}`,
                 display: "flex",
@@ -854,12 +854,12 @@ export default function ProjectPage({ onNavigateToTab }: ProjectPageProps) {
                     style={{
                       fontSize: "14px",
                       fontWeight: "700",
-                      color: "#E8ECEB",
+                      color: "#1C1C1C",
                     }}
                   >
                     {token.symbol}
                   </div>
-                  <div style={{ fontSize: "11px", color: "#A9B3AF" }}>
+                  <div style={{ fontSize: "11px", color: "#5A4A47" }}>
                     {token.desc}
                   </div>
                 </div>

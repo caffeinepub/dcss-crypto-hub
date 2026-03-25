@@ -93,20 +93,6 @@ export default function DCSSHero({ onConnectWallet }: DCSSHeroProps) {
       }}
     >
       <div className="max-w-[1200px] mx-auto px-4 pt-16 pb-12">
-        {/* Badge */}
-        <div className="flex justify-center mb-6">
-          <span
-            className="text-[11px] font-semibold tracking-widest px-3 py-1 rounded-full"
-            style={{
-              background: "var(--accent-dim)",
-              border: "1px solid rgba(0,212,184,0.25)",
-              color: "var(--accent-color)",
-            }}
-          >
-            DCSS CRYPTO HUB · POWERED BY ICP
-          </span>
-        </div>
-
         {/* Title */}
         <div className="text-center mb-4">
           <h1
