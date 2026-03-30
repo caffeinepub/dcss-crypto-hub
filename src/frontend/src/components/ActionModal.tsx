@@ -133,7 +133,7 @@ export default function ActionModal({
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                color: "#00D4B8",
+                color: "#22E97A",
                 display: "flex",
                 alignItems: "center",
                 gap: "4px",
@@ -252,8 +252,8 @@ export default function ActionModal({
         className="max-w-md"
         style={{
           background: "#0B1110",
-          border: "1px solid rgba(0,212,184,0.25)",
-          boxShadow: "0 0 40px rgba(0,212,184,0.12)",
+          border: "1px solid rgba(34,233,122,0.25)",
+          boxShadow: "0 0 40px rgba(34,233,122,0.12)",
         }}
         data-ocid="action.modal"
       >
@@ -282,9 +282,9 @@ export default function ActionModal({
               <span
                 className="text-[9px] font-bold px-2 py-0.5 rounded-full ml-1"
                 style={{
-                  background: "rgba(0,212,184,0.15)",
-                  color: "#00D4B8",
-                  border: "1px solid rgba(0,212,184,0.3)",
+                  background: "rgba(34,233,122,0.15)",
+                  color: "#22E97A",
+                  border: "1px solid rgba(34,233,122,0.3)",
                 }}
               >
                 ON-CHAIN
@@ -309,7 +309,7 @@ export default function ActionModal({
                 className="flex-1 font-mono text-sm"
                 style={{
                   background: "#0F1513",
-                  border: "1px solid rgba(0,212,184,0.2)",
+                  border: "1px solid rgba(34,233,122,0.2)",
                   color: "#E8ECEB",
                 }}
                 data-ocid="action.input"
@@ -321,8 +321,8 @@ export default function ActionModal({
                   onClick={handleMax}
                   className="text-xs px-3"
                   style={{
-                    background: "rgba(0,212,184,0.08)",
-                    border: "1px solid rgba(0,212,184,0.3)",
+                    background: "rgba(34,233,122,0.08)",
+                    border: "1px solid rgba(34,233,122,0.3)",
                     color: "#FFF",
                   }}
                   data-ocid="action.max_button"
@@ -347,7 +347,7 @@ export default function ActionModal({
                 <SelectTrigger
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(0,212,184,0.2)",
+                    border: "1px solid rgba(34,233,122,0.2)",
                     color: "#E8ECEB",
                   }}
                   data-ocid="action.swap_to.select"
@@ -357,7 +357,7 @@ export default function ActionModal({
                 <SelectContent
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(0,212,184,0.2)",
+                    border: "1px solid rgba(34,233,122,0.2)",
                   }}
                 >
                   {tokens
@@ -384,13 +384,13 @@ export default function ActionModal({
                 className="font-mono text-xs"
                 style={{
                   background: "#0F1513",
-                  border: "1px solid rgba(0,212,184,0.2)",
+                  border: "1px solid rgba(34,233,122,0.2)",
                   color: "#E8ECEB",
                 }}
                 data-ocid="action.destination.input"
               />
               {canSendRealEVM && destAddress && (
-                <p className="text-[10px]" style={{ color: "#00D4B8" }}>
+                <p className="text-[10px]" style={{ color: "#22E97A" }}>
                   Real blockchain transaction via MetaMask
                 </p>
               )}
@@ -409,7 +409,7 @@ export default function ActionModal({
                 <SelectTrigger
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(0,212,184,0.2)",
+                    border: "1px solid rgba(34,233,122,0.2)",
                     color: "#E8ECEB",
                   }}
                   data-ocid="action.wallet.select"
@@ -419,7 +419,7 @@ export default function ActionModal({
                 <SelectContent
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(0,212,184,0.2)",
+                    border: "1px solid rgba(34,233,122,0.2)",
                   }}
                 >
                   {compatibleWallets.map((w) => (
@@ -437,13 +437,13 @@ export default function ActionModal({
             <div
               className="flex items-center gap-2 px-3 py-2 rounded-lg"
               style={{
-                background: "rgba(0,212,184,0.06)",
-                border: "1px solid rgba(0,212,184,0.2)",
+                background: "rgba(34,233,122,0.06)",
+                border: "1px solid rgba(34,233,122,0.2)",
               }}
             >
               <span
                 className="text-[10px] font-mono"
-                style={{ color: "#00D4B8" }}
+                style={{ color: "#22E97A" }}
               >
                 Last tx: {lastTxHash.slice(0, 20)}...
               </span>
@@ -451,7 +451,7 @@ export default function ActionModal({
                 href={`https://etherscan.io/tx/${lastTxHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#00D4B8" }}
+                style={{ color: "#22E97A" }}
               >
                 <ExternalLink size={10} />
               </a>
@@ -461,8 +461,8 @@ export default function ActionModal({
           <div
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg"
             style={{
-              background: "rgba(0,212,184,0.04)",
-              border: "1px solid rgba(0,212,184,0.08)",
+              background: "rgba(34,233,122,0.04)",
+              border: "1px solid rgba(34,233,122,0.08)",
             }}
           >
             <Zap size={12} style={{ color: "#FFF" }} />
@@ -471,6 +471,93 @@ export default function ActionModal({
                 ? "Real ETH transaction — gas fees apply"
                 : "Estimated cost: ~500 cycles"}
             </span>
+          </div>
+
+          {/* External action helpers */}
+          {action === "buy" && (
+            <a
+              href={`https://global.transak.com/?defaultCryptoCurrency=${token.symbol}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-2 rounded-lg text-xs font-semibold transition-all"
+              style={{
+                background: "rgba(34,233,122,0.1)",
+                border: "1px solid rgba(34,233,122,0.3)",
+                color: "#22E97A",
+              }}
+            >
+              <ExternalLink size={12} /> Comprar via Transak (tarjeta/banco)
+            </a>
+          )}
+          {action === "swap" && (
+            <a
+              href={
+                token.network === "Solana"
+                  ? `https://jup.ag/swap/${token.symbol}-USDC`
+                  : token.network === "Cosmos"
+                    ? `https://app.osmosis.zone/?from=${token.symbol}&to=USDC`
+                    : `https://app.1inch.io/#/1/unified/swap/${token.symbol}/USDC`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-2 rounded-lg text-xs font-semibold"
+              style={{
+                background: "rgba(34,233,122,0.1)",
+                border: "1px solid rgba(34,233,122,0.3)",
+                color: "#22E97A",
+              }}
+            >
+              <ExternalLink size={12} />
+              {token.network === "Solana"
+                ? "Swap en Jupiter"
+                : token.network === "Cosmos"
+                  ? "Swap en Osmosis"
+                  : "Swap en 1inch"}
+            </a>
+          )}
+          {action === "send" && token.network === "Solana" && (
+            <a
+              href="https://phantom.app/send"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-2 rounded-lg text-xs font-semibold"
+              style={{
+                background: "rgba(34,233,122,0.1)",
+                border: "1px solid rgba(34,233,122,0.3)",
+                color: "#22E97A",
+              }}
+            >
+              <ExternalLink size={12} /> Enviar via Phantom App
+            </a>
+          )}
+          {/* Bridge shortcuts */}
+          <div className="flex gap-2">
+            <a
+              href="https://portalbridge.com/#/transfer"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded text-[10px] font-semibold"
+              style={{
+                background: "rgba(34,233,122,0.06)",
+                border: "1px solid rgba(34,233,122,0.15)",
+                color: "#22E97A",
+              }}
+            >
+              <ExternalLink size={10} /> Wormhole Bridge
+            </a>
+            <a
+              href="https://stargate.finance/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded text-[10px] font-semibold"
+              style={{
+                background: "rgba(34,233,122,0.06)",
+                border: "1px solid rgba(34,233,122,0.15)",
+                color: "#22E97A",
+              }}
+            >
+              <ExternalLink size={10} /> Stargate (LayerZero)
+            </a>
           </div>
 
           <div className="flex gap-3">

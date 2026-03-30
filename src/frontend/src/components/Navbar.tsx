@@ -15,12 +15,9 @@ import {
   Layers,
   LayoutDashboard,
   LogOut,
-  Moon,
-  Sun,
   Wallet,
 } from "lucide-react";
 import { useState } from "react";
-import type { AppTheme } from "../App";
 import { useWallet } from "../contexts/WalletContext";
 import type { Network } from "../data/tokens";
 import { truncateAddr } from "../data/tokens";
@@ -68,16 +65,9 @@ const NETWORK_NATIVE: Record<string, string> = {
 interface NavbarProps {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
-  theme: AppTheme;
-  onThemeToggle: () => void;
 }
 
-export default function Navbar({
-  activeTab,
-  onTabChange,
-  theme,
-  onThemeToggle,
-}: NavbarProps) {
+export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
   const {
     connectedWallets,
     activeWallet,
@@ -121,13 +111,12 @@ export default function Navbar({
       <header
         className="sticky top-0 z-50 w-full"
         style={{
-          background: "rgba(11,17,16,0.96)",
+          background: "rgba(7,11,10,0.96)",
           backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(0,212,184,0.12)",
+          borderBottom: "1px solid rgba(34,233,122,0.12)",
         }}
       >
         <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          {/* Logo */}
           <button
             type="button"
             onClick={() => onTabChange("dashboard")}
@@ -141,7 +130,7 @@ export default function Navbar({
             />
             <span
               className="font-bold text-sm tracking-widest uppercase"
-              style={{ color: "#00D4B8" }}
+              style={{ color: "#22E97A" }}
             >
               DCSS
             </span>
@@ -150,7 +139,6 @@ export default function Navbar({
             </span>
           </button>
 
-          {/* Center nav — desktop */}
           <nav className="hidden md:flex items-center gap-1">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
@@ -163,9 +151,9 @@ export default function Navbar({
                   data-ocid={`nav.${item.id}.link`}
                   className="relative flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-md transition-colors"
                   style={{
-                    color: isActive ? "#00D4B8" : "rgba(169,179,175,1)",
+                    color: isActive ? "#22E97A" : "rgba(169,179,175,1)",
                     background: isActive
-                      ? "rgba(0,212,184,0.08)"
+                      ? "rgba(34,233,122,0.08)"
                       : "transparent",
                   }}
                 >
@@ -174,7 +162,7 @@ export default function Navbar({
                   {isActive && (
                     <span
                       className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full"
-                      style={{ background: "#00D4B8" }}
+                      style={{ background: "#22E97A" }}
                     />
                   )}
                 </button>
@@ -182,34 +170,7 @@ export default function Navbar({
             })}
           </nav>
 
-          {/* Right: theme toggle + wallet */}
           <div className="flex items-center gap-2">
-            {/* Theme toggle */}
-            <button
-              type="button"
-              onClick={onThemeToggle}
-              className="flex items-center justify-center rounded-full transition-colors"
-              style={{
-                width: "32px",
-                height: "32px",
-                background:
-                  theme === "midnight"
-                    ? "rgba(120,160,255,0.12)"
-                    : "rgba(255,200,80,0.12)",
-                border:
-                  theme === "midnight"
-                    ? "1px solid rgba(120,160,255,0.3)"
-                    : "1px solid rgba(255,200,80,0.35)",
-                color: theme === "midnight" ? "#8ab4f8" : "#f5c842",
-              }}
-              title={
-                theme === "midnight" ? "Cambiar a Claro" : "Cambiar a Midnight"
-              }
-              data-ocid="nav.theme.toggle"
-            >
-              {theme === "midnight" ? <Sun size={14} /> : <Moon size={14} />}
-            </button>
-
             {activeWallet ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -217,15 +178,15 @@ export default function Navbar({
                     type="button"
                     className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border transition-colors"
                     style={{
-                      background: "rgba(0,212,184,0.08)",
-                      borderColor: "rgba(0,212,184,0.35)",
-                      color: "#00D4B8",
+                      background: "rgba(34,233,122,0.08)",
+                      borderColor: "rgba(34,233,122,0.35)",
+                      color: "#22E97A",
                     }}
                     data-ocid="nav.wallet.toggle"
                   >
                     <span
-                      className="w-2 h-2 rounded-full animate-pulse_neon"
-                      style={{ background: "#00D4B8" }}
+                      className="w-2 h-2 rounded-full"
+                      style={{ background: "#22E97A" }}
                     />
                     {truncateAddr(activeWallet.address)}
                     <ChevronDown size={12} />
@@ -236,7 +197,7 @@ export default function Navbar({
                   className="w-64"
                   style={{
                     background: "#0F1513",
-                    border: "1px solid rgba(0,212,184,0.2)",
+                    border: "1px solid rgba(34,233,122,0.2)",
                   }}
                 >
                   {connectedWallets.map((w) => {
@@ -250,7 +211,7 @@ export default function Navbar({
                         style={{
                           color:
                             activeWallet.address === w.address
-                              ? "#00D4B8"
+                              ? "#22E97A"
                               : "#E8ECEB",
                         }}
                       >
@@ -266,7 +227,7 @@ export default function Navbar({
                         <div className="flex items-center gap-2 mt-0.5">
                           <span
                             className="text-[11px] font-semibold"
-                            style={{ color: bal ? "#1DE9B6" : "#5A6560" }}
+                            style={{ color: bal ? "#22E97A" : "#5A6560" }}
                           >
                             {bal
                               ? `${bal.amount.toLocaleString(undefined, { maximumFractionDigits: 6 })} ${bal.symbol}`
@@ -275,7 +236,7 @@ export default function Navbar({
                           {usd != null && (
                             <span
                               className="text-[10px]"
-                              style={{ color: "#A9B3AF" }}
+                              style={{ color: "#FFD700" }}
                             >
                               $
                               {usd.toLocaleString(undefined, {
@@ -287,13 +248,12 @@ export default function Navbar({
                       </DropdownMenuItem>
                     );
                   })}
-
                   {hasAnyBalance && (
                     <div
                       className="px-2 py-1.5 flex items-center justify-between"
                       style={{
-                        borderTop: "1px solid rgba(0,212,184,0.1)",
-                        borderBottom: "1px solid rgba(0,212,184,0.1)",
+                        borderTop: "1px solid rgba(34,233,122,0.1)",
+                        borderBottom: "1px solid rgba(34,233,122,0.1)",
                       }}
                     >
                       <span
@@ -304,7 +264,7 @@ export default function Navbar({
                       </span>
                       <span
                         className="text-[11px] font-bold"
-                        style={{ color: "#00D4B8" }}
+                        style={{ color: "#FFD700" }}
                       >
                         $
                         {totalPortfolio.toLocaleString(undefined, {
@@ -314,15 +274,12 @@ export default function Navbar({
                       </span>
                     </div>
                   )}
-
                   <DropdownMenuSeparator
-                    style={{ background: "rgba(0,212,184,0.1)" }}
+                    style={{ background: "rgba(34,233,122,0.1)" }}
                   />
                   <DropdownMenuItem
-                    onClick={() => {
-                      setWalletModalOpen(true);
-                    }}
-                    style={{ color: "#00D4B8" }}
+                    onClick={() => setWalletModalOpen(true)}
+                    style={{ color: "#22E97A" }}
                     data-ocid="nav.connect_wallet.button"
                   >
                     <Wallet size={13} className="mr-2" />
@@ -330,8 +287,7 @@ export default function Navbar({
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onTabChange("wallets")}
-                    style={{ color: "#00D4B8" }}
-                    data-ocid="nav.wallets.link"
+                    style={{ color: "#22E97A" }}
                   >
                     <Wallet size={13} className="mr-2" />
                     Manage Wallets
@@ -352,7 +308,7 @@ export default function Navbar({
                 size="sm"
                 className="rounded-full text-xs font-semibold px-4"
                 style={{
-                  background: "#00D4B8",
+                  background: "#22E97A",
                   color: "#070B0A",
                   border: "none",
                 }}
@@ -365,13 +321,9 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* Mobile nav — horizontal scroll */}
         <div
           className="flex md:hidden border-t items-center px-2 py-1"
-          style={{
-            borderColor: "rgba(0,212,184,0.08)",
-            overflowX: "auto",
-          }}
+          style={{ borderColor: "rgba(34,233,122,0.08)", overflowX: "auto" }}
         >
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -382,7 +334,7 @@ export default function Navbar({
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
                 className="flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium shrink-0"
-                style={{ color: isActive ? "#00D4B8" : "#A9B3AF" }}
+                style={{ color: isActive ? "#22E97A" : "#A9B3AF" }}
                 data-ocid={`nav.${item.id}.link`}
               >
                 <Icon size={16} />

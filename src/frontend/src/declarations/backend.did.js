@@ -8,6 +8,26 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const AdminLog = IDL.Record({
+  'action' : IDL.Text,
+  'timestamp' : IDL.Int,
+  'caller' : IDL.Text,
+});
+export const EcosystemStats = IDL.Record({
+  'totalSponsors' : IDL.Nat,
+  'totalTokens' : IDL.Nat,
+  'rewardsDistributed' : IDL.Float64,
+  'totalHolders' : IDL.Nat,
+  'totalNetworks' : IDL.Nat,
+  'totalTransactions' : IDL.Nat,
+});
+export const SponsorRecord = IDL.Record({
+  'id' : IDL.Nat,
+  'message' : IDL.Text,
+  'timestamp' : IDL.Int,
+  'sponsor' : IDL.Text,
+  'amount' : IDL.Float64,
+});
 export const Stats = IDL.Record({
   'cyclesConsumed' : IDL.Nat,
   'circulatingSupply' : IDL.Float64,
@@ -54,21 +74,27 @@ export const TransformationOutput = IDL.Record({
 
 export const idlService = IDL.Service({
   'closeVault' : IDL.Func([IDL.Nat], [], []),
+  'distributeRewards' : IDL.Func([IDL.Float64], [], []),
   'fetchExternalUrl' : IDL.Func([IDL.Text], [IDL.Text], []),
+  'getAdminLogs' : IDL.Func([], [IDL.Vec(AdminLog)], ['query']),
   'getBridgeFee' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Float64],
       [IDL.Float64, IDL.Nat],
       ['query'],
     ),
+  'getEcosystemStats' : IDL.Func([], [EcosystemStats], ['query']),
+  'getSponsorLogs' : IDL.Func([], [IDL.Vec(SponsorRecord)], ['query']),
   'getStats' : IDL.Func([], [Stats], ['query']),
   'getTokenPrices' : IDL.Func([], [IDL.Vec(TokenInfo)], ['query']),
   'getTransactions' : IDL.Func([IDL.Text], [IDL.Vec(Transaction)], ['query']),
   'openVault' : IDL.Func([IDL.Nat], [IDL.Nat], []),
+  'recordSponsor' : IDL.Func([IDL.Text, IDL.Float64, IDL.Text], [IDL.Nat], []),
   'recordTransaction' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Float64, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
       [IDL.Nat],
       [],
     ),
+  'setAdmin' : IDL.Func([IDL.Text], [], []),
   'transform' : IDL.Func(
       [TransformationInput],
       [TransformationOutput],
@@ -79,6 +105,26 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const AdminLog = IDL.Record({
+    'action' : IDL.Text,
+    'timestamp' : IDL.Int,
+    'caller' : IDL.Text,
+  });
+  const EcosystemStats = IDL.Record({
+    'totalSponsors' : IDL.Nat,
+    'totalTokens' : IDL.Nat,
+    'rewardsDistributed' : IDL.Float64,
+    'totalHolders' : IDL.Nat,
+    'totalNetworks' : IDL.Nat,
+    'totalTransactions' : IDL.Nat,
+  });
+  const SponsorRecord = IDL.Record({
+    'id' : IDL.Nat,
+    'message' : IDL.Text,
+    'timestamp' : IDL.Int,
+    'sponsor' : IDL.Text,
+    'amount' : IDL.Float64,
+  });
   const Stats = IDL.Record({
     'cyclesConsumed' : IDL.Nat,
     'circulatingSupply' : IDL.Float64,
@@ -122,16 +168,25 @@ export const idlFactory = ({ IDL }) => {
   
   return IDL.Service({
     'closeVault' : IDL.Func([IDL.Nat], [], []),
+    'distributeRewards' : IDL.Func([IDL.Float64], [], []),
     'fetchExternalUrl' : IDL.Func([IDL.Text], [IDL.Text], []),
+    'getAdminLogs' : IDL.Func([], [IDL.Vec(AdminLog)], ['query']),
     'getBridgeFee' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Float64],
         [IDL.Float64, IDL.Nat],
         ['query'],
       ),
+    'getEcosystemStats' : IDL.Func([], [EcosystemStats], ['query']),
+    'getSponsorLogs' : IDL.Func([], [IDL.Vec(SponsorRecord)], ['query']),
     'getStats' : IDL.Func([], [Stats], ['query']),
     'getTokenPrices' : IDL.Func([], [IDL.Vec(TokenInfo)], ['query']),
     'getTransactions' : IDL.Func([IDL.Text], [IDL.Vec(Transaction)], ['query']),
     'openVault' : IDL.Func([IDL.Nat], [IDL.Nat], []),
+    'recordSponsor' : IDL.Func(
+        [IDL.Text, IDL.Float64, IDL.Text],
+        [IDL.Nat],
+        [],
+      ),
     'recordTransaction' : IDL.Func(
         [
           IDL.Text,
@@ -145,6 +200,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Nat],
         [],
       ),
+    'setAdmin' : IDL.Func([IDL.Text], [], []),
     'transform' : IDL.Func(
         [TransformationInput],
         [TransformationOutput],

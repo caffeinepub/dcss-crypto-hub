@@ -58,14 +58,14 @@
     --sidebar-ring: 0.78 0.15 185;
 
     /* Custom semantic vars */
-    --bg-base: #0a0a0a;
-    --bg-surface: #141414;
-    --bg-elevated: #1e1e1e;
-    --border-subtle: #2a2a2a;
+    --bg-base: #070b0a;
+    --bg-surface: #0f1513;
+    --bg-elevated: #162018;
+    --border-subtle: rgba(34, 233, 122, 0.12);
     --text-primary: #f0f0f0;
     --text-muted: #6b6b6b;
-    --accent-color: #00d4b8;
-    --accent-dim: rgba(0, 212, 184, 0.12);
+    --accent-color: #22e97a;
+    --accent-dim: rgba(34, 233, 122, 0.08);
     --error: #ff4444;
   }
 

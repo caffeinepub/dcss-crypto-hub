@@ -4,84 +4,176 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { ExternalLink, Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  SUPPORTED_WALLETS,
-  detectBrowser,
-  useWallet,
-} from "../contexts/WalletContext";
+import { SUPPORTED_WALLETS, useWallet } from "../contexts/WalletContext";
 
 interface WalletConnectModalProps {
   open: boolean;
   onClose: () => void;
-  preselectedNetwork?: string;
 }
 
-const WALLET_ICONS: Record<string, string> = {
-  "Internet Identity": "II",
-  Oisy: "OI",
-  Keplr: "KP",
+const WALLET_GROUP: Record<string, string> = {
+  "Internet Identity": "ICP",
+  Oisy: "ICP",
+  MetaMask: "EVM",
+  Rabby: "EVM",
+  "Coinbase Wallet": "EVM",
+  "Trust Wallet": "EVM",
+  "OKX Wallet": "EVM",
+  "Binance Web3": "EVM",
+  Phantom: "Solana",
+  Solflare: "Solana",
+  Backpack: "Solana",
+  Keplr: "Cosmos",
+  Leap: "Cosmos",
+  Talisman: "Polkadot",
+  SubWallet: "Polkadot",
+  Unisat: "Bitcoin",
+  Xverse: "Bitcoin",
+  ArConnect: "Arweave",
+  "NEAR Wallet": "NEAR",
 };
 
 const WALLET_DESC: Record<string, string> = {
-  "Internet Identity": "Login con Internet Computer — sin seed phrase",
-  Oisy: "Wallet multi-chain nativa de ICP — Abre oisy.com",
-  Keplr: "Wallet del ecosistema Cosmos — ATOM, OSMO y más",
+  "Internet Identity": "Login sin seed phrase — nativo ICP",
+  Oisy: "Wallet multi-chain nativa ICP — ICRC-25",
+  MetaMask: "La wallet EVM más popular",
+  Rabby: "Wallet EVM multi-chain, segura",
+  "Coinbase Wallet": "Wallet de Coinbase — EVM",
+  "Trust Wallet": "Wallet móvil multi-chain",
+  "OKX Wallet": "Wallet OKX — EVM + BTC",
+  "Binance Web3": "Wallet Web3 de Binance",
+  Phantom: "La wallet líder de Solana",
+  Solflare: "Wallet Solana con staking",
+  Backpack: "Wallet xNFT de Solana",
+  Keplr: "La wallet del ecosistema Cosmos",
+  Leap: "Wallet Cosmos — ATOM, OSMO",
+  Talisman: "Wallet Polkadot + EVM",
+  SubWallet: "Wallet Polkadot / Substrate",
+  Unisat: "Wallet Bitcoin + BRC-20",
+  Xverse: "Wallet Bitcoin + Ordinals",
+  ArConnect: "Wallet Arweave",
+  "NEAR Wallet": "Wallet del ecosistema NEAR",
 };
 
-const WALLET_NETWORK_BADGE: Record<string, string> = {
-  "Internet Identity": "ICP",
-  Oisy: "ICP",
-  Keplr: "Cosmos",
-};
+const GROUP_ORDER = [
+  "ICP",
+  "EVM",
+  "Solana",
+  "Cosmos",
+  "Polkadot",
+  "Bitcoin",
+  "Arweave",
+  "NEAR",
+];
 
-function KeplrInstallInstructions() {
-  const browser = detectBrowser();
-  if (browser === "edge") {
-    return (
-      <div
-        className="text-[11px] p-3 rounded-lg mt-1"
-        style={{
-          background: "rgba(118,90,226,0.06)",
-          border: "1px solid rgba(118,90,226,0.25)",
-          color: "var(--text-muted)",
-        }}
-      >
-        <p className="font-semibold mb-1" style={{ color: "#765AE2" }}>
-          Keplr en Edge
-        </p>
-        <ol className="list-decimal ml-3 space-y-0.5">
-          <li>Se abrirá la tienda de Edge Add-ons</li>
-          <li>Haz clic en &ldquo;Obtener&rdquo; para instalar Keplr</li>
-          <li>Crea o importa tu wallet Cosmos en Keplr</li>
-          <li>Regresa aquí y conecta</li>
-        </ol>
-      </div>
+async function connectOisyICRC25(): Promise<{
+  address: string;
+  isReal: boolean;
+}> {
+  return new Promise((resolve, reject) => {
+    const popup = window.open(
+      "https://oisy.com/sign-in",
+      "oisy_connect",
+      "width=480,height=700,left=200,top=100",
     );
-  }
-  return (
-    <div
-      className="text-[11px] p-3 rounded-lg mt-1"
-      style={{
-        background: "rgba(118,90,226,0.06)",
-        border: "1px solid rgba(118,90,226,0.25)",
-        color: "var(--text-muted)",
-      }}
-    >
-      Instala Keplr desde{" "}
-      <a
-        href="https://www.keplr.app/download"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ color: "#765AE2" }}
-      >
-        keplr.app/download
-      </a>{" "}
-      y vuelve a conectar.
-    </div>
-  );
+    if (!popup) {
+      reject(new Error("Popup bloqueado. Permite popups para este sitio."));
+      return;
+    }
+    const safePopup = popup;
+
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("Oisy: tiempo de espera agotado (2 min)"));
+    }, 120000);
+
+    const checkClosed = setInterval(() => {
+      if (safePopup.closed) {
+        cleanup();
+        reject(new Error("Oisy: popup cerrado por el usuario"));
+      }
+    }, 500);
+
+    function cleanup() {
+      clearTimeout(timer);
+      clearInterval(checkClosed);
+      window.removeEventListener("message", handler);
+    }
+
+    // Send permissions after popup loads
+    setTimeout(() => {
+      if (!safePopup.closed) {
+        safePopup.postMessage(
+          {
+            jsonrpc: "2.0",
+            id: 1,
+            method: "icrc25_request_permissions",
+            params: {
+              scopes: [
+                { method: "icrc27_accounts" },
+                { method: "icrc49_call_canister" },
+              ],
+            },
+          },
+          "https://oisy.com",
+        );
+      }
+    }, 2000);
+
+    function handler(event: MessageEvent) {
+      if (event.origin !== "https://oisy.com") return;
+      const data = event.data as Record<string, unknown>;
+
+      if (data?.method === "icrc29_ready") {
+        safePopup.postMessage(
+          {
+            jsonrpc: "2.0",
+            id: 1,
+            method: "icrc25_request_permissions",
+            params: {
+              scopes: [
+                { method: "icrc27_accounts" },
+                { method: "icrc49_call_canister" },
+              ],
+            },
+          },
+          "https://oisy.com",
+        );
+      }
+
+      if (data?.id === 1 && data?.result) {
+        safePopup.postMessage(
+          { jsonrpc: "2.0", id: 2, method: "icrc27_accounts", params: {} },
+          "https://oisy.com",
+        );
+      }
+
+      if (data?.id === 2) {
+        const result = data?.result as Record<string, unknown> | undefined;
+        const accounts = result?.accounts as { owner?: string }[] | undefined;
+        cleanup();
+        if (!safePopup.closed) safePopup.close();
+        const principal = accounts?.[0]?.owner ?? "";
+        if (principal) {
+          resolve({ address: principal, isReal: true });
+        } else {
+          reject(new Error("Oisy no devolvió ninguna cuenta"));
+        }
+      }
+
+      if (data?.error) {
+        cleanup();
+        if (!safePopup.closed) safePopup.close();
+        const err = data.error as { message?: string };
+        reject(new Error(err.message ?? "Oisy: conexión rechazada"));
+      }
+    }
+
+    window.addEventListener("message", handler);
+  });
 }
 
 export default function WalletConnectModal({
@@ -90,236 +182,248 @@ export default function WalletConnectModal({
 }: WalletConnectModalProps) {
   const { connectWallet, connectedWallets } = useWallet();
   const [connecting, setConnecting] = useState<string | null>(null);
-  const [showKeplrInstall, setShowKeplrInstall] = useState(false);
-  const [oisyOpened, setOisyOpened] = useState(false);
+  const [search, setSearch] = useState("");
+  const [wcProjectId, setWcProjectId] = useState(
+    () => localStorage.getItem("wc_project_id") ?? "",
+  );
+  const [showWC, setShowWC] = useState(false);
 
-  async function handleConnect(walletId: string) {
-    // Oisy: just open the site
-    if (walletId === "Oisy") {
-      window.open("https://oisy.com", "_blank");
-      setOisyOpened(true);
-      toast.info("Abriendo Oisy Wallet...", {
-        description:
-          "Conéctate en oisy.com y vuelve cuando tengas tu wallet lista",
-        duration: 6000,
-      });
-      return;
-    }
+  const connectedIds = new Set(connectedWallets.map((w) => w.walletType));
 
-    setConnecting(walletId);
-    const wallet = await connectWallet("ICP", walletId);
-    setConnecting(null);
+  const visibleWallets = SUPPORTED_WALLETS.filter((w) => {
+    const matchesSearch = w.label.toLowerCase().includes(search.toLowerCase());
+    // Always show ICP wallets; for others, only show if extension detected
+    const group = WALLET_GROUP[w.id] ?? "Other";
+    if (group === "ICP") return matchesSearch;
+    return w.isAvailable() && matchesSearch;
+  });
 
-    const r = wallet as { redirected?: boolean; installNote?: string };
-
-    if (r.redirected) {
-      if (walletId === "Keplr") {
-        setShowKeplrInstall(true);
-      } else {
-        toast.info(`Instalar ${walletId}`, {
-          description:
-            r.installNote ?? "Instala la extensión y vuelve a conectar",
-          duration: 8000,
-        });
-      }
-      return;
-    }
-
-    if (!wallet.address || !wallet.isReal) {
-      toast.error(`No se pudo conectar ${walletId}`, {
-        description:
-          "Verifica que la extensión esté instalada y activa, luego intenta de nuevo",
-      });
-      return;
-    }
-
-    toast.success(`Conectado: ${wallet.address.slice(0, 20)}...`);
-    onClose();
+  const groups: Record<string, typeof SUPPORTED_WALLETS> = {};
+  for (const w of visibleWallets) {
+    const g = WALLET_GROUP[w.id] ?? "Other";
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(w);
   }
 
-  const activeAddrs = new Set(connectedWallets.map((w) => w.walletType));
-  const browser = detectBrowser();
+  async function handleConnect(walletId: string) {
+    setConnecting(walletId);
+    try {
+      if (walletId === "Oisy") {
+        toast.info("Abriendo Oisy Wallet...", {
+          description: "Aprueba los permisos en el popup",
+        });
+        const result = await connectOisyICRC25();
+        if (result.address) {
+          toast.success("Oisy conectado");
+          // Manually add wallet to context
+          await connectWallet("ICP", "Oisy");
+        } else {
+          toast.warning(
+            "Oisy abierto — conexión requiere registro en whitelist de Oisy",
+          );
+        }
+        onClose();
+        return;
+      }
+
+      const w = await connectWallet("ICP" as const, walletId);
+      if (w.redirected) {
+        toast.info(w.installNote ?? `Abriendo ${walletId}...`);
+      } else if (w.address) {
+        toast.success(`${walletId} conectado`, {
+          description: `${w.address.slice(0, 20)}...`,
+        });
+        onClose();
+      } else {
+        toast.error(`No se pudo conectar ${walletId}`);
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (msg.includes("cerrado") || msg.includes("closed")) {
+        toast.info("Conexión cancelada");
+      } else {
+        toast.error(`Error: ${msg.slice(0, 80)}`);
+      }
+    } finally {
+      setConnecting(null);
+    }
+  }
+
+  function saveWCProjectId() {
+    localStorage.setItem("wc_project_id", wcProjectId);
+    toast.success("Project ID guardado");
+  }
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        className="max-w-sm"
+        className="max-w-md max-h-[90vh] overflow-y-auto"
         style={{
-          background: "var(--bg-surface)",
-          border: "1px solid var(--border-subtle)",
+          background: "rgba(7,11,10,0.97)",
+          border: "1px solid rgba(34,233,122,0.25)",
+          boxShadow: "0 0 40px rgba(34,233,122,0.1)",
         }}
         data-ocid="wallet.modal"
       >
         <DialogHeader>
           <DialogTitle
             className="text-base font-bold"
-            style={{ color: "var(--text-primary)" }}
+            style={{ color: "#E8ECEB" }}
           >
             Conectar Wallet
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-2 mt-1">
-          {SUPPORTED_WALLETS.map((adapter) => {
-            const isConnected = activeAddrs.has(adapter.id);
-            const isConnecting = connecting === adapter.id;
-            const isOisy = adapter.id === "Oisy";
-            const isKeplr = adapter.id === "Keplr";
-            const notInstalled = !adapter.isAvailable();
-            const keplrNotInstalled = isKeplr && notInstalled;
-
-            return (
-              <div key={adapter.id}>
-                <button
-                  type="button"
-                  onClick={() => handleConnect(adapter.id)}
-                  disabled={!!connecting}
-                  className="w-full flex items-center gap-4 p-4 rounded-xl transition-all text-left"
-                  style={{
-                    background: isConnected
-                      ? "var(--accent-dim)"
-                      : "var(--bg-elevated)",
-                    border: isConnected
-                      ? "1px solid rgba(0,212,184,0.4)"
-                      : isKeplr
-                        ? "1px solid rgba(118,90,226,0.25)"
-                        : isOisy
-                          ? "1px solid rgba(0,212,184,0.35)"
-                          : "1px solid var(--border-subtle)",
-                    opacity: connecting && !isConnecting ? 0.5 : 1,
-                    cursor: connecting ? "not-allowed" : "pointer",
-                  }}
-                  data-ocid={`wallet.${adapter.id.toLowerCase().replace(/\s+/g, "_")}.button`}
-                >
-                  {/* Icon */}
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 font-mono"
-                    style={{
-                      background: isKeplr
-                        ? "rgba(118,90,226,0.12)"
-                        : isOisy
-                          ? "rgba(0,212,184,0.08)"
-                          : "var(--bg-base)",
-                      border: isKeplr
-                        ? "1px solid rgba(118,90,226,0.35)"
-                        : isOisy
-                          ? "1px solid rgba(0,212,184,0.3)"
-                          : "1px solid var(--border-subtle)",
-                      color: isKeplr ? "#765AE2" : "var(--accent-color)",
-                    }}
-                  >
-                    {WALLET_ICONS[adapter.id] ??
-                      adapter.id.slice(0, 2).toUpperCase()}
-                  </div>
-
-                  {/* Labels */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span
-                        className="text-sm font-semibold"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        {adapter.label}
-                      </span>
-
-                      {/* Network badge */}
-                      {WALLET_NETWORK_BADGE[adapter.id] && (
-                        <span
-                          className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold tracking-wide"
-                          style={{
-                            background: isKeplr
-                              ? "rgba(118,90,226,0.12)"
-                              : "rgba(0,212,184,0.08)",
-                            color: isKeplr ? "#765AE2" : "var(--accent-color)",
-                          }}
-                        >
-                          {WALLET_NETWORK_BADGE[adapter.id]}
-                        </span>
-                      )}
-
-                      {isOisy && (
-                        <span
-                          className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold tracking-wide flex items-center gap-1"
-                          style={{
-                            background: "rgba(0,212,184,0.08)",
-                            color: "var(--accent-color)",
-                          }}
-                        >
-                          <ExternalLink size={8} />
-                          oisy.com
-                        </span>
-                      )}
-
-                      {isConnected && (
-                        <span
-                          className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
-                          style={{
-                            background: "rgba(0,212,184,0.15)",
-                            color: "var(--accent-color)",
-                          }}
-                        >
-                          Conectado
-                        </span>
-                      )}
-
-                      {keplrNotInstalled && (
-                        <span
-                          className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
-                          style={{
-                            background: "rgba(255,180,0,0.12)",
-                            color: "#ffb400",
-                          }}
-                        >
-                          {browser === "edge"
-                            ? "Disponible en Edge"
-                            : "No instalado"}
-                        </span>
-                      )}
-                    </div>
-                    <p
-                      className="text-xs mt-0.5 truncate"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {isOisy && oisyOpened
-                        ? "Abriendo Oisy Wallet..."
-                        : keplrNotInstalled && browser === "edge"
-                          ? "Click para abrir Edge Add-ons e instalar Keplr"
-                          : WALLET_DESC[adapter.id]}
-                    </p>
-                  </div>
-
-                  {/* Spinner or external icon */}
-                  {isConnecting && (
-                    <Loader2
-                      size={16}
-                      className="animate-spin shrink-0"
-                      style={{
-                        color: isKeplr ? "#765AE2" : "var(--accent-color)",
-                      }}
-                    />
-                  )}
-                  {isOisy && !isConnecting && (
-                    <ExternalLink
-                      size={14}
-                      className="shrink-0"
-                      style={{ color: "var(--text-muted)" }}
-                    />
-                  )}
-                </button>
-
-                {isKeplr && (keplrNotInstalled || showKeplrInstall) && (
-                  <KeplrInstallInstructions />
-                )}
-              </div>
-            );
-          })}
+        {/* Search */}
+        <div className="relative">
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2"
+            style={{ color: "#6B7B74" }}
+          />
+          <input
+            type="text"
+            placeholder="Buscar wallet..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-8 pr-3 py-2 rounded-lg text-xs font-mono outline-none"
+            style={{
+              background: "#0F1513",
+              border: "1px solid rgba(34,233,122,0.15)",
+              color: "#E8ECEB",
+            }}
+          />
         </div>
 
-        <p
-          className="text-[11px] text-center mt-3"
-          style={{ color: "var(--text-muted)" }}
+        {/* Wallet groups */}
+        <div className="space-y-4">
+          {GROUP_ORDER.filter((g) => groups[g]?.length).map((group) => (
+            <div key={group}>
+              <p
+                className="text-[10px] font-bold uppercase tracking-widest mb-2"
+                style={{ color: "#6B7B74" }}
+              >
+                {group}
+              </p>
+              <div className="space-y-1.5">
+                {groups[group].map((w) => {
+                  const isConnected = connectedIds.has(w.id);
+                  const isConnecting = connecting === w.id;
+                  return (
+                    <button
+                      key={w.id}
+                      type="button"
+                      onClick={() => handleConnect(w.id)}
+                      disabled={isConnecting || isConnected}
+                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-all"
+                      style={{
+                        background: "rgba(15,21,19,0.8)",
+                        border: isConnected
+                          ? "1px solid rgba(34,233,122,0.5)"
+                          : "1px solid rgba(34,233,122,0.15)",
+                        opacity: isConnected ? 0.7 : 1,
+                        cursor: isConnected ? "default" : "pointer",
+                      }}
+                      data-ocid={`wallet.${w.id.toLowerCase().replace(/\s/g, "_")}.button`}
+                    >
+                      <div>
+                        <p
+                          className="text-xs font-semibold"
+                          style={{ color: isConnected ? "#22E97A" : "#E8ECEB" }}
+                        >
+                          {w.label} {isConnected && "✓"}
+                        </p>
+                        <p
+                          className="text-[10px] mt-0.5"
+                          style={{ color: "#6B7B74" }}
+                        >
+                          {WALLET_DESC[w.id] ?? ""}
+                        </p>
+                      </div>
+                      {isConnecting ? (
+                        <Loader2
+                          size={14}
+                          className="animate-spin"
+                          style={{ color: "#22E97A" }}
+                        />
+                      ) : !w.isAvailable() && WALLET_GROUP[w.id] !== "ICP" ? (
+                        <ExternalLink size={12} style={{ color: "#6B7B74" }} />
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* WalletConnect panel */}
+        <div
+          style={{ borderTop: "1px solid rgba(34,233,122,0.1)" }}
+          className="pt-3"
         >
-          Más wallets disponibles próximamente
+          <button
+            type="button"
+            className="w-full flex items-center justify-between text-xs"
+            style={{ color: "#22E97A" }}
+            onClick={() => setShowWC((v) => !v)}
+          >
+            <span className="font-semibold">WalletConnect (QR / móvil)</span>
+            <span>{showWC ? "▲" : "▼"}</span>
+          </button>
+          {showWC && (
+            <div className="mt-2 space-y-2">
+              <p className="text-[10px]" style={{ color: "#6B7B74" }}>
+                Para usar WalletConnect necesitas un Project ID gratuito de{" "}
+                <a
+                  href="https://cloud.walletconnect.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                  style={{ color: "#22E97A" }}
+                >
+                  cloud.walletconnect.com
+                </a>
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Pega tu Project ID aquí"
+                  value={wcProjectId}
+                  onChange={(e) => setWcProjectId(e.target.value)}
+                  className="flex-1 px-3 py-1.5 rounded text-xs font-mono outline-none"
+                  style={{
+                    background: "#0F1513",
+                    border: "1px solid rgba(34,233,122,0.15)",
+                    color: "#E8ECEB",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={saveWCProjectId}
+                  className="px-3 py-1.5 rounded text-xs font-semibold"
+                  style={{ background: "#22E97A", color: "#070B0A" }}
+                >
+                  Guardar
+                </button>
+              </div>
+              {wcProjectId && (
+                <a
+                  href={"https://walletconnect.com/explorer?type=wallet"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-[10px]"
+                  style={{ color: "#22E97A" }}
+                >
+                  <ExternalLink size={11} /> Abrir WalletConnect
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+
+        <p className="text-[10px] text-center" style={{ color: "#4A5750" }}>
+          Las extensiones no detectadas no aparecen en este listado
         </p>
       </DialogContent>
     </Dialog>

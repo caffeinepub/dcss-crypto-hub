@@ -10,6 +10,26 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AdminLog {
+  'action' : string,
+  'timestamp' : bigint,
+  'caller' : string,
+}
+export interface EcosystemStats {
+  'totalSponsors' : bigint,
+  'totalTokens' : bigint,
+  'rewardsDistributed' : number,
+  'totalHolders' : bigint,
+  'totalNetworks' : bigint,
+  'totalTransactions' : bigint,
+}
+export interface SponsorRecord {
+  'id' : bigint,
+  'message' : string,
+  'timestamp' : bigint,
+  'sponsor' : string,
+  'amount' : number,
+}
 export interface Stats {
   'cyclesConsumed' : bigint,
   'circulatingSupply' : number,
@@ -52,16 +72,22 @@ export interface http_request_result {
 }
 export interface _SERVICE {
   'closeVault' : ActorMethod<[bigint], undefined>,
+  'distributeRewards' : ActorMethod<[number], undefined>,
   'fetchExternalUrl' : ActorMethod<[string], string>,
+  'getAdminLogs' : ActorMethod<[], Array<AdminLog>>,
   'getBridgeFee' : ActorMethod<[string, string, number], [number, bigint]>,
+  'getEcosystemStats' : ActorMethod<[], EcosystemStats>,
+  'getSponsorLogs' : ActorMethod<[], Array<SponsorRecord>>,
   'getStats' : ActorMethod<[], Stats>,
   'getTokenPrices' : ActorMethod<[], Array<TokenInfo>>,
   'getTransactions' : ActorMethod<[string], Array<Transaction>>,
   'openVault' : ActorMethod<[bigint], bigint>,
+  'recordSponsor' : ActorMethod<[string, number, string], bigint>,
   'recordTransaction' : ActorMethod<
     [string, string, number, string, string, string, string],
     bigint
   >,
+  'setAdmin' : ActorMethod<[string], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
 }
 export declare const idlService: IDL.ServiceClass;

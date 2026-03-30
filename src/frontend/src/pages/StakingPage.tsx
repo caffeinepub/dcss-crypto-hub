@@ -164,8 +164,8 @@ export default function StakingPage() {
           style={{
             padding: "20px 24px",
             borderRadius: "12px",
-            background: "rgba(0,212,184,0.05)",
-            border: "1px solid rgba(0,212,184,0.2)",
+            background: "rgba(34,233,122,0.05)",
+            border: "1px solid rgba(34,233,122,0.2)",
             display: "flex",
             alignItems: "flex-start",
             gap: "14px",
@@ -174,7 +174,7 @@ export default function StakingPage() {
         >
           <Info
             size={20}
-            style={{ color: "#00D4B8", flexShrink: 0, marginTop: "1px" }}
+            style={{ color: "#22E97A", flexShrink: 0, marginTop: "1px" }}
           />
           <p
             style={{
@@ -368,7 +368,7 @@ export default function StakingPage() {
               left: "10%",
               right: "10%",
               height: "2px",
-              background: "rgba(0,212,184,0.12)",
+              background: "rgba(34,233,122,0.12)",
             }}
           />
           {TIMELINE.map((item, i) => (
@@ -389,14 +389,14 @@ export default function StakingPage() {
                   width: "40px",
                   height: "40px",
                   borderRadius: "50%",
-                  background: item.done ? "rgba(0,212,184,0.2)" : "#0F1513",
+                  background: item.done ? "rgba(34,233,122,0.2)" : "#0F1513",
                   border: `2px solid ${
-                    item.done ? "#00D4B8" : "rgba(169,179,175,0.2)"
+                    item.done ? "#22E97A" : "rgba(169,179,175,0.2)"
                   }`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: item.done ? "#00D4B8" : "#A9B3AF",
+                  color: item.done ? "#22E97A" : "#A9B3AF",
                   fontSize: "14px",
                   fontWeight: "700",
                 }}
@@ -406,7 +406,7 @@ export default function StakingPage() {
               <div
                 style={{
                   fontSize: "11px",
-                  color: item.done ? "#00D4B8" : "#A9B3AF",
+                  color: item.done ? "#22E97A" : "#A9B3AF",
                   textAlign: "center",
                   maxWidth: "120px",
                   lineHeight: 1.4,

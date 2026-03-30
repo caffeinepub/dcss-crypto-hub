@@ -33,7 +33,7 @@ export default function CircuitBackground() {
               y1="20"
               x2="80"
               y2="20"
-              stroke="rgba(0,212,184,0.04)"
+              stroke="rgba(34,233,122,0.04)"
               strokeWidth="0.5"
             />
             <line
@@ -41,7 +41,7 @@ export default function CircuitBackground() {
               y1="60"
               x2="80"
               y2="60"
-              stroke="rgba(0,212,184,0.04)"
+              stroke="rgba(34,233,122,0.04)"
               strokeWidth="0.5"
             />
             {/* Vertical lines */}
@@ -50,7 +50,7 @@ export default function CircuitBackground() {
               y1="0"
               x2="20"
               y2="80"
-              stroke="rgba(0,212,184,0.04)"
+              stroke="rgba(34,233,122,0.04)"
               strokeWidth="0.5"
             />
             <line
@@ -58,7 +58,7 @@ export default function CircuitBackground() {
               y1="0"
               x2="60"
               y2="80"
-              stroke="rgba(0,212,184,0.04)"
+              stroke="rgba(34,233,122,0.04)"
               strokeWidth="0.5"
             />
             {/* Main trace - thicker */}
@@ -67,7 +67,7 @@ export default function CircuitBackground() {
               y1="40"
               x2="80"
               y2="40"
-              stroke="rgba(0,212,184,0.06)"
+              stroke="rgba(34,233,122,0.06)"
               strokeWidth="1"
             />
             <line
@@ -75,22 +75,22 @@ export default function CircuitBackground() {
               y1="0"
               x2="40"
               y2="80"
-              stroke="rgba(0,212,184,0.06)"
+              stroke="rgba(34,233,122,0.06)"
               strokeWidth="1"
             />
             {/* Node dots at intersections */}
-            <circle cx="20" cy="20" r="1.5" fill="rgba(0,212,184,0.10)" />
-            <circle cx="60" cy="20" r="1.5" fill="rgba(0,212,184,0.10)" />
-            <circle cx="20" cy="60" r="1.5" fill="rgba(0,212,184,0.10)" />
-            <circle cx="60" cy="60" r="1.5" fill="rgba(0,212,184,0.10)" />
+            <circle cx="20" cy="20" r="1.5" fill="rgba(34,233,122,0.10)" />
+            <circle cx="60" cy="20" r="1.5" fill="rgba(34,233,122,0.10)" />
+            <circle cx="20" cy="60" r="1.5" fill="rgba(34,233,122,0.10)" />
+            <circle cx="60" cy="60" r="1.5" fill="rgba(34,233,122,0.10)" />
             {/* Main node */}
-            <circle cx="40" cy="40" r="2.5" fill="rgba(0,212,184,0.14)" />
-            <circle cx="40" cy="40" r="1" fill="rgba(0,212,184,0.22)" />
+            <circle cx="40" cy="40" r="2.5" fill="rgba(34,233,122,0.14)" />
+            <circle cx="40" cy="40" r="1" fill="rgba(34,233,122,0.22)" />
             {/* Cross intersections */}
-            <circle cx="40" cy="20" r="1" fill="rgba(0,212,184,0.08)" />
-            <circle cx="40" cy="60" r="1" fill="rgba(0,212,184,0.08)" />
-            <circle cx="20" cy="40" r="1" fill="rgba(0,212,184,0.08)" />
-            <circle cx="60" cy="40" r="1" fill="rgba(0,212,184,0.08)" />
+            <circle cx="40" cy="20" r="1" fill="rgba(34,233,122,0.08)" />
+            <circle cx="40" cy="60" r="1" fill="rgba(34,233,122,0.08)" />
+            <circle cx="20" cy="40" r="1" fill="rgba(34,233,122,0.08)" />
+            <circle cx="60" cy="40" r="1" fill="rgba(34,233,122,0.08)" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#circuit-pattern)" />

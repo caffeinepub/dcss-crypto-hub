@@ -114,10 +114,216 @@ const keplrAdapter: WalletAdapter = {
     "https://microsoftedge.microsoft.com/addons/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap",
 };
 
+// ── EVM Adapters ──
+const metaMaskAdapter: WalletAdapter = {
+  id: "MetaMask",
+  label: "MetaMask",
+  network: "Ethereum",
+  isAvailable: () =>
+    typeof window !== "undefined" &&
+    !!(
+      (window as unknown as Record<string, unknown>).ethereum as
+        | Record<string, unknown>
+        | undefined
+    )?.isMetaMask,
+  connect: async () => {
+    try {
+      const eth = (window as unknown as Record<string, unknown>).ethereum as {
+        request: (a: { method: string }) => Promise<unknown>;
+      };
+      const accounts = (await eth.request({
+        method: "eth_requestAccounts",
+      })) as string[];
+      return { address: accounts[0] ?? "", isReal: true };
+    } catch {
+      return { address: "", isReal: false };
+    }
+  },
+  installUrl: "https://metamask.io/download/",
+};
+
+const okxAdapter: WalletAdapter = {
+  id: "OKX Wallet",
+  label: "OKX Wallet",
+  network: "Ethereum",
+  isAvailable: () =>
+    typeof window !== "undefined" &&
+    !!(window as unknown as Record<string, unknown>).okxwallet,
+  connect: async () => {
+    try {
+      const okx = (window as unknown as Record<string, unknown>).okxwallet as {
+        request: (a: { method: string }) => Promise<unknown>;
+      };
+      const accounts = (await okx.request({
+        method: "eth_requestAccounts",
+      })) as string[];
+      return { address: accounts[0] ?? "", isReal: true };
+    } catch {
+      return { address: "", isReal: false };
+    }
+  },
+  installUrl: "https://www.okx.com/web3",
+};
+
+// ── Solana Adapters ──
+const phantomAdapter: WalletAdapter = {
+  id: "Phantom",
+  label: "Phantom",
+  network: "Solana",
+  isAvailable: () => {
+    if (typeof window === "undefined") return false;
+    const w = window as unknown as Record<string, unknown>;
+    return (
+      !!(w.phantom as Record<string, unknown> | undefined)?.solana ||
+      !!(w.solana as Record<string, unknown> | undefined)?.isPhantom
+    );
+  },
+  connect: async () => {
+    try {
+      const w = window as unknown as Record<string, unknown>;
+      const sol = ((w.phantom as Record<string, unknown>)?.solana ??
+        w.solana) as {
+        connect: (
+          opts?: object,
+        ) => Promise<{ publicKey: { toString(): string } }>;
+      };
+      await (sol as { disconnect?: () => Promise<void> }).disconnect?.();
+      const res = await sol.connect({ onlyIfTrusted: false });
+      return { address: res.publicKey.toString(), isReal: true };
+    } catch {
+      return { address: "", isReal: false };
+    }
+  },
+  installUrl: "https://phantom.app/download",
+};
+
+const solflareAdapter: WalletAdapter = {
+  id: "Solflare",
+  label: "Solflare",
+  network: "Solana",
+  isAvailable: () =>
+    typeof window !== "undefined" &&
+    !!(window as unknown as Record<string, unknown>).solflare,
+  connect: async () => {
+    try {
+      const sf = (window as unknown as Record<string, unknown>).solflare as {
+        connect: () => Promise<void>;
+        publicKey: { toString(): string };
+        isConnected: boolean;
+      };
+      await sf.connect();
+      return { address: sf.publicKey.toString(), isReal: true };
+    } catch {
+      return { address: "", isReal: false };
+    }
+  },
+  installUrl: "https://solflare.com",
+};
+
+const backpackAdapter: WalletAdapter = {
+  id: "Backpack",
+  label: "Backpack",
+  network: "Solana",
+  isAvailable: () =>
+    typeof window !== "undefined" &&
+    !!(window as unknown as Record<string, unknown>).backpack,
+  connect: async () => {
+    try {
+      const bp = (window as unknown as Record<string, unknown>).backpack as {
+        connect: () => Promise<{ publicKey: { toString(): string } }>;
+      };
+      const res = await bp.connect();
+      return { address: res.publicKey.toString(), isReal: true };
+    } catch {
+      return { address: "", isReal: false };
+    }
+  },
+  installUrl: "https://backpack.app",
+};
+
+// ── Cosmos Adapters ──
+const leapAdapter: WalletAdapter = {
+  id: "Leap",
+  label: "Leap",
+  network: "Cosmos",
+  isAvailable: () =>
+    typeof window !== "undefined" &&
+    !!(window as unknown as Record<string, unknown>).leap,
+  connect: async () => {
+    try {
+      const leap = (window as unknown as Record<string, unknown>).leap as {
+        enable: (id: string) => Promise<void>;
+        getKey: (id: string) => Promise<{ bech32Address: string }>;
+      };
+      await leap.enable("cosmoshub-4");
+      const key = await leap.getKey("cosmoshub-4");
+      return { address: key.bech32Address, isReal: true };
+    } catch {
+      return { address: "", isReal: false };
+    }
+  },
+  installUrl: "https://leapwallet.io",
+};
+
+// ── Bitcoin Adapters ──
+const unisatAdapter: WalletAdapter = {
+  id: "Unisat",
+  label: "Unisat",
+  network: "Bitcoin",
+  isAvailable: () =>
+    typeof window !== "undefined" &&
+    !!(window as unknown as Record<string, unknown>).unisat,
+  connect: async () => {
+    try {
+      const u = (window as unknown as Record<string, unknown>).unisat as {
+        requestAccounts: () => Promise<string[]>;
+      };
+      const accounts = await u.requestAccounts();
+      return { address: accounts[0] ?? "", isReal: true };
+    } catch {
+      return { address: "", isReal: false };
+    }
+  },
+  installUrl: "https://unisat.io",
+};
+
+// ── Arweave Adapters ──
+const arconnectAdapter: WalletAdapter = {
+  id: "ArConnect",
+  label: "ArConnect",
+  network: "Arweave",
+  isAvailable: () =>
+    typeof window !== "undefined" &&
+    !!(window as unknown as Record<string, unknown>).arweaveWallet,
+  connect: async () => {
+    try {
+      const ar = (window as unknown as Record<string, unknown>)
+        .arweaveWallet as {
+        connect: (p: string[]) => Promise<void>;
+        getActiveAddress: () => Promise<string>;
+      };
+      await ar.connect(["ACCESS_ADDRESS"]);
+      const addr = await ar.getActiveAddress();
+      return { address: addr, isReal: true };
+    } catch {
+      return { address: "", isReal: false };
+    }
+  },
+  installUrl: "https://arconnect.io",
+};
+
 export const SUPPORTED_WALLETS: WalletAdapter[] = [
-  oisyAdapter,
   iiAdapter,
+  oisyAdapter,
   keplrAdapter,
+  metaMaskAdapter,
+  okxAdapter,
+  phantomAdapter,
+  solflareAdapter,
+  backpackAdapter,
+  leapAdapter,
+  unisatAdapter,
+  arconnectAdapter,
 ];
 
 export interface ConnectedWallet {

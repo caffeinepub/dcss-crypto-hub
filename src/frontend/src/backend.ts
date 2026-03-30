@@ -99,6 +99,14 @@ export interface TransformationOutput {
     body: Uint8Array;
     headers: Array<http_header>;
 }
+export interface EcosystemStats {
+    totalSponsors: bigint;
+    totalTokens: bigint;
+    rewardsDistributed: number;
+    totalHolders: bigint;
+    totalNetworks: bigint;
+    totalTransactions: bigint;
+}
 export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
@@ -117,6 +125,18 @@ export interface Stats {
     txCount: bigint;
     holders: bigint;
 }
+export interface SponsorRecord {
+    id: bigint;
+    message: string;
+    timestamp: bigint;
+    sponsor: string;
+    amount: number;
+}
+export interface AdminLog {
+    action: string;
+    timestamp: bigint;
+    caller: string;
+}
 export interface http_header {
     value: string;
     name: string;
@@ -133,14 +153,20 @@ export interface Transaction {
     amount: number;
 }
 export interface backendInterface {
-    closeVault(id: bigint): Promise<void>;
+    closeVault(arg0: bigint): Promise<void>;
+    distributeRewards(amount: number): Promise<void>;
     fetchExternalUrl(url: string): Promise<string>;
+    getAdminLogs(): Promise<Array<AdminLog>>;
     getBridgeFee(sourceChain: string, destChain: string, amount: number): Promise<[number, bigint]>;
+    getEcosystemStats(): Promise<EcosystemStats>;
+    getSponsorLogs(): Promise<Array<SponsorRecord>>;
     getStats(): Promise<Stats>;
     getTokenPrices(): Promise<Array<TokenInfo>>;
     getTransactions(walletAddr: string): Promise<Array<Transaction>>;
     openVault(collateral: bigint): Promise<bigint>;
+    recordSponsor(sponsor: string, amount: number, message: string): Promise<bigint>;
     recordTransaction(txType: string, tokenSymbol: string, amount: number, fromAddr: string, toAddr: string, network: string, walletAddr: string): Promise<bigint>;
+    setAdmin(newAdmin: string): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
 }
 export class Backend implements backendInterface {
@@ -159,6 +185,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async distributeRewards(arg0: number): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.distributeRewards(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.distributeRewards(arg0);
+            return result;
+        }
+    }
     async fetchExternalUrl(arg0: string): Promise<string> {
         if (this.processError) {
             try {
@@ -170,6 +210,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.fetchExternalUrl(arg0);
+            return result;
+        }
+    }
+    async getAdminLogs(): Promise<Array<AdminLog>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAdminLogs();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAdminLogs();
             return result;
         }
     }
@@ -191,6 +245,34 @@ export class Backend implements backendInterface {
                 result[0],
                 result[1]
             ];
+        }
+    }
+    async getEcosystemStats(): Promise<EcosystemStats> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getEcosystemStats();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getEcosystemStats();
+            return result;
+        }
+    }
+    async getSponsorLogs(): Promise<Array<SponsorRecord>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getSponsorLogs();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getSponsorLogs();
+            return result;
         }
     }
     async getStats(): Promise<Stats> {
@@ -249,6 +331,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async recordSponsor(arg0: string, arg1: number, arg2: string): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.recordSponsor(arg0, arg1, arg2);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.recordSponsor(arg0, arg1, arg2);
+            return result;
+        }
+    }
     async recordTransaction(arg0: string, arg1: string, arg2: number, arg3: string, arg4: string, arg5: string, arg6: string): Promise<bigint> {
         if (this.processError) {
             try {
@@ -260,6 +356,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.recordTransaction(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+            return result;
+        }
+    }
+    async setAdmin(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.setAdmin(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.setAdmin(arg0);
             return result;
         }
     }

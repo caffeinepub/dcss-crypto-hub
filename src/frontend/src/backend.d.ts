@@ -17,6 +17,14 @@ export interface TransformationOutput {
     body: Uint8Array;
     headers: Array<http_header>;
 }
+export interface EcosystemStats {
+    totalSponsors: bigint;
+    totalTokens: bigint;
+    rewardsDistributed: number;
+    totalHolders: bigint;
+    totalNetworks: bigint;
+    totalTransactions: bigint;
+}
 export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
@@ -35,6 +43,18 @@ export interface Stats {
     txCount: bigint;
     holders: bigint;
 }
+export interface SponsorRecord {
+    id: bigint;
+    message: string;
+    timestamp: bigint;
+    sponsor: string;
+    amount: number;
+}
+export interface AdminLog {
+    action: string;
+    timestamp: bigint;
+    caller: string;
+}
 export interface http_header {
     value: string;
     name: string;
@@ -51,13 +71,19 @@ export interface Transaction {
     amount: number;
 }
 export interface backendInterface {
-    closeVault(id: bigint): Promise<void>;
+    closeVault(arg0: bigint): Promise<void>;
+    distributeRewards(amount: number): Promise<void>;
     fetchExternalUrl(url: string): Promise<string>;
+    getAdminLogs(): Promise<Array<AdminLog>>;
     getBridgeFee(sourceChain: string, destChain: string, amount: number): Promise<[number, bigint]>;
+    getEcosystemStats(): Promise<EcosystemStats>;
+    getSponsorLogs(): Promise<Array<SponsorRecord>>;
     getStats(): Promise<Stats>;
     getTokenPrices(): Promise<Array<TokenInfo>>;
     getTransactions(walletAddr: string): Promise<Array<Transaction>>;
     openVault(collateral: bigint): Promise<bigint>;
+    recordSponsor(sponsor: string, amount: number, message: string): Promise<bigint>;
     recordTransaction(txType: string, tokenSymbol: string, amount: number, fromAddr: string, toAddr: string, network: string, walletAddr: string): Promise<bigint>;
+    setAdmin(newAdmin: string): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
 }
