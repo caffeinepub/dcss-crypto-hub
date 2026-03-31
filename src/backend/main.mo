@@ -10,9 +10,9 @@ import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
 import Text "mo:core/Text";
 import Time "mo:core/Time";
-import Migration "migration";
 
-(with migration = Migration.run)
+
+
 persistent actor {
   // ── Admin ──
   stable var adminPrincipal : Text = "2vxsx-fae";
@@ -251,3 +251,4 @@ persistent actor {
     await OutCall.httpGetRequest(url, [], transform);
   };
 };
+

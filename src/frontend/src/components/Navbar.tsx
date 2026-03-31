@@ -1,28 +1,18 @@
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Activity,
   ArrowLeftRight,
-  BookOpen,
-  ChevronDown,
+  Briefcase,
   Coins,
   Layers,
   LayoutDashboard,
-  LogOut,
-  Wallet,
+  Menu,
+  Moon,
+  Sun,
+  X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWallet } from "../contexts/WalletContext";
-import type { Network } from "../data/tokens";
-import { truncateAddr } from "../data/tokens";
-import { useLivePrices } from "../hooks/useLivePrices";
-import WalletConnectModal from "./WalletConnectModal";
+import { useTheme } from "../hooks/useTheme";
 
 export type Tab =
   | "dashboard"
@@ -38,317 +28,230 @@ const NAV_ITEMS: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "tokens", label: "Tokens", icon: Coins },
   { id: "bridge", label: "Bridge", icon: ArrowLeftRight },
   { id: "activity", label: "Activity", icon: Activity },
-  { id: "project", label: "Project", icon: BookOpen },
+  { id: "project", label: "Project", icon: Briefcase },
   { id: "staking", label: "Staking", icon: Layers },
-  { id: "wallets", label: "Wallets", icon: Wallet },
 ];
-
-const NETWORK_NATIVE: Record<string, string> = {
-  Ethereum: "ETH",
-  Arbitrum: "ETH",
-  Base: "ETH",
-  Multichain: "ETH",
-  Avalanche: "AVAX",
-  Stablecoins: "ETH",
-  "0G": "ETH",
-  Solana: "SOL",
-  Cosmos: "ATOM",
-  Polkadot: "DOT",
-  ICP: "ICP",
-  Bitcoin: "BTC",
-  Arweave: "AR",
-  Mina: "MINA",
-  Cardano: "ADA",
-  Celestia: "TIA",
-};
 
 interface NavbarProps {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
+  onOpenWalletModal?: () => void;
 }
 
-export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
-  const {
-    connectedWallets,
-    activeWallet,
-    setActiveWallet,
-    disconnectWallet,
-    balanceTick,
-  } = useWallet();
-  void balanceTick;
-  const { prices } = useLivePrices();
-  const [walletModalOpen, setWalletModalOpen] = useState(false);
+export default function Navbar({
+  activeTab,
+  onTabChange,
+  onOpenWalletModal,
+}: NavbarProps) {
+  const { activeWallet, disconnectWallet } = useWallet();
+  const { theme, toggleTheme } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const isDark = theme === "midnight";
 
-  function getWalletBalance(network: Network, address: string) {
-    const symbol = NETWORK_NATIVE[network as string];
-    if (!symbol) return null;
-    const raw = localStorage.getItem(`dcss_${network}_${address}_${symbol}`);
-    if (!raw) return null;
-    const amount = Number.parseFloat(raw);
-    if (!amount || amount <= 0) return null;
-    return { amount, symbol };
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function truncateAddr(addr: string): string {
+    if (addr.length <= 12) return addr;
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   }
-
-  function getWalletUSD(network: Network, address: string): number | null {
-    const bal = getWalletBalance(network, address);
-    if (!bal) return null;
-    const price = prices[bal.symbol]?.usd;
-    if (!price) return null;
-    return bal.amount * price;
-  }
-
-  const totalPortfolio = connectedWallets.reduce((sum, w) => {
-    const usd = getWalletUSD(w.network, w.address);
-    return usd != null ? sum + usd : sum;
-  }, 0);
-
-  const hasAnyBalance = connectedWallets.some(
-    (w) => getWalletBalance(w.network, w.address) !== null,
-  );
 
   return (
-    <>
-      <header
-        className="sticky top-0 z-50 w-full"
-        style={{
-          background: "rgba(7,11,10,0.96)",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(34,233,122,0.12)",
-        }}
-      >
-        <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={() => onTabChange("dashboard")}
-            className="flex items-center gap-2.5 shrink-0"
-            data-ocid="nav.dashboard.link"
+    <header
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        background: isDark ? "rgba(7,11,10,0.88)" : "rgba(250,248,245,0.88)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        borderBottom: "1px solid var(--glass-border)",
+      }}
+    >
+      <div className="max-w-[1200px] mx-auto px-4 flex items-center h-16 gap-4">
+        {/* Logo */}
+        <button
+          type="button"
+          onClick={() => onTabChange("dashboard")}
+          className="flex items-center gap-2 flex-shrink-0"
+          aria-label="DCSS Crypto Hub — Ir al dashboard"
+          data-ocid="nav.dashboard.link"
+        >
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+            style={{ background: "rgba(34,233,122,0.15)", color: "#22E97A" }}
           >
-            <img
-              src="/assets/generated/dcss-logo-transparent.dim_200x200.png"
-              alt="DCSS"
-              className="w-9 h-9 rounded-full object-cover"
-            />
+            D
+          </div>
+          <div className="hidden sm:flex flex-col leading-none">
             <span
-              className="font-bold text-sm tracking-widest uppercase"
+              className="text-sm font-bold tracking-wide"
               style={{ color: "#22E97A" }}
             >
               DCSS
             </span>
-            <span className="hidden sm:block text-xs text-muted-foreground tracking-wider font-medium">
+            <span
+              className="text-[9px] tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
               CRYPTO HUB
             </span>
-          </button>
-
-          <nav className="hidden md:flex items-center gap-1">
-            {NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  type="button"
-                  key={item.id}
-                  onClick={() => onTabChange(item.id)}
-                  data-ocid={`nav.${item.id}.link`}
-                  className="relative flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-md transition-colors"
-                  style={{
-                    color: isActive ? "#22E97A" : "rgba(169,179,175,1)",
-                    background: isActive
-                      ? "rgba(34,233,122,0.08)"
-                      : "transparent",
-                  }}
-                >
-                  <Icon size={13} />
-                  {item.label}
-                  {isActive && (
-                    <span
-                      className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full"
-                      style={{ background: "#22E97A" }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            {activeWallet ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border transition-colors"
-                    style={{
-                      background: "rgba(34,233,122,0.08)",
-                      borderColor: "rgba(34,233,122,0.35)",
-                      color: "#22E97A",
-                    }}
-                    data-ocid="nav.wallet.toggle"
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ background: "#22E97A" }}
-                    />
-                    {truncateAddr(activeWallet.address)}
-                    <ChevronDown size={12} />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-64"
-                  style={{
-                    background: "#0F1513",
-                    border: "1px solid rgba(34,233,122,0.2)",
-                  }}
-                >
-                  {connectedWallets.map((w) => {
-                    const bal = getWalletBalance(w.network, w.address);
-                    const usd = getWalletUSD(w.network, w.address);
-                    return (
-                      <DropdownMenuItem
-                        key={w.address}
-                        onClick={() => setActiveWallet(w)}
-                        className="flex flex-col items-start gap-0.5 cursor-pointer py-2"
-                        style={{
-                          color:
-                            activeWallet.address === w.address
-                              ? "#22E97A"
-                              : "#E8ECEB",
-                        }}
-                      >
-                        <span className="text-xs font-medium">
-                          {w.walletType} · {w.network}
-                        </span>
-                        <span
-                          className="text-[10px] font-mono"
-                          style={{ color: "#A9B3AF" }}
-                        >
-                          {truncateAddr(w.address)}
-                        </span>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span
-                            className="text-[11px] font-semibold"
-                            style={{ color: bal ? "#22E97A" : "#5A6560" }}
-                          >
-                            {bal
-                              ? `${bal.amount.toLocaleString(undefined, { maximumFractionDigits: 6 })} ${bal.symbol}`
-                              : "—"}
-                          </span>
-                          {usd != null && (
-                            <span
-                              className="text-[10px]"
-                              style={{ color: "#FFD700" }}
-                            >
-                              $
-                              {usd.toLocaleString(undefined, {
-                                maximumFractionDigits: 2,
-                              })}
-                            </span>
-                          )}
-                        </div>
-                      </DropdownMenuItem>
-                    );
-                  })}
-                  {hasAnyBalance && (
-                    <div
-                      className="px-2 py-1.5 flex items-center justify-between"
-                      style={{
-                        borderTop: "1px solid rgba(34,233,122,0.1)",
-                        borderBottom: "1px solid rgba(34,233,122,0.1)",
-                      }}
-                    >
-                      <span
-                        className="text-[10px]"
-                        style={{ color: "#A9B3AF" }}
-                      >
-                        Total Portfolio
-                      </span>
-                      <span
-                        className="text-[11px] font-bold"
-                        style={{ color: "#FFD700" }}
-                      >
-                        $
-                        {totalPortfolio.toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        })}{" "}
-                        USD
-                      </span>
-                    </div>
-                  )}
-                  <DropdownMenuSeparator
-                    style={{ background: "rgba(34,233,122,0.1)" }}
-                  />
-                  <DropdownMenuItem
-                    onClick={() => setWalletModalOpen(true)}
-                    style={{ color: "#22E97A" }}
-                    data-ocid="nav.connect_wallet.button"
-                  >
-                    <Wallet size={13} className="mr-2" />
-                    Add Wallet
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onTabChange("wallets")}
-                    style={{ color: "#22E97A" }}
-                  >
-                    <Wallet size={13} className="mr-2" />
-                    Manage Wallets
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => disconnectWallet(activeWallet.address)}
-                    style={{ color: "#ef4444" }}
-                    data-ocid="nav.disconnect.button"
-                  >
-                    <LogOut size={13} className="mr-2" />
-                    Disconnect
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button
-                onClick={() => setWalletModalOpen(true)}
-                size="sm"
-                className="rounded-full text-xs font-semibold px-4"
-                style={{
-                  background: "#22E97A",
-                  color: "#070B0A",
-                  border: "none",
-                }}
-                data-ocid="nav.connect_wallet.button"
-              >
-                <Wallet size={13} className="mr-1.5" />
-                Connect Wallet
-              </Button>
-            )}
           </div>
-        </div>
+        </button>
 
-        <div
-          className="flex md:hidden border-t items-center px-2 py-1"
-          style={{ borderColor: "rgba(34,233,122,0.08)", overflowX: "auto" }}
+        {/* Desktop nav */}
+        <nav
+          className="hidden md:flex items-center gap-0.5 flex-1 justify-center"
+          aria-label="Navegación principal"
         >
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
+          {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+            const isActive = activeTab === id;
             return (
               <button
+                key={id}
                 type="button"
-                key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className="flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium shrink-0"
-                style={{ color: isActive ? "#22E97A" : "#A9B3AF" }}
-                data-ocid={`nav.${item.id}.link`}
+                onClick={() => onTabChange(id)}
+                aria-current={isActive ? "page" : undefined}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-all"
+                style={{
+                  background: isActive
+                    ? "rgba(34,233,122,0.12)"
+                    : "transparent",
+                  color: isActive ? "#22E97A" : "var(--text-muted)",
+                  border: isActive
+                    ? "1px solid rgba(34,233,122,0.25)"
+                    : "1px solid transparent",
+                }}
+                data-ocid={`nav.${id}.link`}
+              >
+                <Icon size={13} />
+                {label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Right controls */}
+        <div className="flex items-center gap-2 ml-auto md:ml-0">
+          {/* Theme toggle */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={
+              isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro"
+            }
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
+            style={{
+              background: "var(--glass-bg)",
+              border: "1px solid var(--glass-border)",
+              color: "var(--text-secondary)",
+            }}
+            data-ocid="nav.theme.toggle"
+          >
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
+
+          {/* Wallet button */}
+          {activeWallet ? (
+            <button
+              type="button"
+              onClick={() => disconnectWallet(activeWallet.address)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+              style={{
+                background: "rgba(34,233,122,0.1)",
+                border: "1px solid rgba(34,233,122,0.3)",
+                color: "#22E97A",
+              }}
+              title="Desconectar wallet"
+              data-ocid="nav.wallet.button"
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: "#22E97A" }}
+              />
+              {truncateAddr(activeWallet.address)}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onOpenWalletModal}
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all"
+              style={{
+                background: "rgba(34,233,122,0.15)",
+                border: "1px solid rgba(34,233,122,0.35)",
+                color: "#22E97A",
+              }}
+              data-ocid="nav.connect_wallet.button"
+            >
+              Conectar Wallet
+            </button>
+          )}
+
+          {/* Mobile menu */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((p) => !p)}
+            aria-label="Abrir menú"
+            aria-expanded={menuOpen}
+            className="md:hidden w-8 h-8 rounded-full flex items-center justify-center"
+            style={{
+              background: "var(--glass-bg)",
+              border: "1px solid var(--glass-border)",
+              color: "var(--text-secondary)",
+            }}
+            data-ocid="nav.menu.button"
+          >
+            {menuOpen ? <X size={14} /> : <Menu size={14} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile dropdown */}
+      {menuOpen && (
+        <div
+          ref={menuRef}
+          className="md:hidden border-t"
+          style={{
+            background: isDark
+              ? "rgba(7,11,10,0.96)"
+              : "rgba(250,248,245,0.96)",
+            borderColor: "var(--glass-border)",
+          }}
+        >
+          {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+            const isActive = activeTab === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  onTabChange(id);
+                  setMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-6 py-3 text-sm transition-colors"
+                style={{
+                  color: isActive ? "#22E97A" : "var(--text-secondary)",
+                  background: isActive
+                    ? "rgba(34,233,122,0.06)"
+                    : "transparent",
+                }}
+                data-ocid={`nav.${id}.link`}
               >
                 <Icon size={16} />
-                {item.label}
+                {label}
               </button>
             );
           })}
         </div>
-      </header>
-
-      <WalletConnectModal
-        open={walletModalOpen}
-        onClose={() => setWalletModalOpen(false)}
-      />
-    </>
+      )}
+    </header>
   );
 }

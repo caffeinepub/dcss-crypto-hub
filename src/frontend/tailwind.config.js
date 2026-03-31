@@ -71,25 +71,29 @@ export default {
           border: "oklch(var(--sidebar-border))",
           ring: "oklch(var(--sidebar-ring))",
         },
-        neon: {
-          DEFAULT: "#00D4B8",
-          dim: "rgba(0,212,184,0.15)",
+        matrix: {
+          DEFAULT: "#22E97A",
+          dim: "rgba(34,233,122,0.08)",
+          border: "rgba(34,233,122,0.2)",
         },
         gold: {
-          DEFAULT: "#C9A24A",
-          light: "#D6B15A",
+          DEFAULT: "#FFD700",
+          dim: "rgba(255,215,0,0.12)",
         },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        card: "14px",
+        token: "18px",
       },
       boxShadow: {
         xs: "0 1px 2px 0 rgba(0,0,0,0.05)",
-        neon: "0 0 20px rgba(0,212,184,0.25)",
-        "neon-sm": "0 0 12px rgba(0,212,184,0.15)",
-        gold: "0 0 16px rgba(201,162,74,0.3)",
+        card: "0 18px 40px rgba(0,0,0,0.45)",
+        matrix: "0 0 20px rgba(34,233,122,0.25)",
+        "matrix-sm": "0 0 12px rgba(34,233,122,0.15)",
+        gold: "0 0 16px rgba(255,215,0,0.3)",
       },
       keyframes: {
         "accordion-down": {
@@ -100,15 +104,20 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        pulse_neon: {
+        "pulse-matrix": {
           "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.5" },
+          "50%": { opacity: "0.4" },
+        },
+        "float-up": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-6px)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        pulse_neon: "pulse_neon 2s ease-in-out infinite",
+        "pulse-matrix": "pulse-matrix 2.5s ease-in-out infinite",
+        "float-up": "float-up 4s ease-in-out infinite",
       },
     },
   },

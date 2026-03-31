@@ -1,4 +1,4 @@
-import { SiDiscord, SiTelegram, SiX } from "react-icons/si";
+import { SiGithub, SiX } from "react-icons/si";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -10,89 +10,92 @@ export default function Footer() {
     <footer
       className="w-full mt-auto"
       style={{
-        background: "#070B0A",
-        borderTop: "1px solid rgba(0,212,184,0.1)",
+        background: "var(--bg-base)",
+        borderTop: "1px solid rgba(34,233,122,0.08)",
       }}
     >
       <div className="max-w-[1200px] mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Logo */}
           <div className="flex items-center gap-2.5">
-            <img
-              src="/assets/generated/dcss-logo-transparent.dim_200x200.png"
-              alt="DCSS"
-              className="w-8 h-8 rounded-full object-cover"
-            />
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+              style={{ background: "rgba(34,233,122,0.12)", color: "#22E97A" }}
+            >
+              D
+            </div>
             <div>
               <div
                 className="text-sm font-bold tracking-widest"
-                style={{ color: "#00D4B8" }}
+                style={{ color: "#22E97A" }}
               >
                 DCSS
               </div>
               <div
                 className="text-[10px] tracking-wider"
-                style={{ color: "#A9B3AF" }}
+                style={{ color: "var(--text-muted)" }}
               >
-                MULTICHAIN
+                CRYPTO HUB
               </div>
             </div>
           </div>
 
-          <div className="flex gap-6 text-xs">
-            {["Resources", "Community", "Legal"].map((link) => (
-              <button
-                type="button"
-                key={link}
-                className="transition-colors"
-                style={{
-                  color: "#A9B3AF",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                {link}
-              </button>
-            ))}
+          {/* Links */}
+          <div
+            className="flex gap-6 text-xs"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <span className="cursor-default">Recursos</span>
+            <span className="cursor-default">Comunidad</span>
+            <span className="cursor-default">Legal</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            {[
-              { Icon: SiDiscord, label: "Discord", color: "#5865F2" },
-              { Icon: SiX, label: "X", color: "#E8ECEB" },
-              { Icon: SiTelegram, label: "Telegram", color: "#29A8EB" },
-            ].map(({ Icon, label, color }) => (
-              <button
-                type="button"
-                key={label}
-                aria-label={label}
-                className="w-8 h-8 rounded-full flex items-center justify-center border transition-all"
-                style={{
-                  background: "rgba(0,212,184,0.05)",
-                  borderColor: "rgba(0,212,184,0.12)",
-                }}
-              >
-                <Icon size={14} color={color} />
-              </button>
-            ))}
+          {/* Social */}
+          <div className="flex items-center gap-3">
+            <a
+              href="https://github.com/ducassephil-cmyk/dcss-crypto-hub"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="w-8 h-8 rounded-full flex items-center justify-center border transition-all hover:border-[#22E97A]"
+              style={{
+                background: "rgba(34,233,122,0.04)",
+                borderColor: "rgba(34,233,122,0.12)",
+              }}
+            >
+              <SiGithub size={13} style={{ color: "var(--text-secondary)" }} />
+            </a>
+            <a
+              href="https://x.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter/X"
+              className="w-8 h-8 rounded-full flex items-center justify-center border transition-all hover:border-[#22E97A]"
+              style={{
+                background: "rgba(34,233,122,0.04)",
+                borderColor: "rgba(34,233,122,0.12)",
+              }}
+            >
+              <SiX size={12} style={{ color: "var(--text-secondary)" }} />
+            </a>
           </div>
         </div>
 
         <div
           className="mt-6 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px]"
           style={{
-            borderTop: "1px solid rgba(0,212,184,0.06)",
-            color: "#A9B3AF",
+            borderTop: "1px solid rgba(34,233,122,0.06)",
+            color: "var(--text-muted)",
           }}
         >
-          <p>© {year} DCSS Crypto Hub. All rights reserved.</p>
+          <p>© {year} DCSS Crypto Hub. Todos los derechos reservados.</p>
           <p>
             Built with ❤️ using{" "}
             <a
               href={caffeineUrl}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#00D4B8" }}
+              style={{ color: "#22E97A" }}
             >
               caffeine.ai
             </a>

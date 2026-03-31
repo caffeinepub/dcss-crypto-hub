@@ -5,8 +5,11 @@ import AnnouncementBanner from "./components/AnnouncementBanner";
 import BridgePanel from "./components/BridgePanel";
 import CircuitBackground from "./components/CircuitBackground";
 import DCSSHero from "./components/DCSSHero";
+import DePINSection from "./components/DePINSection";
 import Footer from "./components/Footer";
+import NFTViewer from "./components/NFTViewer";
 import Navbar, { type Tab } from "./components/Navbar";
+import SplashOverlay from "./components/SplashOverlay";
 import TokenGrid from "./components/TokenGrid";
 import WalletConnectModal from "./components/WalletConnectModal";
 import { TokenProvider } from "./contexts/TokenContext";
@@ -14,6 +17,7 @@ import { TransactionProvider } from "./contexts/TransactionContext";
 import { WalletProvider, useWallet } from "./contexts/WalletContext";
 import { TOKEN_LIST } from "./data/tokens";
 import { useLivePrices } from "./hooks/useLivePrices";
+import { useTheme } from "./hooks/useTheme";
 import DCSSCoinPage from "./pages/DCSSCoinPage";
 import ProjectPage from "./pages/ProjectPage";
 import StakingPage from "./pages/StakingPage";
@@ -54,7 +58,7 @@ function PortfolioBar() {
       data-ocid="portfolio.panel"
     >
       <span style={{ color: "var(--accent-color)" }}>💼 Portfolio</span>
-      <span style={{ color: "#FFD700", fontWeight: 700 }}>
+      <span style={{ color: "var(--gold-color)", fontWeight: 700 }}>
         $
         {totalUSD.toLocaleString("en-US", {
           minimumFractionDigits: 2,
@@ -62,11 +66,11 @@ function PortfolioBar() {
         })}{" "}
         USD
       </span>
-      <span style={{ color: "rgba(107,107,107,0.6)" }}>|</span>
+      <span>|</span>
       <span>
         {tokenCount} token{tokenCount !== 1 ? "s" : ""}
       </span>
-      <span style={{ color: "rgba(107,107,107,0.6)" }}>|</span>
+      <span>|</span>
       <span>
         Conectado:{" "}
         <span style={{ color: "var(--accent-color)" }}>
@@ -75,6 +79,11 @@ function PortfolioBar() {
       </span>
     </div>
   );
+}
+
+function ThemeInitializer() {
+  useTheme();
+  return null;
 }
 
 function AppContent() {
@@ -88,14 +97,16 @@ function AppContent() {
     setActiveTab(tab);
     setTokenDetailSymbol(null);
   }
+
   const isDCSSPage = tokenDetailSymbol === "DCSS";
 
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ background: "#070B0A", position: "relative" }}
+      style={{ background: "var(--bg-base)", position: "relative" }}
     >
       <CircuitBackground />
+      <SplashOverlay />
       <div
         style={{
           position: "relative",
@@ -105,9 +116,13 @@ function AppContent() {
           minHeight: "100vh",
         }}
       >
-        <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
+        <Navbar
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          onOpenWalletModal={() => setWalletModalOpen(true)}
+        />
         <AnnouncementBanner />
-        <main className="flex-1">
+        <main className="flex-1" id="main-content">
           {isDCSSPage ? (
             <DCSSCoinPage onBack={() => setTokenDetailSymbol(null)} />
           ) : tokenDetailSymbol ? (
@@ -121,7 +136,7 @@ function AppContent() {
                 <div>
                   <DCSSHero onConnectWallet={() => setWalletModalOpen(true)} />
                   <section className="max-w-[1200px] mx-auto px-4 py-10">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                       <div>
                         <h2
                           className="text-xl font-bold font-display"
@@ -154,6 +169,10 @@ function AppContent() {
                       onBridge={() => setActiveTab("bridge")}
                     />
                   </section>
+                  <DePINSection
+                    onNavigateToToken={(s) => setTokenDetailSymbol(s)}
+                  />
+                  <NFTViewer />
                 </div>
               )}
               {activeTab === "tokens" && (
@@ -163,13 +182,14 @@ function AppContent() {
                       className="text-2xl font-bold font-display"
                       style={{ color: "var(--text-primary)" }}
                     >
-                      Tokens
+                      Todos los Tokens
                     </h2>
                     <p
                       className="text-sm mt-1"
                       style={{ color: "var(--text-muted)" }}
                     >
-                      Busca y filtra entre los 40+ activos soportados
+                      Busca y filtra entre los 40+ activos soportados en 18+
+                      redes
                     </p>
                   </div>
                   <TokenGrid
@@ -221,6 +241,7 @@ export default function App() {
     <WalletProvider>
       <TransactionProvider>
         <TokenProvider>
+          <ThemeInitializer />
           <AppContent />
         </TokenProvider>
       </TransactionProvider>

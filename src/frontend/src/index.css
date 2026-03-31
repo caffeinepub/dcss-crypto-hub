@@ -21,52 +21,103 @@
 }
 
 @layer base {
+  /* ── Dark / Midnight (default) ── */
   :root {
     --radius: 0.5rem;
-    /* Monochromatic palette — only aquamarine as accent */
-    --background: 0.08 0 0;
-    --foreground: 0.94 0 0;
-    --card: 0.1 0 0;
-    --card-foreground: 0.94 0 0;
-    --popover: 0.12 0 0;
-    --popover-foreground: 0.94 0 0;
-    --primary: 0.78 0.15 185;
-    --primary-foreground: 0.08 0 0;
-    --secondary: 0.14 0 0;
-    --secondary-foreground: 0.94 0 0;
-    --muted: 0.13 0 0;
-    --muted-foreground: 0.46 0 0;
-    --accent: 0.78 0.15 185;
-    --accent-foreground: 0.08 0 0;
+    /* OKLCH base tokens */
+    --background: 0.08 0.006 155;
+    --foreground: 0.94 0.01 160;
+    --card: 0.1 0.008 155;
+    --card-foreground: 0.94 0.01 160;
+    --popover: 0.12 0.008 155;
+    --popover-foreground: 0.94 0.01 160;
+    --primary: 0.8 0.18 148;
+    --primary-foreground: 0.08 0.006 155;
+    --secondary: 0.14 0.006 155;
+    --secondary-foreground: 0.94 0.01 160;
+    --muted: 0.13 0.005 155;
+    --muted-foreground: 0.52 0.01 160;
+    --accent: 0.8 0.18 148;
+    --accent-foreground: 0.08 0.006 155;
     --destructive: 0.55 0.22 25;
     --destructive-foreground: 0.94 0 0;
-    --border: 0.18 0 0;
-    --input: 0.18 0 0;
-    --ring: 0.78 0.15 185;
-    --chart-1: 0.78 0.15 185;
-    --chart-2: 0.6 0.1 185;
-    --chart-3: 0.4 0.06 185;
-    --chart-4: 0.28 0 0;
-    --chart-5: 0.22 0 0;
-    --sidebar: 0.1 0 0;
-    --sidebar-foreground: 0.94 0 0;
-    --sidebar-primary: 0.78 0.15 185;
-    --sidebar-primary-foreground: 0.08 0 0;
-    --sidebar-accent: 0.14 0 0;
-    --sidebar-accent-foreground: 0.94 0 0;
-    --sidebar-border: 0.18 0 0;
-    --sidebar-ring: 0.78 0.15 185;
+    --border: 0.18 0.01 155;
+    --input: 0.18 0.01 155;
+    --ring: 0.8 0.18 148;
+    --chart-1: 0.8 0.18 148;
+    --chart-2: 0.65 0.14 148;
+    --chart-3: 0.5 0.1 148;
+    --chart-4: 0.85 0.14 85;
+    --chart-5: 0.72 0.2 35;
+    --sidebar: 0.1 0.008 155;
+    --sidebar-foreground: 0.94 0.01 160;
+    --sidebar-primary: 0.8 0.18 148;
+    --sidebar-primary-foreground: 0.08 0.006 155;
+    --sidebar-accent: 0.14 0.006 155;
+    --sidebar-accent-foreground: 0.94 0.01 160;
+    --sidebar-border: 0.18 0.01 155;
+    --sidebar-ring: 0.8 0.18 148;
 
-    /* Custom semantic vars */
+    /* Semantic custom properties — dark */
     --bg-base: #070b0a;
     --bg-surface: #0f1513;
     --bg-elevated: #162018;
     --border-subtle: rgba(34, 233, 122, 0.12);
-    --text-primary: #f0f0f0;
-    --text-muted: #6b6b6b;
+    --text-primary: #e8eef0;
+    --text-secondary: #9aa6b2;
+    --text-muted: #4a5568;
     --accent-color: #22e97a;
     --accent-dim: rgba(34, 233, 122, 0.08);
+    --gold-color: #ffd700;
     --error: #ff4444;
+    --card-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    --glass-bg: rgba(15, 21, 19, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.06);
+  }
+
+  /* ── Light / Claro theme ── */
+  .theme-claro {
+    /* OKLCH light tokens */
+    --background: 0.98 0.004 80;
+    --foreground: 0.22 0.02 250;
+    --card: 0.99 0.003 80;
+    --card-foreground: 0.22 0.02 250;
+    --popover: 0.99 0.003 80;
+    --popover-foreground: 0.22 0.02 250;
+    --primary: 0.7 0.18 148;
+    --primary-foreground: 0.99 0.003 80;
+    --secondary: 0.93 0.01 80;
+    --secondary-foreground: 0.22 0.02 250;
+    --muted: 0.93 0.01 80;
+    --muted-foreground: 0.55 0.02 250;
+    --accent: 0.7 0.18 148;
+    --accent-foreground: 0.99 0.003 80;
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 0.99 0.003 80;
+    --border: 0.88 0.01 80;
+    --input: 0.88 0.01 80;
+    --ring: 0.7 0.18 148;
+    --chart-1: 0.7 0.18 148;
+    --chart-2: 0.55 0.14 148;
+    --chart-3: 0.4 0.1 148;
+    --chart-4: 0.8 0.14 85;
+    --chart-5: 0.65 0.2 35;
+
+    /* Semantic overrides — light */
+    --bg-base: #faf8f5;
+    --bg-surface: rgba(255, 255, 255, 0.75);
+    --bg-elevated: rgba(255, 255, 255, 0.92);
+    --border-subtle: rgba(34, 233, 122, 0.25);
+    --text-primary: #2b2f3a;
+    --text-secondary: #7a8496;
+    --text-muted: #9ba3af;
+    --accent-color: #16c261;
+    --accent-dim: rgba(34, 233, 122, 0.1);
+    --gold-color: #b8960c;
+    --error: #dc2626;
+    --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(0, 0, 0, 0.08);
   }
 
   * {
@@ -77,17 +128,28 @@
     color-scheme: dark;
   }
 
+  html.theme-claro {
+    color-scheme: light;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: "Plus Jakarta Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
     background: var(--bg-base);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1,
   h2,
   h3 {
     font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
   }
 
   ::-webkit-scrollbar {
@@ -106,16 +168,25 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: var(--accent-color);
+    opacity: 0.7;
   }
 }
 
 @layer utilities {
+  .glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--card-shadow);
+  }
+
   .accent-border {
-    border: 1px solid rgba(0, 212, 184, 0.2);
+    border: 1px solid rgba(34, 233, 122, 0.2);
   }
 
   .accent-border:hover {
-    border-color: rgba(0, 212, 184, 0.5);
+    border-color: rgba(34, 233, 122, 0.5);
   }
 
   .mono {
@@ -134,17 +205,16 @@
     color: var(--text-muted);
   }
 
-  /* Legacy compat */
   .neon-border {
-    border: 1px solid rgba(0, 212, 184, 0.2);
+    border: 1px solid rgba(34, 233, 122, 0.2);
   }
 
   .neon-border:hover {
-    border-color: rgba(0, 212, 184, 0.5);
+    border-color: rgba(34, 233, 122, 0.5);
   }
 
   .gold-text {
-    color: var(--text-muted);
+    color: var(--gold-color);
   }
 
   .green-text {
@@ -152,6 +222,17 @@
   }
 
   .glow-green {
-    color: var(--text-primary);
+    text-shadow: 0 0 20px rgba(34, 233, 122, 0.4);
+    color: var(--accent-color);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
